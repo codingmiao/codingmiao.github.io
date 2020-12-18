@@ -1,0 +1,12 @@
+cd blog
+
+hexo s	//启动
+
+hexo g       //编译 编译完后将public文件夹拷到nginx配置的路径下即可
+
+
+添加sitemap插件
+https://blog.csdn.net/qiuchengjia/article/details/52923170
+
+hexo官方文档
+https://hexo.io/zh-cn/docs/front-matter.html
