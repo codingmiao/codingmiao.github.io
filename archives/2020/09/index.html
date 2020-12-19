@@ -1,738 +1,388 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
 <head>
-  <meta charset="utf-8">
-  <title>懒惰的芜菁</title>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="刘雨">
   <meta name="keywords" content="">
-  <meta name="description" content="懒惰的芜菁">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="gdb,是arcgis重要的数据格式之一，它把矢量数据按以下层级结构存为本地文件 图层 -- 要素 ---- 属性 ---- 形状 ---- 样式gdal提供了函数允许我们读取gdb，因此，我们可以通过jni调用gdal来再java中读取gdal 1、配置gdal环境liunx下按照gdal需要编译，而windows下就比较简单了，下载编译好的dll文件，然后环境变量path里加入dll目录即可">
-<meta property="og:type" content="article">
-<meta property="og:title" content="java读取arcgis的gdb文件">
-<meta property="og:url" content="https://blog.wowtools.org/2020/11/05/2020-11-5-java-read-gdb/index.html">
-<meta property="og:site_name" content="懒惰的芜菁">
-<meta property="og:description" content="gdb,是arcgis重要的数据格式之一，它把矢量数据按以下层级结构存为本地文件 图层 -- 要素 ---- 属性 ---- 形状 ---- 样式gdal提供了函数允许我们读取gdb，因此，我们可以通过jni调用gdal来再java中读取gdal 1、配置gdal环境liunx下按照gdal需要编译，而windows下就比较简单了，下载编译好的dll文件，然后环境变量path里加入dll目录即可">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-11-05T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-11-05T10:04:32.161Z">
-<meta property="article:author" content="刘雨">
-<meta property="article:tag" content="arcgis">
-<meta name="twitter:card" content="summary">
+  <title>归档 - 懒惰的芜菁</title>
 
-
-<link rel="icon" href="/img/avatar.jpg">
-
-<link href="/css/style.css?v=1.0.1" rel="stylesheet">
-
-<link href="/css/hl_theme/github.css?v=1.0.1" rel="stylesheet">
-
-<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
-<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="/js/jquery.autocomplete.min.js?v=1.0.1" ></script>
-
-<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-<script>
-    hljs.initHighlightingOnLoad();
-</script>
-
-<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
 
 
-<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+<!-- 主题依赖的图标库，不要自行修改 -->
 
-<script src="/js/iconfont.js?v=1.0.1" ></script>
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
 
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"9b0952b597daef8813158f4936f63a00","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
 <meta name="generator" content="Hexo 4.2.0"></head>
-<div style="display: none">
-  <input class="theme_disqus_on" value="false">
-  <input class="theme_preload_comment" value="true">
-  <input class="theme_blog_path" value="">
-</div>
+
 
 <body>
-<aside class="nav mobile">
-    <div class="nav-left">
-        <a href="/" class="avatar_target">
-    <img class="avatar" src="/img/avatar.jpg" />
-</a>
-<div class="author">
-    <span>刘雨</span>
-</div>
+  <header style="height: 60vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
 
-<div class="icon">
-    
-        
-        <a title="rss" href="/atom.xml" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-rss"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="github" href="https://github.com/codingmiao" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-github"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-        <a title="email" href="mailto:liuyu@wowtools.org" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-email"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=750836354&site=qq&menu=yes" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-qq"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-    
-</div>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
 
-
-
-
-<ul>
-    <li><div class="all active">全部文章<small>(10)</small></div></li>
-    
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
         
-            
-            <li><div data-rel="gis"><i class="fold iconfont icon-right"></i>gis<small>(5)</small></div>
-                
-                    <ul class="sub hide">
-                        
-                        <li><div data-rel="前端">前端<small>(1)</small></div>
-                            
-                        </li>
-                            
-                        <li><div data-rel="工具和软件">工具和软件<small>(1)</small></div>
-                            
-                        </li>
-                            
-                        <li><div data-rel="服务端">服务端<small>(2)</small></div>
-                            
-                        </li>
-                            
-                    </ul>
-                
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
             </li>
-            
+          
         
-    
-        
-            
-            <li><div data-rel="奇葩问题">奇葩问题<small>(1)</small></div>
-                
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
             </li>
-            
+          
         
-    
-        
-            
-        
-    
-        
-            
-        
-    
-        
-            
-            <li><div data-rel="java"><i class="fold iconfont icon-right"></i>java<small>(3)</small></div>
-                
-                    <ul class="sub hide">
-                        
-                        <li><div data-rel="异常">异常<small>(1)</small></div>
-                            
-                        </li>
-                            
-                        <li><div data-rel="neo4j">neo4j<small>(2)</small></div>
-                            
-                        </li>
-                            
-                    </ul>
-                
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
             </li>
-            
+          
         
-    
-        
-            
-        
-    
-        
-            
-        
-    
-        
-            
-            <li><div data-rel="部署运维"><i class="fold iconfont icon-right"></i>部署运维<small>(1)</small></div>
-                
-                    <ul class="sub hide">
-                        
-                        <li><div data-rel="软件安装">软件安装<small>(1)</small></div>
-                            
-                        </li>
-                            
-                    </ul>
-                
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
             </li>
-            
+          
         
-    
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
         
-            
         
-    
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
         
-            
         
-    
-</ul>
-<div class="left-bottom">
-    <div class="menus">
-    
-    
-    
-    
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
     </div>
-    <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
-</div>
-<input type="hidden" id="yelog_site_posts_number" value="10">
-<input type="hidden" id="yelog_site_word_count" value="7k">
-<div style="display: none">
-    <span id="busuanzi_value_site_uv"></span>
-    <span id="busuanzi_value_site_pv"></span>
-</div>
+  </div>
+</nav>
 
-    </div>
-    <div class="nav-right">
-        <div class="friends-area">
-    <div class="friends-title">
-        友情链接
-        <i class="back-title-list"></i>
-    </div>
-    <div class="friends-content">
-        <ul>
-            
-        </ul>
-    </div>
-</div>
-        <div class="title-list">
-    <form onkeydown="if(event.keyCode==13){return false;}">
-        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
-        <i class="cross"></i>
-        <span>
-            <label for="tagswitch">Tags:</label>
-            <input id="tagswitch" type="checkbox" style="display: none" />
-            <i id="tagsWitchIcon"></i>
-        </span>
-    </form>
-    <div class="tags-list">
-    
-    <li class="article-tag-list-item">
-        <a class="color5">geoserver</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color5">奇葩问题</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color2">arcgis</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color5">neo4j扩展开发</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color5">dojo</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color1">PostgreSQL</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color5">gdal</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a class="color2">mapbox</a>
-    </li>
-    
-    <div class="clearfix"></div>
-</div>
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="归档">
+              
+            </span>
 
-    
-    <nav id="title-list-nav">
-        
-        <a  class="gis "
-           href="/2016/11/28/2016-11-28-geoserver-gwc/"
-           data-tag="geoserver"
-           data-author="" >
-            <span class="post-title" title="geoserver gwc">geoserver gwc</span>
-            <span class="post-date" title="2016-11-28 20:46:25">2016/11/28</span>
-        </a>
-        
-        <a  class="java 异常 "
-           href="/2017/11/30/2017-11-30-zip-exception/"
-           data-tag="奇葩问题"
-           data-author="" >
-            <span class="post-title" title="Tomcat启动报错ZipException: error in opening zip file及解决">Tomcat启动报错ZipException: error in opening zip file及解决</span>
-            <span class="post-date" title="2017-11-30 20:46:25">2017/11/30</span>
-        </a>
-        
-        <a  class="gis 工具和软件 "
-           href="/2017/09/05/2017-09-05-arcgis-publishing-layer/"
-           data-tag="arcgis"
-           data-author="" >
-            <span class="post-title" title="arcgis 发布图层">arcgis 发布图层</span>
-            <span class="post-date" title="2017-09-05 20:46:25">2017/09/05</span>
-        </a>
-        
-        <a  class="java neo4j "
-           href="/2019/12/27/2019-12-27-custom-neo4j1/"
-           data-tag="neo4j扩展开发"
-           data-author="" >
-            <span class="post-title" title="neo4j同时使用嵌入模式和服务模式">neo4j同时使用嵌入模式和服务模式</span>
-            <span class="post-date" title="2019-12-27 20:46:25">2019/12/27</span>
-        </a>
-        
-        <a  class="奇葩问题 "
-           href="/2018/06/07/2018-06-07-Uncaught-Error-irrationalPath/"
-           data-tag="dojo"
-           data-author="" >
-            <span class="post-title" title="dojo报错Uncaught Error: irrationalPath原因及解决">dojo报错Uncaught Error: irrationalPath原因及解决</span>
-            <span class="post-date" title="2018-06-07 20:46:25">2018/06/07</span>
-        </a>
-        
-        <a  class="gis 服务端 "
-           href="/2018/03/21/2018-03-21-parse-postgis-shape/"
-           data-tag="PostgreSQL"
-           data-author="" >
-            <span class="post-title" title="postgis空间数据格式解析，及如何绑定变量">postgis空间数据格式解析，及如何绑定变量</span>
-            <span class="post-date" title="2018-03-21 20:46:25">2018/03/21</span>
-        </a>
-        
-        <a  class="部署运维 软件安装 "
-           href="/2018/05/18/2018-05-18-centos7-install-gdal/"
-           data-tag="gdal"
-           data-author="" >
-            <span class="post-title" title="centos 7安装gdal">centos 7安装gdal</span>
-            <span class="post-date" title="2018-05-18 20:46:25">2018/05/18</span>
-        </a>
-        
-        <a  class="java neo4j "
-           href="/2019/12/27/2019-12-27-custom-neo4j2/"
-           data-tag="neo4j扩展开发"
-           data-author="" >
-            <span class="post-title" title="neo4j自定义call函数">neo4j自定义call函数</span>
-            <span class="post-date" title="2019-12-27 20:46:25">2019/12/27</span>
-        </a>
-        
-        <a  class="gis 前端 "
-           href="/2020/09/25/2020-09-25-kill-the-sprite/"
-           data-tag="mapbox"
-           data-author="" >
-            <span class="post-title" title="干掉mapbox里的雪碧图(sprite)">干掉mapbox里的雪碧图(sprite)</span>
-            <span class="post-date" title="2020-09-25 20:46:25">2020/09/25</span>
-        </a>
-        
-        <a  class="gis 服务端 "
-           href="/2020/11/05/2020-11-5-java-read-gdb/"
-           data-tag="arcgis"
-           data-author="" >
-            <span class="post-title" title="java读取arcgis的gdb文件">java读取arcgis的gdb文件</span>
-            <span class="post-date" title="2020-11-05 20:46:25">2020/11/05</span>
-        </a>
-        
-    </nav>
-</div>
-    </div>
-    <div class="hide-list">
-        <div class="semicircle">
-            <div class="brackets first"><</div>
-            <div class="brackets">&gt;</div>
+            
+          </div>
+
+          
         </div>
+      </div>
     </div>
-</aside>
-<div class="post index">
-    <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+  </header>
+
+  <main>
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#刘雨的博客"><span class="toc-text">刘雨的博客</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#关于我"><span class="toc-text">关于我</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于这个博客"><span class="toc-text">关于这个博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#这个博客是怎么搭建的"><span class="toc-text">这个博客是怎么搭建的?</span></a></li></ol></li></ol>
+      <div class="container nopadding-md">
+        <div class="py-5" id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<div class="list-group">
+  <p class="h4">共计 9 篇文章</p>
+  <hr>
+  
+  
     
-<style>
-    .left-col .switch-btn,
-    .left-col .switch-area {
-        display: none;
-    }
-    .toc-level-3 i,
-    .toc-level-3 ol {
-        display: none !important;
-    }
-</style>
+      
+      <p class="h5">2020</p>
+    
+    <a href="/2020/09/25/2020-09-25-kill-the-sprite/" class="list-group-item list-group-item-action">
+      <span class="archive-post-title">干掉mapbox里的雪碧图(sprite)</span>
+      <time style="float: right;">09-25</time>
+    </a>
+  
 </div>
-            <h1 id="刘雨的博客"><a href="#刘雨的博客" class="headerlink" title="刘雨的博客"></a>刘雨的博客</h1><h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p>一个喜欢玩暴雪游戏的18线城市的java/gis码农，为了艾泽拉斯!</p>
-<h2 id="关于这个博客"><a href="#关于这个博客" class="headerlink" title="关于这个博客"></a>关于这个博客</h2><p>把熟悉的东西用文字写下来分享，又会有新的理解，这就是开这个博客的全部动机了~</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="这个博客是怎么搭建的"><a href="#这个博客是怎么搭建的" class="headerlink" title="这个博客是怎么搭建的?"></a>这个博客是怎么搭建的?</h2><p>这个博客通过 <a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a> 生成，部署在 <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank" rel="noopener">3-hexo</a> 已经在github上开源</p>
 
-        </article>
-        
-        <p>
-            <a  class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
-    <div id="comments"></div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
 
-<script type="text/javascript">
-    $.getScript('/js/gitalk.js', function () {
-        var gitalk = new Gitalk({
-            clientID: '7827a2a274092d600318',
-            clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
-            repo: 'gitalkissue',
-            owner: 'codingmiao',
-            admin: ['codingmiao'],
-            id: decodeURI(location.pathname),
-            distractionFreeMode: 'true',
-            language: 'zh-CN',
-            perPage: parseInt('10',10)
-        })
-        gitalk.render('comments')
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
     })
-</script>
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
 
 
-    </div>
-    <div class="copyright">
-        <p class="footer-entry">©2016-2019 liuyu</p>
-<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-    </div>
-    <div class="full-toc">
-        <button class="full"><span class="min "></span></button>
-<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
-<div class="post-toc"><span class="post-toc-title">目录</span>
-    <div class="post-toc-content">
+<!-- Plugins -->
 
-    </div>
-</div>
-<a class="" id="rocket" ></a>
 
-    </div>
-</div>
-<div class="acParent"></div>
+  
+    <script  src="/js/lazyload.js" ></script>
+  
 
-<div class="hide_box" onclick="dashangToggle()"></div>
-<div class="shang_box">
-    <a class="shang_close"  onclick="dashangToggle()">×</a>
-    <div class="shang_tit">
-        <p>喜欢就点赞,疼爱就打赏</p>
-    </div>
-    <div class="shang_payimg">
-        <div class="pay_img">
-            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
-            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
-        </div>
-    </div>
-    <div class="shang_payselect">
-        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
-    </div>
-</div>
+
+
+  
+
+
+
+
+
+
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
 
 
 </body>
-<script src="/js/jquery.pjax.js?v=1.0.1" ></script>
-
-<script src="/js/script.js?v=1.0.1" ></script>
-<script>
-    var img_resize = 'default';
-    /*作者、标签的自动补全*/
-    $(function () {
-        $('.search').AutoComplete({
-            'data': ['#geoserver','#奇葩问题','#arcgis','#neo4j扩展开发','#dojo','#PostgreSQL','#gdal','#mapbox',],
-            'itemHeight': 20,
-            'width': 418
-        }).AutoComplete('show');
-    })
-    function initArticle() {
-        /*渲染对应的表格样式*/
-        
-            $(".post .pjax table").addClass("green_title");
-        
-
-        /*渲染打赏样式*/
-        
-        $("input[name=pay]").on("click", function () {
-            if($("input[name=pay]:checked").val()=="weixin"){
-                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
-            } else {
-                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
-            }
-        })
-        
-
-        /*高亮代码块行号*/
-        
-        $('pre code').each(function(){
-            var lines = $(this).text().split('\n').length - 1, widther='';
-            if (lines>99) {
-                widther = 'widther'
-            }
-            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
-            $(this).addClass('has-numbering ' + widther)
-                    .parent()
-                    .append($numbering);
-            for(var i=1;i<=lines;i++){
-                $numbering.append($('<li/>').text(i));
-            }
-        });
-        
-
-        /*访问数量*/
-        
-        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
-        
-
-        /*代码高亮，行号对齐*/
-        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
-
-        
-        
-    }
-
-    /*打赏页面隐藏与展示*/
-    
-    function dashangToggle() {
-        $(".shang_box").fadeToggle();
-        $(".hide_box").fadeToggle();
-    }
-    
-
-</script>
-
-<!--加入行号的高亮代码块样式-->
-
-<style>
-    pre{
-        position: relative;
-        margin-bottom: 24px;
-        border-radius: 10px;
-        border: 1px solid #e2dede;
-        background: #FFF;
-        overflow: hidden;
-    }
-    code.has-numbering{
-        margin-left: 30px;
-    }
-    code.has-numbering.widther{
-        margin-left: 35px;
-    }
-    .pre-numbering{
-        margin: 0px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 20px;
-        padding: 0.5em 3px 0.7em 5px;
-        border-right: 1px solid #C3CCD0;
-        text-align: right;
-        color: #AAA;
-        background-color: ;
-    }
-    .pre-numbering.widther {
-        width: 35px;
-    }
-</style>
-
-<!--自定义样式设置-->
-<style>
-    
-    
-    .nav {
-        width: 542px;
-    }
-    .nav.fullscreen {
-        margin-left: -542px;
-    }
-    .nav-left {
-        width: 120px;
-    }
-    
-    
-    @media screen and (max-width: 1468px) {
-        .nav {
-            width: 492px;
-        }
-        .nav.fullscreen {
-            margin-left: -492px;
-        }
-        .nav-left {
-            width: 100px;
-        }
-    }
-    
-    
-    @media screen and (max-width: 1024px) {
-        .nav {
-            width: 492px;
-            margin-left: -492px
-        }
-        .nav.fullscreen {
-            margin-left: 0;
-        }
-        .nav .hide-list.fullscreen {
-            left: 492px
-        }
-    }
-    
-    @media screen and (max-width: 426px) {
-        .nav {
-            width: 100%;
-        }
-        .nav-left {
-            width: 100%;
-        }
-    }
-    
-    
-    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
-        color: #383636;
-    }
-    
-    
-    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
-        color: #5e5e5f;
-    }
-    
-    
-    .nav-right nav a.hover, #local-search-result a.hover{
-        background-color: #e2e0e0;
-    }
-    
-    
-
-    /*列表样式*/
-    
-    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
-        border: #e2dede solid 1px;
-        border-radius: 10px;
-        padding: 10px 32px 10px 56px;
-    }
-    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    
-
-    /* 背景图样式 */
-    
-    
-
-
-    /*引用块样式*/
-    
-
-    /*文章列表背景图*/
-    
-    .nav-right:before {
-        content: ' ';
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.3;
-        background: url("https://i.loli.net/2019/07/22/5d3521411f3f169375.png");
-        background-repeat: no-repeat;
-        background-position: 50% 0;
-        -ms-background-size: cover;
-        -o-background-size: cover;
-        -moz-background-size: cover;
-        -webkit-background-size: cover;
-        background-size: cover;
-    }
-    
-
-    
-</style>
-
-
-
-
-
-
-
-
-<!-- 百度统计代码 -->
-<script>
-var _hmt = _hmt || [];
-(function() {
-  console.log('baidu_tj init')
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<!-- end百度统计代码 -->
-
 </html>

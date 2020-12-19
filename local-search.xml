@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>java读取arcgis的gdb文件</title>
+    <link href="/2020/11/05/2020-11-5-java-read-gdb/"/>
+    <url>/2020/11/05/2020-11-5-java-read-gdb/</url>
+    
+    <content type="html"><![CDATA[<p>gdb,是arcgis重要的数据格式之一，它把矢量数据按以下层级结构存为本地文件</p><pre><code>图层-- 要素---- 属性---- 形状---- 样式</code></pre><p>gdal提供了函数允许我们读取gdb，因此，我们可以通过jni调用gdal来再java中读取gdal</p><h1 id="1、配置gdal环境"><a href="#1、配置gdal环境" class="headerlink" title="1、配置gdal环境"></a>1、配置gdal环境</h1><p>liunx下按照gdal需要编译，而windows下就比较简单了，下载编译好的dll文件，然后环境变量path里加入dll目录即可</p><pre><code>链接：https://pan.baidu.com/s/1kH3djGQsow-llQiy82068g 提取码：uuwn </code></pre><h1 id="2、建一个maven工程"><a href="#2、建一个maven工程" class="headerlink" title="2、建一个maven工程"></a>2、建一个maven工程</h1><p>前面下载的那个包里的lib文件夹拷到工程中，然后maven里添加gdal的依赖:</p><pre><code>    &lt;dependencies&gt;        &lt;dependency&gt;            &lt;groupId&gt;org.gdal&lt;/groupId&gt;            &lt;artifactId&gt;gdal&lt;/artifactId&gt;            &lt;version&gt;2.2.3&lt;/version&gt;            &lt;scope&gt;system&lt;/scope&gt;            &lt;!--&lt;systemPath&gt;${project.basedir}/lib/gdal-centos7x64.jar&lt;/systemPath&gt;--&gt;            &lt;systemPath&gt;${project.basedir}/lib/gdal-win64.jar&lt;/systemPath&gt;        &lt;/dependency&gt;    &lt;/dependencies&gt;</code></pre><h1 id="3、写代码"><a href="#3、写代码" class="headerlink" title="3、写代码"></a>3、写代码</h1><pre><code class="java">package com;import org.gdal.gdal.gdal;import org.gdal.ogr.*;import java.sql.Date;import java.sql.Time;import java.sql.Timestamp;import java.time.LocalDate;import java.time.LocalDateTime;import java.time.LocalTime;/** * gdal读取gdb示例 * @author liuyu * @date 2020/11/5 */public class Test {    static {        gdal.AllRegister();    }    public static void main(String[] args) {        Driver driver = ogr.GetDriverByName(&quot;OpenFileGDB&quot;);        DataSource dataSource = driver.Open(&quot;D:\\data\\云南省矢量地图gdb\\云南省地图综合成果.gdb&quot;, 0);        for (int i = 0; i &lt; dataSource.GetLayerCount(); i++) {            //获取图层            Layer layer = dataSource.GetLayer(i);            System.out.println(i + &quot;\t&quot; + layer.GetName());            do {//获取图层下的要素                Feature feature = layer.GetNextFeature();                if (null == feature) {                    break;                }                //获取样式，这里是空，待确定                System.out.println(feature.GetStyleString());                //获取geometry                System.out.println(feature.GetGeometryRef().ExportToWkt());//也可以ExportToWkb() gml等等                //获取属性                for (int p = 0; p &lt; feature.GetFieldCount(); p++) {                    System.out.println(feature.GetFieldDefnRef(p).GetName()                            + &quot;\t&quot; +                            getProperty(feature, p));                }                System.out.println(&quot;---------&quot;);            } while (true);        }    }    private static Object getProperty(Feature feature, int index) {        int type = feature.GetFieldType(index);        PropertyGetter propertyGetter;        if (type &lt; 0 || type &gt;= propertyGetters.length) {            propertyGetter = stringPropertyGetter;        } else {            propertyGetter = propertyGetters[type];        }        try {            return propertyGetter.get(feature, index);        } catch (Exception e) {            e.printStackTrace();            return null;        }    }    /**     * 属性获取器     */    @FunctionalInterface    private interface PropertyGetter {        Object get(Feature feature, int index);    }    private static final PropertyGetter stringPropertyGetter = (feature, index) -&gt; feature.GetFieldAsString(index);    /**     * feature.GetFieldType(index)得到一个属性类型的int值,该值对应具体类型     */    private static final PropertyGetter[] propertyGetters = new PropertyGetter[]{            (feature, index) -&gt; feature.GetFieldAsInteger(index),//0    Integer            (feature, index) -&gt; feature.GetFieldAsIntegerList(index),//1    IntegerList            (feature, index) -&gt; feature.GetFieldAsDouble(index),//2    Real            (feature, index) -&gt; feature.GetFieldAsDoubleList(index),//3    RealList            stringPropertyGetter,//4    String            (feature, index) -&gt; feature.GetFieldAsStringList(index),//5    StringList            stringPropertyGetter,//6    (unknown)            stringPropertyGetter,//7    (unknown)            (feature, index) -&gt; feature.GetFieldAsBinary(index),//8    Binary            (feature, index) -&gt; {                int[] pnYear = new int[1];                int[] pnMonth = new int[1];                int[] pnDay = new int[1];                int[] pnHour = new int[1];                int[] pnMinute = new int[1];                float[] pfSecond = new float[1];                int[] pnTZFlag = new int[1];                feature.GetFieldAsDateTime(index, pnYear, pnMonth, pnDay, pnHour, pnMinute, pfSecond, pnTZFlag);                Date date = Date.valueOf(LocalDate.of(pnYear[0], pnMonth[0], pnDay[0]));                return date;            },//9    Date            (feature, index) -&gt; {                int[] pnYear = new int[1];                int[] pnMonth = new int[1];                int[] pnDay = new int[1];                int[] pnHour = new int[1];                int[] pnMinute = new int[1];                float[] pfSecond = new float[1];                int[] pnTZFlag = new int[1];                feature.GetFieldAsDateTime(index, pnYear, pnMonth, pnDay, pnHour, pnMinute, pfSecond, pnTZFlag);                float fSecond = pfSecond[0];                int s = (int) fSecond;                int ns = (int) (1000000000 * fSecond - s);                Time time = Time.valueOf(LocalTime.of(pnHour[0], pnMinute[0], s, ns));                return time;            },// 10    Time            (feature, index) -&gt; {                int[] pnYear = new int[1];                int[] pnMonth = new int[1];                int[] pnDay = new int[1];                int[] pnHour = new int[1];                int[] pnMinute = new int[1];                float[] pfSecond = new float[1];                int[] pnTZFlag = new int[1];                feature.GetFieldAsDateTime(index, pnYear, pnMonth, pnDay, pnHour, pnMinute, pfSecond, pnTZFlag);                float fSecond = pfSecond[0];                int s = (int) fSecond;                int ns = (int) (1000000000 * fSecond - s);                LocalDateTime localDateTime = LocalDateTime.of(                        LocalDate.of(pnYear[0], pnMonth[0], pnDay[0]),                        LocalTime.of(pnHour[0], pnMinute[0], s, ns)                );                Timestamp timestamp = Timestamp.valueOf(localDateTime);                return timestamp;            },//11    DateTime            (feature, index) -&gt; feature.GetFieldAsInteger64(index),//12    Integer64            (feature, index) -&gt; feature.GetFieldAsIntegerList(index),//13 Integer64List            //&gt;=14    (unknown)    };}</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>gis</category>
+      
+      <category>服务端</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>arcgis</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>干掉mapbox里的雪碧图(sprite)</title>
+    <link href="/2020/09/25/2020-09-25-kill-the-sprite/"/>
+    <url>/2020/09/25/2020-09-25-kill-the-sprite/</url>
+    
+    <content type="html"><![CDATA[<h1 id="什么是雪碧图"><a href="#什么是雪碧图" class="headerlink" title="什么是雪碧图"></a>什么是雪碧图</h1><p>雪碧图源于前端的小图标展现技术，将小图标和背景图像合并到一张图片上，然后利用css的背景定位来显示需要显示的图片部分。<br>对于含有大量小图标的页面，雪碧图把多个图片请求合并成了一个，大幅提高了加载性能。<br><img src="/myimgs/20200925/1.jpg" alt="雪碧图"></p><p>mapbox中也采用了类似的思想：当我们配置了多个symbol类型的图层时，为了减少图标的请求数，mapbox也提供了雪碧图的加载方式</p><pre><code class="js">        var map = new mapboxgl.Map({            container: &#39;map&#39;,            style: {                &quot;version&quot;: 8,                &quot;sources&quot;: {},                &quot;layers&quot;: [],                &quot;sprite&quot;: baseUrl + &quot;/assets/sprites/mysprites&quot;,//配置一个雪碧图的url路径            },            //...        });</code></pre><p>配置了sprite字段后，mapbox就会去加载雪碧图png和一个json配置：</p><pre><code class="js">{  &quot;icon1&quot;: {    &quot;x&quot;: 324,    &quot;y&quot;: 308,    &quot;width&quot;: 20,    &quot;height&quot;: 11,    &quot;pixelRatio&quot;: 1,    &quot;sdf&quot;: false  },  &quot;icon2&quot;: {    &quot;x&quot;: 221,    &quot;y&quot;: 464,    &quot;width&quot;: 15,    &quot;height&quot;: 15,    &quot;pixelRatio&quot;: 1,    &quot;sdf&quot;: false  },  //...}</code></pre><p>随后，我们就可以在图层中使用这个图标了:</p><pre><code class="js">map.addLayer(            {                &quot;id&quot;: &quot;mylayer&quot;,                &quot;type&quot;: &quot;symbol&quot;,                &quot;source&quot;: &quot;mysource&quot;,                &quot;source-layer&quot;: &quot;mylayersource&quot;,                &quot;layout&quot;: {                    &quot;icon-image&quot;: &quot;icon1&quot;,                }            })</code></pre><h1 id="用雪碧图来配图标的缺点"><a href="#用雪碧图来配图标的缺点" class="headerlink" title="用雪碧图来配图标的缺点"></a>用雪碧图来配图标的缺点</h1><p>想在雪碧图上改图标就不那么容易，尤其是我这种大老粗的程序员，还要买杯奶茶去劳烦美工妹子帮忙。<br>嗯，当然也可以写段代码去修改它，或者直接找一些相关的开源工具来解决。</p><p>然而，矢量瓦片的一大卖点就是用户可以在前端自由定制样式，要去修改图片这个操作一定程度上限制了矢量瓦片样式的灵活性。</p><p>同时，目前mapbox仅支持传入一张雪碧图，假如用户自己的图层也配了一份雪碧图，那还需要把两个雪碧图合起来，也就是说图层的自由组合也受到了限制、</p><h1 id="用单个图标来替代雪碧图"><a href="#用单个图标来替代雪碧图" class="headerlink" title="用单个图标来替代雪碧图"></a>用单个图标来替代雪碧图</h1><h2 id="单个图标的使用"><a href="#单个图标的使用" class="headerlink" title="单个图标的使用"></a>单个图标的使用</h2><p>基于上述问题，在更灵活的样式配置的场景下，使用单个图标比雪碧图整合要方便的多：</p><pre><code class="js">let url = &#39;http://xxx.png&#39;let iconId = &#39;icon1&#39;map.loadImage(url, function (err, img) {            if (map.hasImage(iconId)) {                map.updateImage(iconId, img)            } else {                map.addImage(iconId, img)            }            map.addLayer({                                         &quot;id&quot;: &quot;mylayer&quot;,                                         &quot;type&quot;: &quot;symbol&quot;,                                         &quot;source&quot;: &quot;mysource&quot;,                                         &quot;source-layer&quot;: &quot;mylayersource&quot;,                                         &quot;layout&quot;: {                                             &quot;icon-image&quot;: iconId,                                         }            })})</code></pre><p>需要更换/新增图标时，只要改一下图标url之类的代码即可。</p><h2 id="解决单个图标加载的性能问题"><a href="#解决单个图标加载的性能问题" class="headerlink" title="解决单个图标加载的性能问题"></a>解决单个图标加载的性能问题</h2><p>前面提到，使用雪碧图是为了减少图片请求数量从而提高加载性能，当图标数量很多时，我们传多个url去请求图片就不合适了。</p><p>幸好loadImage函数传入的url允许是一个base64字符串，例如:</p><pre><code>data:image/png;base64,R0lGODlhHAAmAKIHA...f394uLiwAAAP===</code></pre><p>于是，我们可以编写一个服务，批量传入图标id，批量返回图标base64字符串，从而将多个请求合并为一个</p><pre><code>#请求urlhttp://xxx/getIcons?id=icon1,icon2#返回数据{    icon1:&#39;data:image/png;base64,R0lGODlhHAAmAKIHA...f394uLiwAAAP===&#39;,    icon2:&#39;yH5B…EoqQqJKT1TRk1V7S2xYJADs=&#39;}</code></pre><p>然后，再编写一段对应的前端加载函数即可：</p><pre><code class="js">    /**     * 从自定义服务批量加载图片     * @param map     * @param ids     * @param cb     */    function loadBatch(map, ids, cb) {        let uuids = &#39;&#39;;        for (let iconId in ids) {            const uuid = ids[iconId];            uuids += uuid + &#39;,&#39;        }        $.ajax({            type: &#39;POST&#39;,            url: &quot;http://xxx/getIcons&quot;,            data: {ids: uuids},            cache: true,            dataType: &#39;json&#39;,            success: function (json) {//获取数据                const notFinds = [];                const urls = {};                for (let iconId in ids) {                    const uuid = ids[iconId];                    const base64 = json[uuid]                    if (!base64) {                        notFinds.push(iconId)                    } else {                        urls[iconId] = base64                    }                }                loadFromUrls(map, urls, cb)            }        });    }    /**     * 批量加载url图片     * @param map     * @param urls 请求urls {&lt;id1&gt;:&lt;url1&gt;,&lt;id2&gt;:&lt;url2&gt;,...}     * @param cb 回调函数 {imgs:{},errs:{}}     */    function loadFromUrls(map, urls, cb) {        const res = {            imgs: {},            errs: {}        }        let num = Object.keys(urls).length        function doReturn() {            num--;            if (num == 0) {                cb(res)            }        }        function subCb(iconId, img) {            res.imgs[iconId] = img;            doReturn();        }        function subErrCb(iconId, err) {            res.errs[iconId] = err;            doReturn();        }        for (let iconId in urls) {            const url = urls[iconId];            loadFromUrl(map, iconId, url, subCb, subErrCb)        }    }    /**     * 加载url     * @param map     * @param iconId 图标id     * @param url url 可以是base64url     * @param cb 加载成功回调     * @param errCb 加载错误回调     */    function loadFromUrl(map, iconId, url, cb, errCb) {        map.loadImage(url, function (err, img) {            if (err) {                if (errCb) {                    errCb(iconId, err)                } else {                    throw err                }            }            if (map.hasImage(iconId)) {                map.updateImage(iconId, img)            } else {                map.addImage(iconId, img)            }            cb(iconId, img)        })    }</code></pre><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然当下的web开发讲究前后端分离，<br>但是从雪碧图的这个例子可以看出，作为一个giser，在主修前端or后端的一方时，还是要多去同时了解下前后端的知识，才能设计出更高效、灵活的方案。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>gis</category>
+      
+      <category>前端</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mapbox</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>neo4j同时使用嵌入模式和服务模式</title>
+    <link href="/2019/12/27/2019-12-27-custom-neo4j1/"/>
+    <url>/2019/12/27/2019-12-27-custom-neo4j1/</url>
+    
+    <content type="html"><![CDATA[<p>neo4j(社区版)有两种模式:嵌入模式和服务器模式，下图描述了它们的使用区别，简单来说，嵌入模式就是直接用java代码去操作，服务器模式就是通过暴露出来的web端口传入查询语句等进行操作。<br><img src="/myimgs/20191227/1.jpg" alt="嵌入模式与服务器模式对比"></p><p>两种模式哪种更优？网上有太多的帖子讨论这个。可是，毕竟只有小孩子才做选择题，我们为什么不选择全都要呢O(∩_∩)O</p><p>话不多说，直接上代码</p><p>1、引入maven依赖:</p><pre><code>        &lt;dependency&gt;            &lt;groupId&gt;org.neo4j&lt;/groupId&gt;            &lt;artifactId&gt;neo4j&lt;/artifactId&gt;            &lt;version&gt;3.4.9&lt;/version&gt;        &lt;/dependency&gt;        &lt;dependency&gt;            &lt;groupId&gt;org.neo4j.app&lt;/groupId&gt;            &lt;artifactId&gt;neo4j-server&lt;/artifactId&gt;            &lt;version&gt;3.4.9&lt;/version&gt;        &lt;/dependency&gt;</code></pre><p>2、拷贝一个neo4j.conf文件，按官方文档进行自己需要的配置，值得注意的是此处:</p><pre><code>#数据文件存放位置dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p><pre><code>    private static final ServerBootstrapper serverBootstrapper;    private static final String dbPath;    private static final GraphDatabaseService graphDb;    ...        //读neo4j.conf的配置        Properties p = new Properties();        try {            p.load(ResourcesReader.readStream(Neo4jDbManager.class, &quot;neo4j.conf&quot;));        } catch (IOException e) {            throw new RuntimeException(e);        }        dbPath = p.getProperty(&quot;dbms.directories.data&quot;);        File storeDir = new File(dbPath);        serverBootstrapper = new CommunityBootstrapper();        String cfgFilePath = ResourcesReader.getClassRootPath(Neo4jDbManager.class) +                &quot;/neo4j.conf&quot;;        //社区版的bug，部分属性无法直接从配置文件写入(例如7474端口号)，手动覆盖一下        Optional&lt;File&gt; cfgFile = Optional.of(new File(cfgFilePath));        Set&lt;String&gt;  cfgKeys = p.stringPropertyNames();        Map&lt;String, String&gt; configOverrides = new HashMap&lt;&gt;(cfgKeys.size());        for (String cfgKey : cfgKeys) {//把所有配置都读到map里，解决默认端口无法修改的问题            configOverrides.put(cfgKey, p.getProperty(cfgKey));        }        //启动服务端模式        serverBootstrapper.start(storeDir, cfgFile, configOverrides);        NeoServer neoServer = serverBootstrapper.getServer();        //获取内嵌模式db对象        graphDb = neoServer.getDatabase().getGraph();</code></pre><p>其中，ResourcesReader是我自己写的一个工具类，负责从相对路径读取配置文件，要用的话需要引入这个maven，你也可以自己写一个来替换它~</p><pre><code>        &lt;dependency&gt;            &lt;groupId&gt;org.wowtools&lt;/groupId&gt;            &lt;artifactId&gt;catframe-common&lt;/artifactId&gt;            &lt;version&gt;1.4.2&lt;/version&gt;        &lt;/dependency&gt;</code></pre><p>4、使用服务端模式和内嵌模式<br>当初始化完成后，服务模式已经在neo4j.conf配置的端口启动了，你可以在localhost:7474（默认端口是这个）这个可视化界面打开看到。</p><p>至于内嵌模式，因为前面我们已经拿到db对象了，可以任意利用java api去操作了，比如:</p><pre><code>        Transaction tx = graphDb.beginTx();//记得起事务和关闭事务        try {            graphDb.findNodes(Label.label(&quot;xxx&quot;),&quot;name&quot;,&quot;小明&quot;).forEachRemaining((node)-&gt;{                System.out.println(node.getProperty(&quot;age&quot;));            });        } finally {            tx.close();        }</code></pre><p>好了，同时享受内嵌模式的高性能和服务端模式的快捷吧~<br>下一节我们将介绍如何把java方法暴露成自定义函数在服务端模式调用，让你将二者结合应用的更得心应手。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>java</category>
+      
+      <category>neo4j</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>neo4j扩展开发</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>neo4j自定义call函数</title>
+    <link href="/2019/12/27/2019-12-27-custom-neo4j2/"/>
+    <url>/2019/12/27/2019-12-27-custom-neo4j2/</url>
+    
+    <content type="html"><![CDATA[<p>在上一小节中(<a href="http://blog.wowtools.org/2019/12/27/2019-12-27-custom-neo4j1/">http://blog.wowtools.org/2019/12/27/2019-12-27-custom-neo4j1/</a>)<br>，我们学习了如何同时使用嵌入模式和服务模式。本小节将学习如何扩展自定义的call函数，以满足自定义查询需求。本小节的代码基于上一小节，所以你可能要先把上一节中的示例先写出来并运行起来。</p><h1 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h1><p>先看效果图，我们自定义了一个函数test.hello，传入一个name参数,在后台拼接字符串并返回两条测试数据。<br>我们执行如下查询语句后，得到对应的结果如下：<br>call test.hello(‘world’)<br><img src="/myimgs/20191227/2.jpg" alt="自定义函数查询效果"></p><p>具体实现步骤是这样的:</p><h2 id="编写Procedure"><a href="#编写Procedure" class="headerlink" title="编写Procedure"></a>编写Procedure</h2><p>首先，我们新建一个Procedure类，编写自定义函数，并通过注解暴露出来:</p><pre><code>import org.neo4j.graphdb.GraphDatabaseService;import org.neo4j.procedure.Context;import org.neo4j.procedure.Description;import org.neo4j.procedure.Name;import org.neo4j.procedure.Procedure;import java.util.stream.Stream;/** * 自定义call函数 * @author liuyu * @date 2019/12/30 */public class TestProcedures {    @Context    public GraphDatabaseService db;    /**     * 要返回的自定义对象     */    public static class HelloResult {        public final String name;        public final Long num;        public HelloResult(String name, Long num) {            this.name = name;            this.num = num;        }    }    @Procedure(&quot;test.hello&quot;)    @Description(&quot;hello world测试&quot;)    public Stream&lt;HelloResult&gt; helloWorld(@Name(&quot;name&quot;) String name) {        return Stream.of(new HelloResult(name + &quot;-1&quot;, 123L), new HelloResult(name + &quot;-2&quot;, 456L));    }}</code></pre><p>其中，<code>HelloResult</code>类定义了我们返回的列的类型。<br>方法helloWorld传入name参数，拼接了两个HelloResult对象后，以Stream封装并返回。<br>最后，我们通过@Procedure(“test.hello”)注解，将方法helloWorld映射到test.hello函数上。</p><h2 id="注册Procedure"><a href="#注册Procedure" class="headerlink" title="注册Procedure"></a>注册Procedure</h2><p>再把Procedure类注册给db就行了~</p><pre><code>    /**     * 自定义函数注册类     * @param db     * @param procedure     * @throws KernelException     */    public static void registerProceduresAndFunctions(GraphDatabaseService db, Class&lt;?&gt; procedure) throws KernelException {        Procedures procedures = ((GraphDatabaseAPI) db).getDependencyResolver().resolveDependency(Procedures.class);        procedures.registerProcedure(procedure);        procedures.registerFunction(procedure);    }        //...接上一小节的代码        graphDb = neoServer.getDatabase().getGraph();        try {//将TestProcedures注册进来，所有@Procedure注解过的方法都会被注册            registerProceduresAndFunctions(graphDb, TestProcedures.class);        } catch (KernelException e) {            e.printStackTrace();        }</code></pre><h1 id="未完待续内容"><a href="#未完待续内容" class="headerlink" title="未完待续内容"></a>未完待续内容</h1><p>1、HelloResult里只支持一些特定类型的属性，假如我们把num改成int型的，注册时会报异常:</p><pre><code>org.neo4j.internal.kernel.api.exceptions.ProcedureException: Field `num` in record `HelloResult` cannot be converted to a Neo4j type: Don&#39;t know how to map `int` to the Neo4j Type System.Please refer to to the documentation for full details.For your reference, known types are: [boolean, byte[], double, java.lang.Boolean, java.lang.Double, java.lang.Long, java.lang.Number,...</code></pre><p>如果需要自定义类型，则需要自行实现</p><p>2、如果需要查询图库并返回node对象，需要修改注解为</p><pre><code>    @Procedure(        value = &quot;test.hello&quot;,        mode = Mode.WRITE    )</code></pre><p>并作对应的代码修改。</p><p>这些内容将在后续章节中说明。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>java</category>
+      
+      <category>neo4j</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>neo4j扩展开发</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>dojo报错Uncaught Error: irrationalPath原因及解决</title>
+    <link href="/2018/06/07/2018-06-07-Uncaught-Error-irrationalPath/"/>
+    <url>/2018/06/07/2018-06-07-Uncaught-Error-irrationalPath/</url>
+    
+    <content type="html"><![CDATA[<p>最近写了一堆amd风格的js库供其他同事调用，有同事反映说用dojo.js调的时候会报这个错:</p><pre><code>init.js:4 Uncaught Error: irrationalPath    at s (init.js:4)    at Ea (init.js:13)    at Ta (init.js:14)    at Ba (init.js:15)    at hb (init.js:21)    at init.js:21    at c (init.js:4)    at gb (init.js:21)    at d (init.js:20)    at HTMLScriptElement.&lt;anonymous&gt; (init.js:23)</code></pre><p>排查了好久，终于找到了原因，一句话解释就是../不能调用配置根路径以上的内容。</p><p>详细还原一下出错过程，我提供的js库路径如下</p><pre><code>xxx.com/    root/        a/            a1.js        b/            b1.js</code></pre><p>a1.js引用了b1.js:</p><pre><code>define([&#39;../b/b1&#39;], function (b1) {    b1.xxx()</code></pre><p>同事是这样调用的</p><pre><code>var dojoConfig = {    parseOnLoad: true,    packages: [        {            &quot;name&quot;: &quot;ext&quot;,            &quot;location&quot;: &quot;xxx.com/root/a&quot;        }    ]};require([        &quot;ext/a1&quot;    ],    function (a1) {        a1.ooxx();    });</code></pre><p>出于安全性考虑，dojo只允许调用根路径(xxx.com/root/a)下的资源,a.js中通过../去引用xxx.com/root/b/b.js，所以就出错了。</p><p>正确地姿势应该是这样:</p><pre><code>var dojoConfig = {    parseOnLoad: true,    packages: [        {            &quot;name&quot;: &quot;ext&quot;,            &quot;location&quot;: &quot;xxx.com/root&quot;        }    ]};require([        &quot;ext/a/a1&quot;    ],    function (a1) {        a1.ooxx();    });</code></pre><p>完o(<em>￣︶￣</em>)o</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>奇葩问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>dojo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>centos 7安装gdal</title>
+    <link href="/2018/05/18/2018-05-18-centos7-install-gdal/"/>
+    <url>/2018/05/18/2018-05-18-centos7-install-gdal/</url>
+    
+    <content type="html"><![CDATA[<p>gdal操作tiff的性能，要比geotools快很多。<br>想要在java中使用gdal，windows可以直接下载到编译好的dll文件(<a href="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries" target="_blank" rel="noopener">点这里下载</a>)，并把存放dll的文件夹配置到path环境变量里即可，有时需要重启一下ide才能识别到<br>centos下需要自己配置环境和编译<br>下面以centos7上安装2.2.3版本的gdal为例，介绍整个安装过程</p><p><em>参考资料<br><a href="https://www.cnblogs.com/gnool/p/7277474.html" target="_blank" rel="noopener">https://www.cnblogs.com/gnool/p/7277474.html</a><br><a href="https://blog.csdn.net/hqfgiser/article/details/78710856" target="_blank" rel="noopener">https://blog.csdn.net/hqfgiser/article/details/78710856</a></em></p><p>首先，需要下载以下文件，方便起见，已全部上传至网盘:<a href="https://pan.baidu.com/s/1ulNu3QqUKMYUpsbnrIfo0w" target="_blank" rel="noopener">gdal_all_files</a></p><pre><code>gdal223.zipgeos-3.6.2.tar.bz2hdf-4.2.13.tar.gzhdf5-1.10.1.tar.gzjpegsrc.v9b.tar.gznetcdf-c-4.4.1.1.tar.gzproj-4.9.3.tar.gzswig-3.0.12.tar.gz</code></pre><h1 id="安装gdal"><a href="#安装gdal" class="headerlink" title="安装gdal"></a>安装gdal</h1><h2 id="1-切换到root用户"><a href="#1-切换到root用户" class="headerlink" title="1.切换到root用户"></a>1.切换到root用户</h2><p>su - root</p><h2 id="2-安装依赖环境"><a href="#2-安装依赖环境" class="headerlink" title="2.安装依赖环境"></a>2.安装依赖环境</h2><p>yum  -y  groupinstall “Development tools”   #这步不成功貌似也没问题-_-</p><p>yum -y install zlib-devel</p><h2 id="3-分别安装上述安装包如下："><a href="#3-分别安装上述安装包如下：" class="headerlink" title="3.分别安装上述安装包如下："></a>3.分别安装上述安装包如下：</h2><h3 id="proj"><a href="#proj" class="headerlink" title="proj"></a>proj</h3><pre><code>tar -zxvf proj-4.9.3.tar.gzcd proj-4.9.3./configuremakemake installcd ..</code></pre><p>proj —help 检验安装</p><h3 id="geos"><a href="#geos" class="headerlink" title="geos"></a>geos</h3><pre><code>tar -zxvf geos-3.6.2.tar.gzcd geos-3.6.2./configuremakemake installldconfigcd ..</code></pre><h3 id="jpeg"><a href="#jpeg" class="headerlink" title="jpeg"></a>jpeg</h3><pre><code>tar -zxf jpegsrc.v9b.tar.gzcd jpeg-9b/./configure --prefix=/opt/jpegmake make installcd ..</code></pre><h3 id="hdf5"><a href="#hdf5" class="headerlink" title="hdf5"></a>hdf5</h3><pre><code>tar -zxf hdf5-1.10.1.tar.gzcd hdf5-1.10.1export F9X=ifort./configure --prefix=/opt/hdf5 --with-hdf4=/opt/hdf4 --with-jpeg=/opt/jpeg --enable-java --enable-cxxmake make installcd ..</code></pre><pre><code>tar -zxf hdf-4.2.13.tar.gzcd hdf-4.2.13./configure --prefix=/opt/hdf4 --enable-netcdf --enable-jpeg --with-jpeg=/opt/jpeg --enable-hdf5 --with-hdf5=/opt/hdf5 --enable-shared --disable-fortran --enable-javamakemake installcd ..</code></pre><h3 id="netcdf"><a href="#netcdf" class="headerlink" title="netcdf"></a>netcdf</h3><pre><code>tar -zxf netcdf-4.4.1.tar.gzcd netcdf-4.4.1CPPFLAGS=&quot;-l/opt/hdf4/include -l/opt/hdf5/include -l/opt/jpeg/include&quot;LDFLAGS=&quot;-l/opt/hdf4/lib -l/opt/hdf5/lib -l/opt/jpeg/lib&quot;./configure --prefix=/opt/netcdf --enable-hdf5 --with-hdf5=/opt/hdf5 --enable-hdf4 --with-hdf4=/opt/hdf4 --enable-jpeg --with-jpeg=/opt/jpeg --disable-netcdf-4makemake installcd ..</code></pre><h4 id="gdal"><a href="#gdal" class="headerlink" title="gdal"></a>gdal</h4><pre><code>unzip gdal233.zipcd gdal-2.2.3./configure --prefix=/opt/gdal --enable-netcdf --with-netcdf=/opt/netcdf --enable-hdf5 --with-hdf5=/opt/hdf5 --enable-hdf4 --with-hdf4=/opt/hdf4makemake installcd ..</code></pre><p>gdalinfo 验证一下</p><h3 id="swig"><a href="#swig" class="headerlink" title="swig"></a>swig</h3><p>yum install pcre<br>yum install pcre-devel</p><pre><code>tar -zxf swig-3.0.12.tar.gzcd swig-3.0.12./configuremakemake install</code></pre><p>检验安装swig -help</p><h2 id="4-修改配置文件"><a href="#4-修改配置文件" class="headerlink" title="4.修改配置文件"></a>4.修改配置文件</h2><p>vi  /etc/profile<br>加入</p><pre><code>export PATH=${PATH}:/opt/hdf4/include:/opt/hdf4/bin:/opt/hdf5/include:/opt/hdf5/bin:/opt/netcdf/include:/opt/netcdf/bin:/opt/gdal/include:/opt/gdal/binexport LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/hdf4/lib:/opt/hdf5/lib:/opt/netcdf/lib:/opt/gdal/lib</code></pre><p>source  /etc/profile</p><h1 id="编译gdal-java"><a href="#编译gdal-java" class="headerlink" title="编译gdal-java"></a>编译gdal-java</h1><h2 id="1、安装jdk"><a href="#1、安装jdk" class="headerlink" title="1、安装jdk"></a>1、安装jdk</h2><p>略</p><h2 id="2、编译jar和jni文件"><a href="#2、编译jar和jni文件" class="headerlink" title="2、编译jar和jni文件"></a>2、编译jar和jni文件</h2><p>进入<gdal-dir>\swig\java修改java.opt文件，指定jdk的路径，<gdal-dir>为gdal文件夹。内容如下： </p><pre><code>JAVA_HOME = /opt/jdk1.8JAVADOC=$(JAVA_HOME)/bin/javadoc JAVAC=$(JAVA_HOME)/bin/javac JAVA=$(JAVA_HOME)/bin/java JAR=$(JAVA_HOME)/bin/jar JAVA_INCLUDE=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux </code></pre><p>编译需要ant支持，所以:</p><pre><code>yum install ant</code></pre><p>编译,并将so文件拷贝出来</p><pre><code>cd &lt;gdal&gt;/swig/java/makecd .libs/cp *.so /usr/local/gdalso/</code></pre><p>同时，目录下会生成gdal.jar，拷贝到项目中就可以用了，需要注意的是，这个jar在win和linux下并不通用</p><p>vi ~/.bashrc ,加上环境变量</p><pre><code>export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/gdalso</code></pre><p>使环境变量生效，source ~/.bashrc</p><p>完成了，享受急速的栅格数据处理性能吧~</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>部署运维</category>
+      
+      <category>软件安装</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>gdal</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>postgis空间数据格式解析，及如何绑定变量</title>
+    <link href="/2018/03/21/2018-03-21-parse-postgis-shape/"/>
+    <url>/2018/03/21/2018-03-21-parse-postgis-shape/</url>
+    
+    <content type="html"><![CDATA[<p>当我们往postgis的shape字段中插入一条数据</p><pre><code>INSERT INTO test1 (shape)VALUES (GeomFromEWKT(&#39;SRID=4326;POINT(116.39 39.9)&#39;));</code></pre><p>读出来的shape是这样的:</p><pre><code>0101000020E6100000295C8FC2F5185D403333333333F34340</code></pre><p>显然，这是一个wkb格式的字符串嘛</p><p>于是，在java中，我们只需用jts的WKBReader类，便可直接将其解析为geometry对象</p><pre><code>WKBReader wkbReader = new WKBReader();......此处略去jdbc的一堆套路PGobject obj = (PGobject) rs.getObject(&quot;shape&quot;);byte[] bytes = WKBReader.hexToBytes(obj.getValue());Geometry geo = wkbReader.read(bytes);System.out.println(geo);</code></pre><p>我们发现，postgreSQL用PGobject来描述自定义数据类型，而空间数据的type是geometry，所以，我们可以这样绑定变量来做预解析：</p><pre><code>        double[] bbox = new double[]{                90, 20, 120, 30        };        Coordinate[] coords = new Coordinate[]{                new Coordinate(bbox[0], bbox[1]),                new Coordinate(bbox[2], bbox[1]),                new Coordinate(bbox[2], bbox[3]),                new Coordinate(bbox[0], bbox[3]),                new Coordinate(bbox[0], bbox[1]),        };        LinearRing shell = gf.createLinearRing(coords);        Geometry env = gf.createPolygon(shell);        PGobject param = new PGobject();        //sql及绑定变量这样写  &quot;select * from test1 ? &amp;&amp; shape&quot;, param</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>gis</category>
+      
+      <category>服务端</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>PostgreSQL</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Tomcat启动报错ZipException: error in opening zip file及解决</title>
+    <link href="/2017/11/30/2017-11-30-zip-exception/"/>
+    <url>/2017/11/30/2017-11-30-zip-exception/</url>
+    
+    <content type="html"><![CDATA[<p>今天早上到公司，照例从git更新了一下项目，然后开始干活，发现tomcat起不来了，报错如下:</p><pre><code>java.util.zip.ZipException: error in opening zip file</code></pre><p>打开zip文件出错？？然而项目里没有什么zip文件啊。。于是，我猜想，项目里，能用zip工具打开的，只有jar包了吧。</p><p>ok，删掉WEB-INF/lib下所有的jar，tomcat能启动了(当然，此时项目由于缺少依赖的jar无法正常启动)。</p><p>emmmmm，这下问题找到了，应该是一个或几个jar包坏掉了，接下来就是找到坏掉的jar，可是项目好大啊，上百个jar包怎么排查呢？当然是二分法查找了，时间复杂度只有O(logn)根本不虚好么2333 :dog: 。通俗点说就是先删掉一半jar包，如果报错找不到某个类，说明有问题的jar在删掉的那一半jar里，然后从删掉那一半里再缩小范围。</p><p>数分钟后，找到了两个jar，果然用zip工具打不开-_-!，maven仓库里找到它们，删掉对应的文件夹，重新下载，问题解决~ :hatched_chick: </p><p>最后，吐槽一下这两个jar是怎么坏掉的，我司安全管理较严格，上网需要在电脑上插一个usb key，没这个key就会把你访问的网址转到一个”你尚未通过安全校验，请先巴拉巴拉”的一个页面。</p><p>然后悲剧就这样发生了，大概是上午更新完代码后，maven正在下载依赖时，我不小心碰到了usb key导致key断开了 :eyes: ，然后，下载下来的pom就变成这样了：<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/5f94f725-4061-48b8-bb5d-25aa1e932967" alt="233"></p><p>整个人都不好了啊喂-_-!</p><p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream<br>本文发布于<a href="http://blog.wowtools.org/2017/11/30/zip-exception/">http://blog.wowtools.org/2017/11/30/zip-exception</a>,转载请注明出处。</p><p>=======</p><blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><p>Stashed changes</p></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>java</category>
+      
+      <category>异常</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>奇葩问题</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>arcgis 发布图层</title>
+    <link href="/2017/09/05/2017-09-05-arcgis-publishing-layer/"/>
+    <url>/2017/09/05/2017-09-05-arcgis-publishing-layer/</url>
+    
+    <content type="html"><![CDATA[<p>好久没用arcgis了，发布图层的步骤老是忘-_-，简单记录一下吧</p><h1 id="制作地图文档"><a href="#制作地图文档" class="headerlink" title="制作地图文档"></a>制作地图文档</h1><h2 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h2><p>打开ArcMap，新建一个地图文档，右键点击”图层”-&gt;”添加数据”，选择需要加入的数据</p><p><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-05-arcgis-publishing-layer-1" alt="此处输入图片的描述"></p><p>若加入的是tif之类的文件，且需要去除黑边，可右键此图层-&gt;属性，勾选”显示背景值”，并设为无颜色:</p><p><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-2" alt="此处输入图片的描述"></p><h2 id="修改坐标系"><a href="#修改坐标系" class="headerlink" title="修改坐标系"></a>修改坐标系</h2><p>右键点击”图层”-&gt;”属性”，设置为需要的坐标系<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-3" alt="此处输入图片的描述"></p><p>最后将其存为mxd文档。</p><h1 id="发布服务"><a href="#发布服务" class="headerlink" title="发布服务"></a>发布服务</h1><h2 id="预先配置一下arcgis-server"><a href="#预先配置一下arcgis-server" class="headerlink" title="预先配置一下arcgis server"></a>预先配置一下arcgis server</h2><p>打开ArcCatalog，在左侧目录树的”gis服务器”下选择”添加arcgis server”，然后根据自己arcgis server的连接信息，一路下一步，添加一个server。<br>然后打开arcserver的web控制台，大概路径像这样：<br><a href="http://localhost:6080/arcgis/manager/index.html" target="_blank" rel="noopener">http://localhost:6080/arcgis/manager/index.html</a></p><p>我们需要配置”站点”选项卡下的几个东西：</p><h3 id="缓存目录"><a href="#缓存目录" class="headerlink" title="缓存目录"></a>缓存目录</h3><p>在”目录”下，修改缓存目录的位置到一个剩余磁盘空间比较大的路径，也可以添加多个缓存目录，在后面的步骤里为不同的图层指定不同的缓存目录。<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-4" alt="此处输入图片的描述"></p><h3 id="Data-Store里注册文件夹"><a href="#Data-Store里注册文件夹" class="headerlink" title="Data Store里注册文件夹"></a>Data Store里注册文件夹</h3><p>做这步操作的原因是，即使你在本机上制作mxd/sd文档并发布到本机的arcgis server，arcserver仍然会把mxd用到的数据文件上传到arcserver的目录下，这就很蛋疼了。。<br>于是，我们需要把数据文件所在的文件夹注册进来，这样mxd用到这个文件夹中的文件时就不需要上传了。<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-5" alt="此处输入图片的描述"></p><h2 id="发布地图文档"><a href="#发布地图文档" class="headerlink" title="发布地图文档"></a>发布地图文档</h2><p>好了，现在可以开始发布刚才制作好的mxd了，在ArcMap中，点击”文件”-&gt;”共享为”-&gt;”服务”，看到如下界面:<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-6" alt="此处输入图片的描述"></p><p>选择”发布服务”的话，就能直接把mxd发成图层，”保存服务定义文件”则会生成一个sd文档。过程大同小异，一路下一步，设置一些常规信息，来到这一步：<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-7" alt="此处输入图片的描述"></p><p>特别说一下缓存这里</p><h3 id="缓存配置"><a href="#缓存配置" class="headerlink" title="缓存配置"></a>缓存配置</h3><p>也就是瓦片地图切片。<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-8" alt="此处输入图片的描述"></p><p>缓存的高级设置下面，可以选择切片的缓存目录，能选择的目录就是前文中arcgis server里配置过的。<br>高级设置的高级按钮(谁起的名字-_-)里，可以设置切片的存储是松散型还是紧凑型，松散型切出来就是一张张图片，级别较高时图片数量会非常大，所以一般我们不太去用这种格式；紧凑型格式的解析可以参考<a href="http://www.cnblogs.com/ssai2015/p/4926323.html" target="_blank" rel="noopener">这个帖子</a>，需要注意的7是，低版本的arcserver切出来的bundle、bundlex文件是分开的。</p><p>好啦，配置完成，点一下分析按钮，没有错误的话点击发布，稍等片刻就文档就发布到arcserver上了。如果配置了切片，切片任务会在arcserver的后台执行，所以关掉arcmap、catalog也没问题。随后，可以在catalog里右键此图层-&gt;查看缓存状态-&gt;详细信息 来查看切片进度。<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/2017-09-5-arcgis-publishing-layer-9" alt="此处输入图片的描述"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>gis</category>
+      
+      <category>工具和软件</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>arcgis</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
