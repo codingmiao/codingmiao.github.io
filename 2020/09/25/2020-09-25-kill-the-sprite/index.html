@@ -67,7 +67,7 @@
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
-       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+       href="/">&nbsp;<strong>懒惰的芜菁</strong>&nbsp;</a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -217,17 +217,17 @@
       
 
 <div class="container-fluid">
-  <div class="row">
-    <div class="d-none d-lg-block col-lg-2"></div>
-    <div class="col-lg-8 nopadding-md">
-      <div class="container nopadding-md" id="board-ctn">
-        <div class="py-5" id="board">
-          <article class="post-content mx-auto">
-            <!-- SEO header -->
-            <h1 style="display: none">干掉mapbox里的雪碧图(sprite)</h1>
-            
-            <div class="markdown-body">
-              <h1 id="什么是雪碧图"><a href="#什么是雪碧图" class="headerlink" title="什么是雪碧图"></a>什么是雪碧图</h1><p>雪碧图源于前端的小图标展现技术，将小图标和背景图像合并到一张图片上，然后利用css的背景定位来显示需要显示的图片部分。<br>对于含有大量小图标的页面，雪碧图把多个图片请求合并成了一个，大幅提高了加载性能。<br><img src="/myimgs/20200925/1.jpg" alt="雪碧图"></p>
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+        <div class="col-lg-8 nopadding-md">
+            <div class="container nopadding-md" id="board-ctn">
+                <div class="py-5" id="board">
+                    <article class="post-content mx-auto">
+                        <!-- SEO header -->
+                        <h1 style="display: none">干掉mapbox里的雪碧图(sprite)</h1>
+                        
+                        <div class="markdown-body">
+                            <h1 id="什么是雪碧图"><a href="#什么是雪碧图" class="headerlink" title="什么是雪碧图"></a>什么是雪碧图</h1><p>雪碧图源于前端的小图标展现技术，将小图标和背景图像合并到一张图片上，然后利用css的背景定位来显示需要显示的图片部分。<br>对于含有大量小图标的页面，雪碧图把多个图片请求合并成了一个，大幅提高了加载性能。<br><img src="/myimgs/20200925/1.jpg" alt="雪碧图"></p>
 <p>mapbox中也采用了类似的思想：当我们配置了多个symbol类型的图层时，为了减少图标的请求数，mapbox也提供了雪碧图的加载方式</p>
 <pre><code class="js">        var map = new mapboxgl.Map({
             container: &#39;map&#39;,
@@ -407,63 +407,219 @@ http://xxx/getIcons?id=icon1,icon2
 </code></pre>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然当下的web开发讲究前后端分离，<br>但是从雪碧图的这个例子可以看出，作为一个giser，在主修前端or后端的一方时，还是要多去同时了解下前后端的知识，才能设计出更高效、灵活的方案。</p>
 
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/gis/">gis</a>
-                    
-                      <a class="hover-with-bg" href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/mapbox/">mapbox</a>
-                    
-                  </div>
-                
-              </div>
-              
-                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
-              
-              
-                <div class="post-prevnext row">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2020/11/05/2020-11-5-java-read-gdb/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">java读取arcgis的gdb文件</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2019/12/27/2019-12-27-custom-neo4j1/">
-                        <span class="hidden-mobile">neo4j同时使用嵌入模式和服务模式</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="post-metas mb-3">
+                                
+                                    <div class="post-meta mr-3">
+                                        <i class="iconfont icon-category"></i>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                        
+                                    </div>
+                                
+                                
+                                    <div class="post-meta">
+                                        <i class="iconfont icon-tags"></i>
+                                        
+                                            <a class="hover-with-bg" href="/tags/mapbox/">mapbox</a>
+                                        
+                                    </div>
+                                
+                            </div>
+                            
+                                <p class="note note-warning">本文采用 <a
+                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                    https://blog.wowtools.org/2020/09/25/2020-09-25-kill-the-sprite/ </p>
+                            
+                            <!-- 打赏 -->
+                            <style>
+    .dashang{
+        display: block;
+        width: 56px;
+        margin: auto;
+        height: 56px;
+        line-height: 56px;
+        font-size: 20px;
+        color: #fff;
+        border: none;
+        background: #4094c7;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        -webkit-transition: 0.4s ease-in-out;
+        -webkit-transition: 0.4s ease-in-out;
+        -moz-transition: 0.4s ease-in-out;
+        -ms-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+    }
+    .hide_box {
+        z-index: 40;
+        background: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: none;
+    }
+    .shang_box {
+        width: 540px;
+        height: 450px;
+        padding: 10px;
+        background-color: #3f3f3f;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 41;
+        left: 50%;
+        top: 50%;
+        margin-left: -280px;
+        margin-top: -225px;
+        border: 1px dotted #000;
+        display: none;
+    }
+    .shang_box .shang_close {
+        position: absolute;
+        display: inline-block;
+        font-weight: 200;
+        font-size: 50px;
+        right: 19px;
+        outline: none;
+        text-shadow: none;
+        color: #4094c7;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-transition: color 0.35s;
+        -moz-transition: color 0.35s;
+        -ms-transition: color 0.35s;
+        -o-transition: color 0.35s;
+        transition: color 0.35s;
+    }
+    .shang_box .shang_tit {
+        width: 100%;
+        font-family: Roboto, "Roboto", serif;
+        height: 75px;
+        text-align: center;
+        line-height: 66px;
+        color: #fff;
+        font-size: 30px;
+        margin-top: 7px;
+        margin-right: 2px;
+    }
+    .shang_box .shang_payimg {
+        width: 255px;
+        height: 255px;
+        padding: 10px;
+        border: 6px solid #4094c7;
+        margin: 0 auto;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .shang_box .shang_payimg .pay_img {
+        width: 535px;
+        vertical-align: middle;
+        transition: margin-left 0.5s;
+    }
+    .shang_box .shang_payimg .pay_img img {
+        width: 225px;
+        width: 225px;
+        height: 100%;
+        margin: 0;
+        color: #283444;
+        font: 400 16px/1 "Open Sans", "Hiragino Sans GB", sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: none;
+        overflow: hidden;
+    }
+    .shang_box .shang_payselect {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20px;
+        height: 60px;
+        width: 320px;
+    }
+</style>
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>请作者喝杯咖啡</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg"
+                 class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg"
+                 class="weixin" title="扫码支持" style="display: none;">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input
+                        type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+<a  class="dashang" onclick="dashangToggle()">赏</a>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    $("input[name=pay]").on("click", function () {
+        console.log('click',$("input[name=pay]:checked").val())
+        $(".alipay").fadeToggle();
+        $(".weixin").fadeToggle();
+    })
+</script>
 
-            
-              <!-- Comments -->
-              <article class="comments" id="comments">
-                
-                
+                            <!-- end打赏 -->
+                            
+                                <div class="post-prevnext row">
+                                    <article class="post-prev col-6">
+                                        
+                                        
+                                            <a href="/2020/11/05/2020-11-5-java-read-gdb/">
+                                                <i class="iconfont icon-arrowleft"></i>
+                                                <span class="hidden-mobile">java读取arcgis的gdb文件</span>
+                                                <span class="visible-mobile">上一篇</span>
+                                            </a>
+                                        
+                                    </article>
+                                    <article class="post-next col-6">
+                                        
+                                        
+                                            <a href="/2019/12/27/2019-12-27-custom-neo4j1/">
+                                                <span class="hidden-mobile">neo4j同时使用嵌入模式和服务模式</span>
+                                                <span class="visible-mobile">下一篇</span>
+                                                <i class="iconfont icon-arrowright"></i>
+                                            </a>
+                                        
+                                    </article>
+                                </div>
+                            
+                        </div>
+
+                        
+                            <!-- Comments -->
+                            <article class="comments" id="comments">
+                                
+                                
   <div id="gitalk-container"></div>
   <script type="text/javascript">
     Fluid.utils.waitElementVisible('gitalk-container', function() {
@@ -490,22 +646,22 @@ http://xxx/getIcons?id=icon1,icon2
   <noscript>Please enable JavaScript to view the comments</noscript>
 
 
-              </article>
-            
-          </article>
+                            </article>
+                        
+                    </article>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
+        
+            <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+                <div id="toc">
   <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
-  </div>
+            </div>
+        
+    </div>
 </div>
 
 <!-- Custom -->
