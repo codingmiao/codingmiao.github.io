@@ -181,6 +181,63 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">mapbox-gl教程(2):添加自定义数据（小数据量的方式）(上)</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">
+          
+          
+            
+          
+          上一节的hello world中，我们学会了如何构造一个地图并展现在dom内，但只是一个背景地图而已，接下来我们将学习如何添加自定义数据。
+demo先看下demo，我们在地图上添加两个红点
+
+    
+    
+    
+    
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-12-25 20:46" pubdate>
+              2020-12-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/gis/">gis</a>
+            
+              <a href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/">mapbox-gl教程(1):初识mapboxgl</a>
       </h1>
 
@@ -654,64 +711,19 @@ ok，删掉WEB-INF/lib下所有的jar，tomcat能启动了(当然，此
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2017/09/05/2017-09-05-arcgis-publishing-layer/">arcgis 发布图层</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2017/09/05/2017-09-05-arcgis-publishing-layer/">
-          
-          
-            
-          
-          好久没用arcgis了，发布图层的步骤老是忘-_-，简单记录一下吧
-制作地图文档添加数据打开ArcMap，新建一个地图文档，右键点击”图层”-&gt;”添加数据”，选择需要加入的数据
-
-若加入的是tif之类的文件，且需要去除黑边，可右键此图层-&gt;属性，勾选”显示背景值”，并设为无颜色:
-
-修改坐标系右键点击”图层”-&gt;”属性”，设置为需要的坐标系
-最后将其存为mxd文档。
-发布服务预先
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2017-09-05 20:46" pubdate>
-              2017-09-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/gis/">gis</a>
-            
-              <a href="/categories/gis/%E5%B7%A5%E5%85%B7%E5%92%8C%E8%BD%AF%E4%BB%B6/">工具和软件</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/arcgis/">arcgis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
 
 
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+  
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
 
 
 
