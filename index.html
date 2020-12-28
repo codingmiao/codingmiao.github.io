@@ -181,6 +181,58 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/">mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/">
+          
+          
+            
+          
+          示例的详细说明我们先简单回顾一下上一章的demo：要想展示自定义数据，我们需要先把数据做成数据源添加到map对象里，然后再新建一个图层指定样式和数据源添加到map。所以在示例中，我们用构造了包含两个点的geojson数据源，然后构造了一个半径为20像素的红点样式，就完成了数据的展现工作。
+接下来，我们详细了解一下geojson和样式的结构
+geojson这个网页详细介绍了geojson的标准；这个
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-12-28 20:46" pubdate>
+              2020-12-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/gis/">gis</a>
+            
+              <a href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">mapbox-gl教程(2):添加自定义数据（小数据量的方式）(上)</a>
       </h1>
 
@@ -190,14 +242,14 @@
           
             
           
-          上一节的hello world中，我们学会了如何构造一个地图并展现在dom内，但只是一个背景地图而已，接下来我们将学习如何添加自定义数据。
+          上一章 的hello world中，我们学会了如何构造一个地图并展现在dom内，但只是一个背景地图而已，接下来我们将学习如何添加自定义数据。
 demo先看下demo，我们在地图上添加两个红点
 
     
     
     
     
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJj
         </a>
       </p>
 
@@ -360,7 +412,7 @@ gdal提供了函数允许我们读取gdb，因此，我们可以通过jni调用g
           
           什么是雪碧图雪碧图源于前端的小图标展现技术，将小图标和背景图像合并到一张图片上，然后利用css的背景定位来显示需要显示的图片部分。对于含有大量小图标的页面，雪碧图把多个图片请求合并成了一个，大幅提高了加载性能。
 mapbox中也采用了类似的思想：当我们配置了多个symbol类型的图层时，为了减少图标的请求数，mapbox也提供了雪碧图的加载方式
-        var map = new mapb
+12345678910var map = new m
         </a>
       </p>
 
@@ -652,58 +704,6 @@ VALUES (GeomFromEWKT(&#39;SRID=4326;POINT(116.39 39.9)&#39;));读出来的shape�
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/PostgreSQL/">PostgreSQL</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2017/11/30/2017-11-30-zip-exception/">Tomcat启动报错ZipException: error in opening zip file及解决</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2017/11/30/2017-11-30-zip-exception/">
-          
-          
-            
-          
-          今天早上到公司，照例从git更新了一下项目，然后开始干活，发现tomcat起不来了，报错如下:
-java.util.zip.ZipException: error in opening zip file打开zip文件出错？？然而项目里没有什么zip文件啊。。于是，我猜想，项目里，能用zip工具打开的，只有jar包了吧。
-ok，删掉WEB-INF/lib下所有的jar，tomcat能启动了(当然，此
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2017-11-30 20:46" pubdate>
-              2017-11-30
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-              <a href="/categories/java/%E5%BC%82%E5%B8%B8/">异常</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A5%87%E8%91%A9%E9%97%AE%E9%A2%98/">奇葩问题</a>
             
           </div>
         

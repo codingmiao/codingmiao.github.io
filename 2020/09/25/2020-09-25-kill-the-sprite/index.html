@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      16
+      15
        分钟
     </span>
   
@@ -229,182 +229,27 @@
                         <div class="markdown-body">
                             <h1 id="什么是雪碧图"><a href="#什么是雪碧图" class="headerlink" title="什么是雪碧图"></a>什么是雪碧图</h1><p>雪碧图源于前端的小图标展现技术，将小图标和背景图像合并到一张图片上，然后利用css的背景定位来显示需要显示的图片部分。<br>对于含有大量小图标的页面，雪碧图把多个图片请求合并成了一个，大幅提高了加载性能。<br><img src="/myimgs/20200925/1.jpg" alt="雪碧图"></p>
 <p>mapbox中也采用了类似的思想：当我们配置了多个symbol类型的图层时，为了减少图标的请求数，mapbox也提供了雪碧图的加载方式</p>
-<pre><code class="js">        var map = new mapboxgl.Map({
-            container: &#39;map&#39;,
-            style: {
-                &quot;version&quot;: 8,
-                &quot;sources&quot;: {},
-                &quot;layers&quot;: [],
-                &quot;sprite&quot;: baseUrl + &quot;/assets/sprites/mysprites&quot;,//配置一个雪碧图的url路径
-            },
-            //...
-        });</code></pre>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">style</span>: &#123;<br>        <span class="hljs-string">"version"</span>: <span class="hljs-number">8</span>,<br>        <span class="hljs-string">"sources"</span>: &#123;&#125;,<br>        <span class="hljs-string">"layers"</span>: [],<br>        <span class="hljs-string">"sprite"</span>: baseUrl + <span class="hljs-string">"/assets/sprites/mysprites"</span>,<span class="hljs-comment">//配置一个雪碧图的url路径</span><br>    &#125;,<br>    <span class="hljs-comment">//...</span><br>&#125;);<br></code></pre></td></tr></table></figure>
 <p>配置了sprite字段后，mapbox就会去加载雪碧图png和一个json配置：</p>
-<pre><code class="js">{
-  &quot;icon1&quot;: {
-    &quot;x&quot;: 324,
-    &quot;y&quot;: 308,
-    &quot;width&quot;: 20,
-    &quot;height&quot;: 11,
-    &quot;pixelRatio&quot;: 1,
-    &quot;sdf&quot;: false
-  },
-  &quot;icon2&quot;: {
-    &quot;x&quot;: 221,
-    &quot;y&quot;: 464,
-    &quot;width&quot;: 15,
-    &quot;height&quot;: 15,
-    &quot;pixelRatio&quot;: 1,
-    &quot;sdf&quot;: false
-  },
-  //...
-}</code></pre>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">"icon1"</span>: &#123;<br>    <span class="hljs-attr">"x"</span>: <span class="hljs-number">324</span>,<br>    <span class="hljs-attr">"y"</span>: <span class="hljs-number">308</span>,<br>    <span class="hljs-attr">"width"</span>: <span class="hljs-number">20</span>,<br>    <span class="hljs-attr">"height"</span>: <span class="hljs-number">11</span>,<br>    <span class="hljs-attr">"pixelRatio"</span>: <span class="hljs-number">1</span>,<br>    <span class="hljs-attr">"sdf"</span>: <span class="hljs-literal">false</span><br>  &#125;,<br>  <span class="hljs-attr">"icon2"</span>: &#123;<br>    <span class="hljs-attr">"x"</span>: <span class="hljs-number">221</span>,<br>    <span class="hljs-attr">"y"</span>: <span class="hljs-number">464</span>,<br>    <span class="hljs-attr">"width"</span>: <span class="hljs-number">15</span>,<br>    <span class="hljs-attr">"height"</span>: <span class="hljs-number">15</span>,<br>    <span class="hljs-attr">"pixelRatio"</span>: <span class="hljs-number">1</span>,<br>    <span class="hljs-attr">"sdf"</span>: <span class="hljs-literal">false</span><br>  &#125;,<br>  <span class="hljs-comment">//...</span><br>&#125;<br></code></pre></td></tr></table></figure>
 <p>随后，我们就可以在图层中使用这个图标了:</p>
-<pre><code class="js">map.addLayer(
-            {
-                &quot;id&quot;: &quot;mylayer&quot;,
-                &quot;type&quot;: &quot;symbol&quot;,
-                &quot;source&quot;: &quot;mysource&quot;,
-                &quot;source-layer&quot;: &quot;mylayersource&quot;,
-                &quot;layout&quot;: {
-                    &quot;icon-image&quot;: &quot;icon1&quot;,
-                }
-            }
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js">map.addLayer(<br>            &#123;<br>                <span class="hljs-string">"id"</span>: <span class="hljs-string">"mylayer"</span>,<br>                <span class="hljs-string">"type"</span>: <span class="hljs-string">"symbol"</span>,<br>                <span class="hljs-string">"source"</span>: <span class="hljs-string">"mysource"</span>,<br>                <span class="hljs-string">"source-layer"</span>: <span class="hljs-string">"mylayersource"</span>,<br>                <span class="hljs-string">"layout"</span>: &#123;<br>                    <span class="hljs-string">"icon-image"</span>: <span class="hljs-string">"icon1"</span>,<br>                &#125;<br>            &#125;<br><br>)<br></code></pre></td></tr></table></figure>
 
-)</code></pre>
 <h1 id="用雪碧图来配图标的缺点"><a href="#用雪碧图来配图标的缺点" class="headerlink" title="用雪碧图来配图标的缺点"></a>用雪碧图来配图标的缺点</h1><p>想在雪碧图上改图标就不那么容易，尤其是我这种大老粗的程序员，还要买杯奶茶去劳烦美工妹子帮忙。<br>嗯，当然也可以写段代码去修改它，或者直接找一些相关的开源工具来解决。</p>
 <p>然而，矢量瓦片的一大卖点就是用户可以在前端自由定制样式，要去修改图片这个操作一定程度上限制了矢量瓦片样式的灵活性。</p>
 <p>同时，目前mapbox仅支持传入一张雪碧图，假如用户自己的图层也配了一份雪碧图，那还需要把两个雪碧图合起来，也就是说图层的自由组合也受到了限制、</p>
 <h1 id="用单个图标来替代雪碧图"><a href="#用单个图标来替代雪碧图" class="headerlink" title="用单个图标来替代雪碧图"></a>用单个图标来替代雪碧图</h1><h2 id="单个图标的使用"><a href="#单个图标的使用" class="headerlink" title="单个图标的使用"></a>单个图标的使用</h2><p>基于上述问题，在更灵活的样式配置的场景下，使用单个图标比雪碧图整合要方便的多：</p>
-<pre><code class="js">let url = &#39;http://xxx.png&#39;
-let iconId = &#39;icon1&#39;
-map.loadImage(url, function (err, img) {
-            if (map.hasImage(iconId)) {
-                map.updateImage(iconId, img)
-            } else {
-                map.addImage(iconId, img)
-            }
-            map.addLayer({
-                                         &quot;id&quot;: &quot;mylayer&quot;,
-                                         &quot;type&quot;: &quot;symbol&quot;,
-                                         &quot;source&quot;: &quot;mysource&quot;,
-                                         &quot;source-layer&quot;: &quot;mylayersource&quot;,
-                                         &quot;layout&quot;: {
-                                             &quot;icon-image&quot;: iconId,
-                                         }
-            })
-})</code></pre>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> url = <span class="hljs-string">'http://xxx.png'</span><br><span class="hljs-keyword">let</span> iconId = <span class="hljs-string">'icon1'</span><br>map.loadImage(url, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, img</span>) </span>&#123;<br>            <span class="hljs-keyword">if</span> (map.hasImage(iconId)) &#123;<br>                map.updateImage(iconId, img)<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                map.addImage(iconId, img)<br>            &#125;<br>            map.addLayer(&#123;<br>                                         <span class="hljs-string">"id"</span>: <span class="hljs-string">"mylayer"</span>,<br>                                         <span class="hljs-string">"type"</span>: <span class="hljs-string">"symbol"</span>,<br>                                         <span class="hljs-string">"source"</span>: <span class="hljs-string">"mysource"</span>,<br>                                         <span class="hljs-string">"source-layer"</span>: <span class="hljs-string">"mylayersource"</span>,<br>                                         <span class="hljs-string">"layout"</span>: &#123;<br>                                             <span class="hljs-string">"icon-image"</span>: iconId,<br>                                         &#125;<br>            &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
 <p>需要更换/新增图标时，只要改一下图标url之类的代码即可。</p>
 <h2 id="解决单个图标加载的性能问题"><a href="#解决单个图标加载的性能问题" class="headerlink" title="解决单个图标加载的性能问题"></a>解决单个图标加载的性能问题</h2><p>前面提到，使用雪碧图是为了减少图片请求数量从而提高加载性能，当图标数量很多时，我们传多个url去请求图片就不合适了。</p>
 <p>幸好loadImage函数传入的url允许是一个base64字符串，例如:</p>
-<pre><code>data:image/png;base64,R0lGODlhHAAmAKIHA...f394uLiwAAAP===</code></pre><p>于是，我们可以编写一个服务，批量传入图标id，批量返回图标base64字符串，从而将多个请求合并为一个</p>
-<pre><code>#请求url
-http://xxx/getIcons?id=icon1,icon2
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">data:image/png;base64,R0lGODlhHAAmAKIHA<span class="hljs-built_in">..</span>.<span class="hljs-attribute">f394uLiwAAAP</span>===<br></code></pre></td></tr></table></figure>
 
-#返回数据
-{
-    icon1:&#39;data:image/png;base64,R0lGODlhHAAmAKIHA...f394uLiwAAAP===&#39;,
-    icon2:&#39;yH5B…EoqQqJKT1TRk1V7S2xYJADs=&#39;
-}
-</code></pre><p>然后，再编写一段对应的前端加载函数即可：</p>
-<pre><code class="js">    /**
-     * 从自定义服务批量加载图片
-     * @param map
-     * @param ids
-     * @param cb
-     */
-    function loadBatch(map, ids, cb) {
-        let uuids = &#39;&#39;;
-        for (let iconId in ids) {
-            const uuid = ids[iconId];
-            uuids += uuid + &#39;,&#39;
-        }
-        $.ajax({
-            type: &#39;POST&#39;,
-            url: &quot;http://xxx/getIcons&quot;,
-            data: {ids: uuids},
-            cache: true,
-            dataType: &#39;json&#39;,
-            success: function (json) {//获取数据
-                const notFinds = [];
-                const urls = {};
-                for (let iconId in ids) {
-                    const uuid = ids[iconId];
-                    const base64 = json[uuid]
-                    if (!base64) {
-                        notFinds.push(iconId)
-                    } else {
-                        urls[iconId] = base64
-                    }
-                }
-                loadFromUrls(map, urls, cb)
-            }
+<p>于是，我们可以编写一个服务，批量传入图标id，批量返回图标base64字符串，从而将多个请求合并为一个</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs vala"><span class="hljs-meta">#请求url</span><br>http:<span class="hljs-comment">//xxx/getIcons?id=icon1,icon2</span><br><br><span class="hljs-meta">#返回数据</span><br>&#123;<br>    icon1:<span class="hljs-string">'data:image/png;base64,R0lGODlhHAAmAKIHA...f394uLiwAAAP==='</span>,<br>    icon2:<span class="hljs-string">'yH5B…EoqQqJKT1TRk1V7S2xYJADs='</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后，再编写一段对应的前端加载函数即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**<br> * 从自定义服务批量加载图片<br> * <span class="hljs-doctag">@param <span class="hljs-variable">map</span></span><br> * <span class="hljs-doctag">@param <span class="hljs-variable">ids</span></span><br> * <span class="hljs-doctag">@param <span class="hljs-variable">cb</span></span><br> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadBatch</span>(<span class="hljs-params">map, ids, cb</span>) </span>&#123;<br>    <span class="hljs-keyword">let</span> uuids = <span class="hljs-string">''</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> iconId <span class="hljs-keyword">in</span> ids) &#123;<br>        <span class="hljs-keyword">const</span> uuid = ids[iconId];<br>        uuids += uuid + <span class="hljs-string">','</span><br>    &#125;<br>    $.ajax(&#123;<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'POST'</span>,<br>        <span class="hljs-attr">url</span>: <span class="hljs-string">"http://xxx/getIcons"</span>,<br>        <span class="hljs-attr">data</span>: &#123;<span class="hljs-attr">ids</span>: uuids&#125;,<br>        <span class="hljs-attr">cache</span>: <span class="hljs-literal">true</span>,<br>        <span class="hljs-attr">dataType</span>: <span class="hljs-string">'json'</span>,<br>        <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">json</span>) </span>&#123;<span class="hljs-comment">//获取数据</span><br>            <span class="hljs-keyword">const</span> notFinds = [];<br>            <span class="hljs-keyword">const</span> urls = &#123;&#125;;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> iconId <span class="hljs-keyword">in</span> ids) &#123;<br>                <span class="hljs-keyword">const</span> uuid = ids[iconId];<br>                <span class="hljs-keyword">const</span> base64 = json[uuid]<br>                <span class="hljs-keyword">if</span> (!base64) &#123;<br>                    notFinds.push(iconId)<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    urls[iconId] = base64<br>                &#125;<br>            &#125;<br>            loadFromUrls(map, urls, cb)<br>        &#125;<br><br>    &#125;);<br>&#125;<br><br><span class="hljs-comment">/**<br> * 批量加载url图片<br> * <span class="hljs-doctag">@param <span class="hljs-variable">map</span></span><br> * <span class="hljs-doctag">@param </span>urls 请求urls &#123;&lt;id1&gt;:&lt;url1&gt;,&lt;id2&gt;:&lt;url2&gt;,...&#125;<br> * <span class="hljs-doctag">@param </span>cb 回调函数 &#123;imgs:&#123;&#125;,errs:&#123;&#125;&#125;<br> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadFromUrls</span>(<span class="hljs-params">map, urls, cb</span>) </span>&#123;<br>    <span class="hljs-keyword">const</span> res = &#123;<br>        <span class="hljs-attr">imgs</span>: &#123;&#125;,<br>        <span class="hljs-attr">errs</span>: &#123;&#125;<br>    &#125;<br>    <span class="hljs-keyword">let</span> num = <span class="hljs-built_in">Object</span>.keys(urls).length<br><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doReturn</span>(<span class="hljs-params"></span>) </span>&#123;<br>        num--;<br>        <span class="hljs-keyword">if</span> (num == <span class="hljs-number">0</span>) &#123;<br>            cb(res)<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">subCb</span>(<span class="hljs-params">iconId, img</span>) </span>&#123;<br>        res.imgs[iconId] = img;<br>        doReturn();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">subErrCb</span>(<span class="hljs-params">iconId, err</span>) </span>&#123;<br>        res.errs[iconId] = err;<br>        doReturn();<br>    &#125;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> iconId <span class="hljs-keyword">in</span> urls) &#123;<br>        <span class="hljs-keyword">const</span> url = urls[iconId];<br>        loadFromUrl(map, iconId, url, subCb, subErrCb)<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">/**<br> * 加载url<br> * <span class="hljs-doctag">@param <span class="hljs-variable">map</span></span><br> * <span class="hljs-doctag">@param </span>iconId 图标id<br> * <span class="hljs-doctag">@param </span>url url 可以是base64url<br> * <span class="hljs-doctag">@param </span>cb 加载成功回调<br> * <span class="hljs-doctag">@param </span>errCb 加载错误回调<br> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadFromUrl</span>(<span class="hljs-params">map, iconId, url, cb, errCb</span>) </span>&#123;<br>    map.loadImage(url, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, img</span>) </span>&#123;<br>        <span class="hljs-keyword">if</span> (err) &#123;<br>            <span class="hljs-keyword">if</span> (errCb) &#123;<br>                errCb(iconId, err)<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">throw</span> err<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (map.hasImage(iconId)) &#123;<br>            map.updateImage(iconId, img)<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            map.addImage(iconId, img)<br>        &#125;<br>        cb(iconId, img)<br>    &#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
 
-        });
-    }
-
-    /**
-     * 批量加载url图片
-     * @param map
-     * @param urls 请求urls {&lt;id1&gt;:&lt;url1&gt;,&lt;id2&gt;:&lt;url2&gt;,...}
-     * @param cb 回调函数 {imgs:{},errs:{}}
-     */
-    function loadFromUrls(map, urls, cb) {
-        const res = {
-            imgs: {},
-            errs: {}
-        }
-        let num = Object.keys(urls).length
-
-        function doReturn() {
-            num--;
-            if (num == 0) {
-                cb(res)
-            }
-        }
-
-        function subCb(iconId, img) {
-            res.imgs[iconId] = img;
-            doReturn();
-        }
-
-        function subErrCb(iconId, err) {
-            res.errs[iconId] = err;
-            doReturn();
-        }
-
-        for (let iconId in urls) {
-            const url = urls[iconId];
-            loadFromUrl(map, iconId, url, subCb, subErrCb)
-        }
-    }
-
-    /**
-     * 加载url
-     * @param map
-     * @param iconId 图标id
-     * @param url url 可以是base64url
-     * @param cb 加载成功回调
-     * @param errCb 加载错误回调
-     */
-    function loadFromUrl(map, iconId, url, cb, errCb) {
-        map.loadImage(url, function (err, img) {
-            if (err) {
-                if (errCb) {
-                    errCb(iconId, err)
-                } else {
-                    throw err
-                }
-            }
-            if (map.hasImage(iconId)) {
-                map.updateImage(iconId, img)
-            } else {
-                map.addImage(iconId, img)
-            }
-            cb(iconId, img)
-        })
-    }
-</code></pre>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然当下的web开发讲究前后端分离，<br>但是从雪碧图的这个例子可以看出，作为一个giser，在主修前端or后端的一方时，还是要多去同时了解下前后端的知识，才能设计出更高效、灵活的方案。</p>
 
                         </div>

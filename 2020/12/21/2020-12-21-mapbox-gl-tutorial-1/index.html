@@ -231,7 +231,7 @@
 <div>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
-    <div id='map' style='width: 800px; height: 300px;'></div>
+    <div id='map' style='width: 90%; height: 300px;'></div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA';
         var map = new mapboxgl.Map({
@@ -244,13 +244,13 @@
 </div>
 
 <p>代码如下（html、body之类的标签就省略了哈）：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css'</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">'stylesheet'</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 800px; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript"><br>    mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br>    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>        container: <span class="hljs-string">'map'</span>,<br>        style: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br>        center: [<span class="hljs-number">116.403119</span>,<span class="hljs-number">39.925338</span>],<br>        zoom: <span class="hljs-number">9</span><br>    &#125;);<br></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css'</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">'stylesheet'</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 90%; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript"><br>    mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br>    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>        container: <span class="hljs-string">'map'</span>,<br>        style: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br>        center: [<span class="hljs-number">116.403119</span>,<span class="hljs-number">39.925338</span>],<br>        zoom: <span class="hljs-number">9</span><br>    &#125;);<br></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
 <p>逐行解释一下：</p>
 <p>第一步，引入mapbox的js和css</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css'</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">'stylesheet'</span> /&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p>第二步，写一个div来展现地图，给它指定id</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 800px; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 90%; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p>第三步，mapbox设置一个token才能获取它官方发布的地图，这里用了一个公开的token，你也可以去<a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener">这里</a>自己申请一个</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br></code></pre></td></tr></table></figure>
@@ -296,7 +296,7 @@
         <input id="traffic-day-v2" type="radio" name="rtoggle" value="light" /><label>traffic-day-v2</label>&nbsp;
         <input id="traffic-night-v2" type="radio" name="rtoggle" value="light" /><label>traffic-night-v2</label>&nbsp;
     </div>
-    <div id='map1' style='width: 800px; height: 300px;'></div>
+    <div id='map1' style='width: 90%; height: 300px;'></div>
     <script>
         var map1 = new mapboxgl.Map({
             container: 'map1',
@@ -332,10 +332,10 @@
 <p>openlayers是对面向对象开发人员非常友好的一个框架，map、layer、feature、geometry的分层非常清晰，写起来非常的OOP，如果有很复杂的前端逻辑，openlayers写出来的代码比其它几个都容易维护。<br>缺点是性能一般，而且对于一些新技术有少量奇怪的bug，比如矢量瓦片绘制跨瓦片的点绘制不完整。</p>
 <p>还有一类是运营商开发的框架，比如百度和高德，这类框架优势是方便且中文文档丰富。但是必须接公网、不开源、定制性差等问题，使得我们在需要开发强业务功能时几乎不会去考虑它。</p>
 <p>那么，mapbox有哪些优劣呢？最大的优劣都来源于：<strong>mapbox-gl是基于webgl开发的</strong>。</p>
-<p><strong>高性能</strong> 用js进行数据基本处理，然后就丢给webgl去渲染了，所以性能非常强悍。以我的破笔记本来测试geojson点图层的加载，<br>openlayers加载一千个点左右就开始卡顿了，而mapbox可以支撑两万个点左右。如果用mapbox的webgl接口来操作，甚至可以支撑到百万级。</p>
-<p><strong>可视化效果丰富</strong> mapbox-gl开放了webgl的操作接口，这使得我们可以直接用gl对象或是将gl对象丢给Three.js等框架，从而做出炫酷的效果。</p>
-<p><strong>代码层级不够清晰</strong> 但基于webgl开发，造成了数据与渲染的高度分离，使得mapbox的代码层次不是很清晰，甚至于根本就没有feature和geometry（而是用json去代替），不是很容易维护，后面的章节中我们会体会到这点。<br>所以开发之前，你应该充分设计代码结构以防止后期的混乱（当然，openlayers虽然层次清晰，但不好好设计依然会混乱，只是比mapbox容易维护一些）。</p>
-<p><strong>兼容性不高</strong> 在IE上完全无法展示，但微软自己都把IE丢掉了，除了应付守旧的用户，这条也不是大问题。</p>
+<p>👍<strong>高性能</strong> 用js进行数据基本处理，然后就丢给webgl去渲染了，所以性能非常强悍。以我的破笔记本来测试geojson点图层的加载，<br>openlayers加载一千个点左右就开始卡顿了，而mapbox可以支撑两万个点左右。如果用mapbox的webgl接口来操作，甚至可以支撑到百万级。</p>
+<p>👍<strong>可视化效果丰富</strong> mapbox-gl开放了webgl的操作接口，这使得我们可以直接用gl对象或是将gl对象丢给Three.js等框架，从而做出炫酷的效果。</p>
+<p>👎<strong>代码层级不够清晰</strong> 但基于webgl开发，造成了数据与渲染的高度分离，使得mapbox的代码层次不是很清晰，甚至于根本就没有feature和geometry（而是用json去代替），不是很容易维护，后面的章节中我们会体会到这点。<br>所以开发之前，你应该充分设计代码结构以防止后期的混乱（当然，openlayers虽然层次清晰，但不好好设计依然会混乱，只是比mapbox容易维护一些）。</p>
+<p>👎<strong>兼容性不高</strong> 在IE上完全无法展示，但微软自己都把IE丢掉了，除了应付守旧的用户，这条也不是大问题。</p>
 <p>了解了以上优劣，相信你会对你的的项目是否该使用mapbox有自己的判断。</p>
 <h1 id="本教程计划章节"><a href="#本教程计划章节" class="headerlink" title="本教程计划章节"></a>本教程计划章节</h1><p>本教程将按以下章节，逐步介绍和学习mapbox（啊，这坑好大，慢慢施工<del>~</del>）</p>
 <h2 id="第一部分-简介"><a href="#第一部分-简介" class="headerlink" title="第一部分 简介"></a>第一部分 简介</h2><p>这部分我们先编写一个hello world，介绍mapbox的基本情况，并与其它前端地图框架做比较，以帮助你快速选型和上手</p>
