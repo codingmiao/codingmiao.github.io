@@ -181,6 +181,60 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/03/21/2018-03-21-parse-postgis-shape/">postgis空间数据格式解析，及如何绑定变量</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/03/21/2018-03-21-parse-postgis-shape/">
+          
+          
+            
+          
+          当我们往postgis的shape字段中插入一条数据
+INSERT INTO test1 (shape)
+VALUES (GeomFromEWKT(&#39;SRID=4326;POINT(116.39 39.9)&#39;));读出来的shape是这样的:
+0101000020E6100000295C8FC2F5185D403333333333F34340显然，这是一个wkb格式的字符串嘛
+于是
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-03-21 20:46" pubdate>
+              2018-03-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/gis/">gis</a>
+            
+              <a href="/categories/gis/%E6%9C%8D%E5%8A%A1%E7%AB%AF/">服务端</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/PostgreSQL/">PostgreSQL</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2017/11/30/2017-11-30-zip-exception/">Tomcat启动报错ZipException: error in opening zip file及解决</a>
       </h1>
 
