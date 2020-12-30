@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
-    <lastmod>2020-12-29</lastmod>
-  </url>
-  <url>
     <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
-    <lastmod>2020-12-29</lastmod>
+    <lastmod>2020-12-30</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-30</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
+    <lastmod>2020-12-29</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/</loc>

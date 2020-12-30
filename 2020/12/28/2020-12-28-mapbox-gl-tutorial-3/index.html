@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      1.8k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      21
+      23
        分钟
     </span>
   
@@ -247,7 +247,11 @@
 <h2 id="图层与样式"><a href="#图层与样式" class="headerlink" title="图层与样式"></a>图层与样式</h2><p>mapbox有很多种类型，每种类型的图层又配有对应的样式属性，一个标准的图层json格式如下:</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"lightLinelayer"</span>,<span class="hljs-comment">//图层id</span><br>  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"line"</span>,<span class="hljs-comment">//图层类型</span><br>  <span class="hljs-attr">"source"</span>: <span class="hljs-string">"lightSource"</span>,<span class="hljs-comment">//数据源id</span><br>  <span class="hljs-attr">"layout"</span>: &#123;<span class="hljs-comment">//样式的布局属性</span><br>    <span class="hljs-attr">"line-join"</span>: <span class="hljs-string">"round"</span>,<br>    <span class="hljs-attr">"line-cap"</span>: <span class="hljs-string">"round"</span><br>  &#125;,<br>  <span class="hljs-attr">"paint"</span>: &#123;<span class="hljs-comment">//样式的绘制属性</span><br>    <span class="hljs-attr">"line-color"</span>: <span class="hljs-string">"#00FFFF"</span>,<br>    <span class="hljs-attr">"line-width"</span>: <span class="hljs-number">5</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>样式的信息散落在布局属性(layout)和绘制属性(paint)中，从人类的思维上，layout和paint并没有明显的区分，例如线宽(line-width)和线端点(line-cap)都是对线型的描述，但却分别落在了paint和layout中，<br>所以，具体每种图层有哪些样式属性，是layout还是paint，需要查阅<a href="https://www.mapbox.cn/mapbox-gl-js/style-spec/#layers" target="_blank" rel="noopener">官方文档</a></p>
+<p>样式的信息散落在布局属性(layout)和绘制属性(paint)中，从人类的思维上，layout和paint并没有明显的区分，例如线宽(line-width)和线端点(line-cap)都是对线型的描述，但却分别落在了paint和layout中，<br>官方对二者的差异如下解释:</p>
+<blockquote>
+<p>Layout properties appear in the layer’s “layout” object. They are applied early in the rendering process and define how data for that layer is passed to the GPU. Changes to a layout property require an asynchronous “layout” step.<br>布局属性出现在图层的“layout”对象中。它们在渲染过程的早期应用，并定义该层的数据如何传递给GPU。对布局属性的更改需要一个异步的“布局”过程。<br>Paint properties are applied later in the rendering process. Paint properties appear in the layer’s”paint” object. Changes to a paint property are cheap and happen synchronously.<br>绘制属性稍后在呈现过程中应用。绘制属性出现在图层的“paint”对象中。更改绘制属性的性能很高，并且是同步的。</p>
+</blockquote>
+<p>也就是说二者的差异体现在渲染的机制不同，所以，具体每种图层有哪些样式属性，是layout还是paint，需要查阅<a href="https://www.mapbox.cn/mapbox-gl-js/style-spec/#layers" target="_blank" rel="noopener">官方文档</a></p>
 <h2 id="数据和样式的修改"><a href="#数据和样式的修改" class="headerlink" title="数据和样式的修改"></a>数据和样式的修改</h2><p>下面对例子作一下扩充，我们看一下如何改变样式和数据</p>
 <h3 id="修改样式"><a href="#修改样式" class="headerlink" title="修改样式"></a>修改样式</h3><p><code>map.setLayoutProperty</code>和<code>map.setPaintProperty</code>函数可以设置图层的布局属性和绘制属性，这个例子演示了把点的颜色来回切换：</p>
 <div>
