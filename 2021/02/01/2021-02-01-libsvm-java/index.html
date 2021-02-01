@@ -15,9 +15,9 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="description" content="">
-  <meta name="author" content="liuyu">
+  <meta name="author" content="刘雨">
   <meta name="keywords" content="">
-  <title>mapbox-gl教程(4):适配国内底图 - 懒惰的芜菁</title>
+  <title>用libsvm-java做数据分类 - 懒惰的芜菁</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -162,7 +162,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="mapbox-gl教程(4):适配国内底图">
+            <span class="h2" id="subtitle" title="用libsvm-java做数据分类">
               
             </span>
 
@@ -172,8 +172,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-12-29 20:46" pubdate>
-        2020年12月29日 晚上
+      <time datetime="2021-02-01 20:22" pubdate>
+        2021年2月1日 晚上
       </time>
     </span>
   
@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      1.9k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      23
+      27
        分钟
     </span>
   
@@ -224,109 +224,255 @@
                 <div class="py-5" id="board">
                     <article class="post-content mx-auto">
                         <!-- SEO header -->
-                        <h1 style="display: none">mapbox-gl教程(4):适配国内底图</h1>
+                        <h1 style="display: none">用libsvm-java做数据分类</h1>
                         
                         <div class="markdown-body">
-                            <p>回到背景地图(底图)上来，我们发现，底图上的标注文字大部分都是英文的，这对国内用户很不友好。<br>本章将介绍一些处理方法，同时本章还涉及到一种常见的数据源/图层:栅格瓦片</p>
-<h1 id="方式一-使用mapbox的汉化插件"><a href="#方式一-使用mapbox的汉化插件" class="headerlink" title="方式一 使用mapbox的汉化插件"></a>方式一 使用mapbox的汉化插件</h1><div>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet'/>
-    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'></script>
-    <div id='map1' style='width: 90%; height: 300px;'></div>
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA';
-        const map1 = new mapboxgl.Map({
-            container: 'map1',
-            style: 'mapbox://styles/mapbox/streets-v9',
-            center: [116.405419, 39.923568],
-            zoom: 11
-        });
-        mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
-        var languageControl = new MapboxLanguage({
-            defaultLanguage: 'zh'//设置语言为中文
-        });
-        map1.addControl(languageControl);
-    </script>
-</div>
+                            <p>svm是什么？啦啦，这个问题说起来比较费劲，感兴趣的话可以去看看<a href="https://zhuanlan.zhihu.com/p/77750026" target="_blank" rel="noopener">这篇知乎大佬写的文章</a></p>
+<p>本文要说的是svm能做什么，以及怎么用代码来做。</p>
+<h1 id="1-svm能做什么"><a href="#1-svm能做什么" class="headerlink" title="1 svm能做什么"></a>1 svm能做什么</h1><p>先看下面这个<a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/" target="_blank" rel="noopener">例子</a>：</p>
+<p><img src="/myimgs/20210201/2.gif" alt="svm分类"></p>
+<p>在平面坐标系上画了红黄蓝种颜色的点若干个，然后我们画几条线，把平面划分为三个区域，使得相同颜色的点落在同一区域内。<br>如此一来，给出任意一个点的坐标，我们就能确定它落在哪个区域内，从而将它分类。<br>用稍微数字化一点的表达就是,svm能解决下列问题:</p>
+<div class="code-wrapper"><pre><code>已知:
+当x=[1,2]时，y=&#39;红&#39;;
+当x=[3,2]时，y=&#39;红&#39;;
+当x=[4,3]时，y=&#39;黄&#39;;
+当x=[5,1]时，y=&#39;黄&#39;;
+当x=[2,6]时，y=&#39;蓝&#39;;
+....
 
-<p>引入插件</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<p>新建汉化Control对象，并添加到map中即可：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js">mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">style</span>: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br>    <span class="hljs-attr">center</span>: [<span class="hljs-number">116.405419</span>, <span class="hljs-number">39.923568</span>],<br>    <span class="hljs-attr">zoom</span>: <span class="hljs-number">11</span><br>&#125;);<br>mapboxgl.setRTLTextPlugin(<span class="hljs-string">'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js'</span>);<br><span class="hljs-keyword">var</span> languageControl = <span class="hljs-keyword">new</span> MapboxLanguage(&#123;<br>    <span class="hljs-attr">defaultLanguage</span>: <span class="hljs-string">'zh'</span><span class="hljs-comment">//设置语言为中文</span><br>&#125;);<br>map.addControl(languageControl);<br></code></pre></td></tr></table></figure>
-
-<p>实际用下来，这种方式效果一般，依然有少量的英文标注，而且由于是国外的数据源，POI的密度也比较低。</p>
-<h1 id="方式二-使用国内数据源"><a href="#方式二-使用国内数据源" class="headerlink" title="方式二 使用国内数据源"></a>方式二 使用国内数据源</h1><p><a href="https://www.tianditu.gov.cn/" target="_blank" rel="noopener">国家地理信息公共服务平台“天地图”</a>（以下简称“天地图“）是国家基础地理信息中心建设的网络化地理信息共享与服务门户。<br>天地图提供的背景地图，国家背景、更新及时、地物详细、完全免费、值得信赖。本小节我们就来学习如何将mapbox的背景地图换成天地图的：</p>
-<div>
-    <div id='map' style='width: 90%; height: 300px;'></div>
-    <script>
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: {//为map构造一个空的style
-                "version": 8,
-                "sources": {},
-                "layers": [],
-            },
-            center: [116.405419, 39.923568],
-            zoom: 11
-        });
-        //天地图的token
-        const tiandituToken = 'd12deb9576426df9aff82075b754790a';
-        //下面几组url代表不同的底图，根据需要选用
-        //矢量底图
-        const vecwUrl = 'https://t0.tianditu.gov.cn/vec_w/wmts?' +
-            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
-            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
-        //矢量注记
-        const cvawUrl = 'https://t3.tianditu.gov.cn/cva_w/wmts?' +
-            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
-            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
-        //影像底图
-        const imgUrl = 'https://t6.tianditu.gov.cn/img_w/wmts?' +
-            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
-            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
-        //影像注记
-        const imgwUrl = 'https://t0.tianditu.gov.cn/cia_w/wmts?' +
-            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
-            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
-        /**
-         * 向地图中添加一个栅格瓦片图层
-         * @param map
-         * @param url 瓦片url
-         * @param sourceId 数据源id，保证唯一性即可
-         * @param layerId 图层id，保证唯一性即可
-         */
-        function addRasterTileLayer(map, url, sourceId, layerId) {
-            map.addSource(sourceId, {
-                type: 'raster',
-                tiles: [url],
-                tileSize: 256
-            });
-            map.addLayer({
-                id: layerId,
-                type: 'raster',
-                source: sourceId
-            });
+求:
+当x=[3,7]时，y=?
+</code></pre></div><p>最常见的用途就是验证码识别:我们把读取验证码图片上各像素点的灰度值(0~255)，得到了一个向量，然后手工录入这张图片上的字母，形成样本，把很多张图片样本经过训练后得到一个svm模型。</p>
+<p>此后，我们传入一张新图片，就能知道图片上有什么字母了。(当然，这只是个理想过程，实际上还要辅以一些图像预处理手段等等)</p>
+<h1 id="2-libsvm-java的使用示例"><a href="#2-libsvm-java的使用示例" class="headerlink" title="2 libsvm-java的使用示例"></a>2 libsvm-java的使用示例</h1><p><a href="https://github.com/cjlin1/libsvm" target="_blank" rel="noopener">libsvm-java</a> 是最著名的svm java库。</p>
+<p>下面的例子中，我们用svm来判断某个属于哪个象限。<br><img src="/myimgs/20210201/1.jpg" alt="四个象限"><br>有同学要问，判断象限用x、y的正负不就可以了么？是的，这个例子是可以用公式直接判断的，正是因为它简单，我们才能简洁地说明svm的步骤，并能方便地构造样本和验证结果。<br>理解了这个简单的套路，在图像识别等复杂得无法用公式判断的场景，我们也可以按这个套路进行。</p>
+<h2 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h2><p>引入maven依赖即可使用</p>
+<div class="code-wrapper"><pre><code class="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;tw.edu.ntu.csie&lt;/groupId&gt;
+      &lt;artifactId&gt;libsvm&lt;/artifactId&gt;
+      &lt;version&gt;3.24&lt;/version&gt;
+    &lt;/dependency&gt;</code></pre></div>
+<p>然而这个库用起来相当恶心：完全c语言的命名风格，用System.out.println来打印日志等等。。好在源码数量不多。<br>所以，建议你先用maven依赖跑起来熟悉一下，正式使用时从 <a href="https://github.com/cjlin1/libsvm/tree/master/java" target="_blank" rel="noopener">https://github.com/cjlin1/libsvm/tree/master/java</a> 上把源码拷下来自己把觉得恶心的地方改掉。</p>
+<h2 id="2-2-构造样本"><a href="#2-2-构造样本" class="headerlink" title="2.2 构造样本"></a>2.2 构造样本</h2><p>前面说了，判断象限可以直接用x、y的正负，所以我们先写一个判断象限的方法，并以此随机生成样本:</p>
+<div class="code-wrapper"><pre><code class="java">
+    /**
+     * 判断输入的点在第几象限
+     *
+     * @param x
+     * @param y
+     * @return 1 2 3 4
+     * 4  |  1
+     * ----|----
+     * 3  |  2
+     */
+    private static int getQuadrant(double x, double y) {
+        if (x &gt; 0) {
+            if (y &gt; 0) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else {
+            if (y &gt; 0) {
+                return 4;
+            } else {
+                return 3;
+            }
         }
-        map.on('load', function () {
-            //这里选择加载矢量底图及其标注
-            addRasterTileLayer(map, vecwUrl, 'vecw', 'vecw')
-            addRasterTileLayer(map, cvawUrl, 'cvaw', 'cvaw')
-        })
-    </script>
-</div>
-emmm，这下好多了，看下代码：
+    }
+</code></pre></div>
+<div class="code-wrapper"><pre><code class="java">
+        final int sampleNum = 100;//样本数量
+        double[][] features = new double[sampleNum][];//特征向量数组 本例中即xy坐标构成的向量
+        double[] targetValues = new double[sampleNum];//分类值数组 本例中即点属于哪个象限
+        Random random = new Random(233);
+        for (int i = 0; i &lt; sampleNum; i++) {
+        //每次循环随机生成一条样本数据
+        //随机在[-100,100)直接生成x、y坐标
+        double x = random.nextInt(200) - 100;
+        double y = random.nextInt(200) - 100;
+        int quadrant = getQuadrant(x, y);//样本分类，实际应用中分类一般需要手工录入，本例中获取象限有公式我们就自己生成了
+        //坐标值归一化，特征向量的值需要在[0,1]间，所以需要归一化
+        double normalizationX = (x + 100) / 200;
+        double normalizationY = (y + 100) / 200;
+        //把特征向量和分类值丢到数组里
+        features[i] = new double[]{normalizationX, normalizationY};
+        targetValues[i] = quadrant;</code></pre></div>
+<h2 id="2-3-训练模型"><a href="#2-3-训练模型" class="headerlink" title="2.3 训练模型"></a>2.3 训练模型</h2><p>有了样本，我们就可以拿来训练了，写一个训练的方法，除了调参的部分，这个方法是可以复用的：</p>
+<div class="code-wrapper"><pre><code class="java">    /**
+     * 训练模型
+     * @param features
+     * @param targetValues
+     * @return
+     */
+    private static svm_model train(double[][] features, double[] targetValues) {
+        svm_node[][] svmNodes = new svm_node[features.length][features[0].length];
+        for (int i = 0; i &lt; features.length; i++) {
+            double[] feature = features[i];
+            for (int i1 = 0; i1 &lt; feature.length; i1++) {
+                svm_node svmNode = new svm_node();
+                svmNode.index = i1 + 1;//index从1开始，所以要+1
+                svmNode.value = feature[i1];
+                svmNodes[i][i1] = svmNode;
+            }
+        }
 
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">style</span>: &#123;<span class="hljs-comment">//为map构造一个空的style</span><br>        <span class="hljs-string">"version"</span>: <span class="hljs-number">8</span>,<br>        <span class="hljs-string">"sources"</span>: &#123;&#125;,<br>        <span class="hljs-string">"layers"</span>: [],<br>    &#125;,<br>    <span class="hljs-attr">center</span>: [<span class="hljs-number">116.405419</span>, <span class="hljs-number">39.923568</span>],<br>    <span class="hljs-attr">zoom</span>: <span class="hljs-number">11</span><br>&#125;);<br><br><span class="hljs-comment">//天地图的token</span><br><span class="hljs-keyword">const</span> tiandituToken = <span class="hljs-string">'d12deb9576426df9aff82075b754790a'</span>;<br><span class="hljs-comment">/*<br>* 天地图提供了多种背景地图和标注供选择，<br>* 只要从http://lbs.tianditu.gov.cn/server/MapService.html找到对应的url即可<br>* 这里使用了了矢量地图和注记<br>* */</span><br><span class="hljs-comment">//矢量底图</span><br><span class="hljs-keyword">const</span> vecwUrl = <span class="hljs-string">'https://t0.tianditu.gov.cn/vec_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=vec&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br><span class="hljs-comment">//矢量注记</span><br><span class="hljs-keyword">const</span> cvawUrl = <span class="hljs-string">'https://t3.tianditu.gov.cn/cva_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=cva&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br><br><span class="hljs-comment">/**<br> * 向地图中添加一个栅格瓦片图层<br> * @param map<br> * @param url 瓦片url<br> * @param sourceId 数据源id，保证唯一性即可<br> * @param layerId 图层id，保证唯一性即可<br> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addRasterTileLayer</span>(<span class="hljs-params">map, url, sourceId, layerId</span>) </span>&#123;<br>    map.addSource(sourceId, &#123;<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'raster'</span>,<br>        <span class="hljs-attr">tiles</span>: [url],<br>        <span class="hljs-attr">tileSize</span>: <span class="hljs-number">256</span><br>    &#125;);<br>    map.addLayer(&#123;<br>        <span class="hljs-attr">id</span>: layerId,<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'raster'</span>,<br>        <span class="hljs-attr">source</span>: sourceId<br>    &#125;);<br>&#125;<br><br>map.on(<span class="hljs-string">'load'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-comment">//这里选择加载矢量底图及其标注</span><br>    addRasterTileLayer(map,vecwUrl,<span class="hljs-string">'vecw'</span>,<span class="hljs-string">'vecw'</span>)<br>    addRasterTileLayer(map,cvawUrl,<span class="hljs-string">'cvaw'</span>,<span class="hljs-string">'cvaw'</span>)<br>&#125;)<br></code></pre></td></tr></table></figure>
-<p>我们先构造了一个空的style，这样map对象里就不含任何数据源和图层，也就是一张空白的地图。<br>然后我们定义了一个<code>addRasterTileLayer</code>函数，用以构建栅格瓦片数据源和图层并添加到地图中。<br>最后再用天地图的瓦片url构造了一个背景图层和一个背景标注图层。</p>
-<h1 id="栅格瓦片简介"><a href="#栅格瓦片简介" class="headerlink" title="栅格瓦片简介"></a>栅格瓦片简介</h1><p>按下F12打开开发者工具，然后滚动几下地图，你会发现mapbox请求了许多256*256的图片：<br><img src="/myimgs/20201229/1.jpg" alt="F12"><br>这些图片就是一个栅格瓦片，多个瓦片拼接完成了背景地图图层的展示。</p>
-<p>再回过头来看下天地图的瓦片url</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> vecwUrl = <span class="hljs-string">'https://t0.tianditu.gov.cn/vec_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=vec&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br></code></pre></td></tr></table></figure>
-<p>可以看到，url里包含了{z}、{x}、{y}三个参数，事实上，任何瓦片的url都必须包含这三个参数:<br><img src="/myimgs/20201229/2.jpg" alt="ZXY"></p>
-<p>z即当前地图的缩放层级。<br>每个层级上，地球在水平和数值方向上都被切割成了2^z块瓦片，左上角的编号为(0,0)，并由左向右递增x、由上往下递增y。<br>所以，当我们把瓦片url传给mapbox后，mapbox就根据当前地图的层级、经纬度范围，按照这个规则去计算出需要哪些zxy对应的瓦片来填充地图，并发送请求去取图片。</p>
-<p>瓦片图层有哪些好处呢？<br>在服务端，我们可以提前把所有zxy对应的瓦片都预先生成好并存起来(这个过程称为预切片)，这样在运行过程中服务端就几乎没什么计算压力了。<br>而客户端也只需加载视野范围内的瓦片，不用像geojson那样把所有数据都加载过来，压力也少了很多。</p>
-<p>有同学要问了，那服务端传过来的是图片，我们没办法修改它的颜色等样式了呀，是的，所以mapbox又制定了矢量瓦片标准，瓦片里不再是一张jpg，而是压缩过的feature，<br>这样又可以在前端改样式了，矢量瓦片需要涉及一些服务端的知识，我们将在第四部分中详解。</p>
-<p><strong>TIPS:</strong>高德、百度等地图产商也提供了栅格瓦片或矢量瓦片，如有需要，我们也可以把天地图的瓦片换成高德或百度等。<br>但是，按照高德、百度的用户协议，直接调用瓦片是不合规的；而且为了保密，这些瓦片还经过了一些偏移处理，我们需要一些纠偏手段把偏移去掉，这也是不合规的。</p>
+        svm_problem sp = new svm_problem();
+        sp.x = svmNodes;
+        sp.y = targetValues;
+        sp.l = features.length;
+
+        //调参什么的，太深奥了，先用默认值好了
+        svm_parameter prm = new svm_parameter();
+        prm.svm_type = svm_parameter.C_SVC;
+        prm.kernel_type = svm_parameter.RBF;
+        prm.C = 1000;
+        prm.eps = 0.0000001;
+        prm.gamma = 10;
+        prm.probability = 1;
+        prm.cache_size = 1024;
+
+        svm_model model = svm.svm_train(sp, prm);           //训练分类
+        return model;
+    }
+</code></pre></div>
+<p>然后传入刚才生成的样本，即可训练出一个模型对象:</p>
+<div class="code-wrapper"><pre><code class="java">        svm_model model = train(features, targetValues);</code></pre></div>
+<p>这里我们看到了libsvm的恶心之处，对象名<code>svm_model</code>居然是小写+下划线。。。</p>
+<p>我们也可以把训练好的模型存入文件里，下次直接读文件获取模型而免去训练过程:</p>
+<div class="code-wrapper"><pre><code class="java">        svm.svm_save_model(&quot;d:/test.md&quot;, model);//写入文件
+        svm_model model1 = svm.svm_load_model(&quot;d:/test.md&quot;);//从文件读取</code></pre></div>
+<h2 id="2-4-识别分类"><a href="#2-4-识别分类" class="headerlink" title="2.4 识别分类"></a>2.4 识别分类</h2><p>有了模型，我们就可以传入一个新向量来识别它是哪一类了：</p>
+<div class="code-wrapper"><pre><code class="java">        //判断点(-45.5,-20.2)属于哪个象限
+        svm_node[] test = new svm_node[]{new svm_node(), new svm_node()};
+        test[0].index = 1;
+        test[0].value = -45.5;
+        test[1].index = 2;
+        test[1].value = -20.2;
+        //归一化
+        test[0].value = (test[0].value+100)/200;
+        test[1].value = (test[1].value+100)/200;
+
+        double result = svm.svm_predict(model, test);    // 不带概率的分类
+        System.out.println(&quot;所在象限 &quot; + result);//打印  所在象限 3.0</code></pre></div>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><div class="code-wrapper"><pre><code class="java">package org.wowtools.test;
+
+
+import libsvm.*;
+
+import java.util.Random;
+
+
+public class SvmTest {
+
+    public static void main(String[] args) {
+
+        /** 1、构造样本 **/
+        final int sampleNum = 100;//样本数量
+        double[][] features = new double[sampleNum][];//特征向量数组 本例中即xy坐标构成的向量
+        double[] targetValues = new double[sampleNum];//分类值数组 本例中即点属于哪个象限
+        Random random = new Random(233);
+        for (int i = 0; i &lt; sampleNum; i++) {
+            //每次循环随机生成一条样本数据
+            //随机在[-100,100)直接生成x、y坐标
+            double x = random.nextInt(200) - 100;
+            double y = random.nextInt(200) - 100;
+            int quadrant = getQuadrant(x, y);//样本分类，实际应用中分类一般需要手工录入，本例中获取象限有公式我们就自己生成了
+            //坐标值归一化，特征向量的值需要在[0,1]间，所以需要归一化
+            double normalizationX = (x + 100) / 200;
+            double normalizationY = (y + 100) / 200;
+            //把特征向量和分类值丢到数组里
+            features[i] = new double[]{normalizationX, normalizationY};
+            targetValues[i] = quadrant;
+        }
+
+        /** 2、训练模型 **/
+        svm_model model = train(features, targetValues);
+
+        /** 3、识别分类 **/
+        //待识别向量
+        svm_node[] test = new svm_node[]{new svm_node(), new svm_node()};
+        test[0].index = 1;
+        test[0].value = -45.5;
+        test[1].index = 2;
+        test[1].value = -20.2;
+        //归一化
+        test[0].value = (test[0].value+100)/200;
+        test[1].value = (test[1].value+100)/200;
+
+        double result = svm.svm_predict(model, test);    // 不带概率的分类测试
+        System.out.println(&quot;所在象限 &quot; + result);//所在象限 3.0
+
+//        double[] l = new double[4];
+//        double result_prob = svm.svm_predict_probability(model, test, l);        //带预测概率的分类测试
+//        System.out.println(&quot;Result with prob &quot; + result_prob);
+//        System.out.println(&quot;Probability &quot; + l[0] + &quot;\t&quot; + l[1]);
+    }
+
+    /**
+     * 训练模型
+     * @param features
+     * @param targetValues
+     * @return
+     */
+    private static svm_model train(double[][] features, double[] targetValues) {
+        svm_node[][] svmNodes = new svm_node[features.length][features[0].length];
+        for (int i = 0; i &lt; features.length; i++) {
+            double[] feature = features[i];
+            for (int i1 = 0; i1 &lt; feature.length; i1++) {
+                svm_node svmNode = new svm_node();
+                svmNode.index = i1 + 1;//index从1开始，所以要+1
+                svmNode.value = feature[i1];
+                svmNodes[i][i1] = svmNode;
+            }
+        }
+
+        svm_problem sp = new svm_problem();
+        sp.x = svmNodes;
+        sp.y = targetValues;
+        sp.l = features.length;
+
+        //调参什么的，太深奥了，先用默认值好了
+        svm_parameter prm = new svm_parameter();
+        prm.svm_type = svm_parameter.C_SVC;
+        prm.kernel_type = svm_parameter.RBF;
+        prm.C = 1000;
+        prm.eps = 0.0000001;
+        prm.gamma = 10;
+        prm.probability = 1;
+        prm.cache_size = 1024;
+
+        svm_model model = svm.svm_train(sp, prm);           //训练分类
+        return model;
+    }
+
+    /**
+     * 判断输入的点在第几象限
+     *
+     * @param x
+     * @param y
+     * @return 1 2 3 4
+     * 4  |  1
+     * ----|----
+     * 3  |  2
+     */
+    private static int getQuadrant(double x, double y) {
+        if (x &gt; 0) {
+            if (y &gt; 0) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else {
+            if (y &gt; 0) {
+                return 4;
+            } else {
+                return 3;
+            }
+        }
+    }
+}
+</code></pre></div>
 
                         </div>
                         <hr>
@@ -337,10 +483,10 @@ emmm，这下好多了，看下代码：
                                         <i class="iconfont icon-category"></i>
                                         
                                             <a class="hover-with-bg"
-                                               href="/categories/gis/">gis</a>
+                                               href="/categories/java/">java</a>
                                         
                                             <a class="hover-with-bg"
-                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                               href="/categories/java/%E7%AE%97%E6%B3%95%E5%B7%A5%E5%85%B7/">算法工具</a>
                                         
                                     </div>
                                 
@@ -348,7 +494,7 @@ emmm，这下好多了，看下代码：
                                     <div class="post-meta">
                                         <i class="iconfont icon-tags"></i>
                                         
-                                            <a class="hover-with-bg" href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+                                            <a class="hover-with-bg" href="/tags/svm-%E6%95%B0%E6%8D%AE%E5%88%86%E7%B1%BB/">svm 数据分类</a>
                                         
                                     </div>
                                 
@@ -357,7 +503,7 @@ emmm，这下好多了，看下代码：
                                 <p class="note note-warning">本文采用 <a
                                             href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
                                             rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
-                                    https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/ </p>
+                                    https://blog.wowtools.org/2021/02/01/2021-02-01-libsvm-java/ </p>
                             
                             <!-- 打赏 -->
                             <style>
@@ -515,18 +661,12 @@ emmm，这下好多了，看下代码：
                                     <article class="post-prev col-6">
                                         
                                         
-                                            <a href="/2021/02/01/2021-02-01-libsvm-java/">
-                                                <i class="iconfont icon-arrowleft"></i>
-                                                <span class="hidden-mobile">用libsvm-java做数据分类</span>
-                                                <span class="visible-mobile">上一篇</span>
-                                            </a>
-                                        
                                     </article>
                                     <article class="post-next col-6">
                                         
                                         
-                                            <a href="/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/">
-                                                <span class="hidden-mobile">mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)</span>
+                                            <a href="/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/">
+                                                <span class="hidden-mobile">mapbox-gl教程(4):适配国内底图</span>
                                                 <span class="visible-mobile">下一篇</span>
                                                 <i class="iconfont icon-arrowright"></i>
                                             </a>
@@ -552,7 +692,7 @@ emmm，这下好多了，看下代码：
           repo: 'gitalkissue',
           owner: 'codingmiao',
           admin: ["codingmiao"],
-          id: '8cea178edd176e4eb9d0cf0abf556395',
+          id: 'd4e5944cbb55eaf4dc9da6eefe4ea0a1',
           language: 'zh-CN',
           labels: ["Gitalk"],
           perPage: 10,

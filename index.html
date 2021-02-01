@@ -181,6 +181,60 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/02/01/2021-02-01-libsvm-java/">用libsvm-java做数据分类</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/02/01/2021-02-01-libsvm-java/">
+          
+          
+            
+          
+          svm是什么？啦啦，这个问题说起来比较费劲，感兴趣的话可以去看看这篇知乎大佬写的文章
+本文要说的是svm能做什么，以及怎么用代码来做。
+1 svm能做什么先看下面这个例子：
+
+在平面坐标系上画了红黄蓝种颜色的点若干个，然后我们画几条线，把平面划分为三个区域，使得相同颜色的点落在同一区域内。如此一来，给出任意一个点的坐标，我们就能确定它落在哪个区域内，从而将它分类。用稍微数字化一点的表达就是,svm
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-02-01 20:22" pubdate>
+              2021-02-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+              <a href="/categories/java/%E7%AE%97%E6%B3%95%E5%B7%A5%E5%85%B7/">算法工具</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/svm-%E6%95%B0%E6%8D%AE%E5%88%86%E7%B1%BB/">svm 数据分类</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/">mapbox-gl教程(4):适配国内底图</a>
       </h1>
 
@@ -510,20 +564,17 @@ mapbox中也采用了类似的思想：当我们配置了多个symbol类型的�
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">neo4j同时使用嵌入模式和服务模式</a>
+        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">neo4j自定义call函数</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">
+        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
           
           
             
           
-          neo4j(社区版)有两种模式:嵌入模式和服务器模式，下图描述了它们的使用区别，简单来说，嵌入模式就是直接用java代码去操作，服务器模式就是通过暴露出来的web端口传入查询语句等进行操作。
-两种模式哪种更优？网上有太多的帖子讨论这个。可是，毕竟只有小孩子才做选择题，我们为什么不选择全都要呢O(∩_∩)O
-话不多说，直接上代码
-1、引入maven依赖:
-        &lt;dependency
+          在上一小节中(http://blog.wowtools.org/2019/12/27/2019-12-27-custom-neo4j1/)，我们学习了如何同时使用嵌入模式和服务模式。本小节将学习如何扩展自定义的call函数，以满足自定义查询需求。本小节的代码基于上一小节，所以你可能要先把上一节中的示例先写出来并运行起来。
+hello world先看效果图，我们自定义了一个函数test.hello，
         </a>
       </p>
 
@@ -564,17 +615,20 @@ mapbox中也采用了类似的思想：当我们配置了多个symbol类型的�
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">neo4j自定义call函数</a>
+        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">neo4j同时使用嵌入模式和服务模式</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
+        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">
           
           
             
           
-          在上一小节中(http://blog.wowtools.org/2019/12/27/2019-12-27-custom-neo4j1/)，我们学习了如何同时使用嵌入模式和服务模式。本小节将学习如何扩展自定义的call函数，以满足自定义查询需求。本小节的代码基于上一小节，所以你可能要先把上一节中的示例先写出来并运行起来。
-hello world先看效果图，我们自定义了一个函数test.hello，
+          neo4j(社区版)有两种模式:嵌入模式和服务器模式，下图描述了它们的使用区别，简单来说，嵌入模式就是直接用java代码去操作，服务器模式就是通过暴露出来的web端口传入查询语句等进行操作。
+两种模式哪种更优？网上有太多的帖子讨论这个。可是，毕竟只有小孩子才做选择题，我们为什么不选择全都要呢O(∩_∩)O
+话不多说，直接上代码
+1、引入maven依赖:
+        &lt;dependency
         </a>
       </p>
 
@@ -656,57 +710,6 @@ init.js:4 Uncaught Error: irrationalPath
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/dojo/">dojo</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/05/18/2018-05-18-centos7-install-gdal/">centos 7安装gdal</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/05/18/2018-05-18-centos7-install-gdal/">
-          
-          
-            
-          
-          gdal操作tiff的性能，要比geotools快很多。想要在java中使用gdal，windows可以直接下载到编译好的dll文件(点这里下载)，并把存放dll的文件夹配置到path环境变量里即可，有时需要重启一下ide才能识别到centos下需要自己配置环境和编译下面以centos7上安装2.2.3版本的gdal为例，介绍整个安装过程
-参考资料https://www.cnblogs.com/g
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-05-18 20:46" pubdate>
-              2018-05-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E9%83%A8%E7%BD%B2%E8%BF%90%E7%BB%B4/">部署运维</a>
-            
-              <a href="/categories/%E9%83%A8%E7%BD%B2%E8%BF%90%E7%BB%B4/%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/">软件安装</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/gdal/">gdal</a>
             
           </div>
         

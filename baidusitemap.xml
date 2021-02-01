@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.wowtools.org/2021/02/01/2021-02-01-libsvm-java/</loc>
+    <lastmod>2021-02-01</lastmod>
+  </url>
+  <url>
     <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
     <lastmod>2020-12-30</lastmod>
   </url>
