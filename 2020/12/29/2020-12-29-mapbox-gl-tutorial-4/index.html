@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="liuyu">
+  <meta name="keywords" content="">
+  <title>mapbox-gl教程(4):适配国内底图 - 懒惰的芜菁</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"9b0952b597daef8813158f4936f63a00","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>懒惰的芜菁</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mapbox-gl教程(4):适配国内底图">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-29 20:46" pubdate>
+        2020年12月29日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+        <div class="col-lg-8 nopadding-md">
+            <div class="container nopadding-md" id="board-ctn">
+                <div class="py-5" id="board">
+                    <article class="post-content mx-auto">
+                        <!-- SEO header -->
+                        <h1 style="display: none">mapbox-gl教程(4):适配国内底图</h1>
+                        
+                        <div class="markdown-body">
+                            <p>回到背景地图(底图)上来，我们发现，底图上的标注文字大部分都是英文的，这对国内用户很不友好。<br>本章将介绍一些处理方法，同时本章还涉及到一种常见的数据源/图层:栅格瓦片</p>
+<h1 id="方式一-使用mapbox的汉化插件"><a href="#方式一-使用mapbox的汉化插件" class="headerlink" title="方式一 使用mapbox的汉化插件"></a>方式一 使用mapbox的汉化插件</h1><div>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet'/>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'></script>
+    <div id='map1' style='width: 90%; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA';
+        const map1 = new mapboxgl.Map({
+            container: 'map1',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            center: [116.405419, 39.923568],
+            zoom: 11
+        });
+        mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+        var languageControl = new MapboxLanguage({
+            defaultLanguage: 'zh'//设置语言为中文
+        });
+        map1.addControl(languageControl);
+    </script>
+</div>
+
+<p>引入插件</p>
+<figure class="highlight html"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+
+<p>新建汉化Control对象，并添加到map中即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">style</span>: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br>    <span class="hljs-attr">center</span>: [<span class="hljs-number">116.405419</span>, <span class="hljs-number">39.923568</span>],<br>    <span class="hljs-attr">zoom</span>: <span class="hljs-number">11</span><br>&#125;);<br>mapboxgl.setRTLTextPlugin(<span class="hljs-string">'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js'</span>);<br><span class="hljs-keyword">var</span> languageControl = <span class="hljs-keyword">new</span> MapboxLanguage(&#123;<br>    <span class="hljs-attr">defaultLanguage</span>: <span class="hljs-string">'zh'</span><span class="hljs-comment">//设置语言为中文</span><br>&#125;);<br>map.addControl(languageControl);<br></code></pre></div></td></tr></table></figure>
+
+<p>实际用下来，这种方式效果一般，依然有少量的英文标注，而且由于是国外的数据源，POI的密度也比较低。</p>
+<h1 id="方式二-使用国内数据源"><a href="#方式二-使用国内数据源" class="headerlink" title="方式二 使用国内数据源"></a>方式二 使用国内数据源</h1><p><a href="https://www.tianditu.gov.cn/" target="_blank" rel="noopener">国家地理信息公共服务平台“天地图”</a>（以下简称“天地图“）是国家基础地理信息中心建设的网络化地理信息共享与服务门户。<br>天地图提供的背景地图，国家背景、更新及时、地物详细、完全免费、值得信赖。本小节我们就来学习如何将mapbox的背景地图换成天地图的：</p>
+<div>
+    <div id='map' style='width: 90%; height: 300px;'></div>
+    <script>
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: {//为map构造一个空的style
+                "version": 8,
+                "sources": {},
+                "layers": [],
+            },
+            center: [116.405419, 39.923568],
+            zoom: 11
+        });
+        //天地图的token
+        const tiandituToken = 'd12deb9576426df9aff82075b754790a';
+        //下面几组url代表不同的底图，根据需要选用
+        //矢量底图
+        const vecwUrl = 'https://t0.tianditu.gov.cn/vec_w/wmts?' +
+            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
+            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
+        //矢量注记
+        const cvawUrl = 'https://t3.tianditu.gov.cn/cva_w/wmts?' +
+            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
+            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
+        //影像底图
+        const imgUrl = 'https://t6.tianditu.gov.cn/img_w/wmts?' +
+            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
+            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
+        //影像注记
+        const imgwUrl = 'https://t0.tianditu.gov.cn/cia_w/wmts?' +
+            'SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&' +
+            'TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=' + tiandituToken;
+        /**
+         * 向地图中添加一个栅格瓦片图层
+         * @param map
+         * @param url 瓦片url
+         * @param sourceId 数据源id，保证唯一性即可
+         * @param layerId 图层id，保证唯一性即可
+         */
+        function addRasterTileLayer(map, url, sourceId, layerId) {
+            map.addSource(sourceId, {
+                type: 'raster',
+                tiles: [url],
+                tileSize: 256
+            });
+            map.addLayer({
+                id: layerId,
+                type: 'raster',
+                source: sourceId
+            });
+        }
+        map.on('load', function () {
+            //这里选择加载矢量底图及其标注
+            addRasterTileLayer(map, vecwUrl, 'vecw', 'vecw')
+            addRasterTileLayer(map, cvawUrl, 'cvaw', 'cvaw')
+        })
+    </script>
+</div>
+emmm，这下好多了，看下代码：
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">style</span>: &#123;<span class="hljs-comment">//为map构造一个空的style</span><br>        <span class="hljs-string">"version"</span>: <span class="hljs-number">8</span>,<br>        <span class="hljs-string">"sources"</span>: &#123;&#125;,<br>        <span class="hljs-string">"layers"</span>: [],<br>    &#125;,<br>    <span class="hljs-attr">center</span>: [<span class="hljs-number">116.405419</span>, <span class="hljs-number">39.923568</span>],<br>    <span class="hljs-attr">zoom</span>: <span class="hljs-number">11</span><br>&#125;);<br><br><span class="hljs-comment">//天地图的token</span><br><span class="hljs-keyword">const</span> tiandituToken = <span class="hljs-string">'d12deb9576426df9aff82075b754790a'</span>;<br><span class="hljs-comment">/*<br>* 天地图提供了多种背景地图和标注供选择，<br>* 只要从http://lbs.tianditu.gov.cn/server/MapService.html找到对应的url即可<br>* 这里使用了了矢量地图和注记<br>* */</span><br><span class="hljs-comment">//矢量底图</span><br><span class="hljs-keyword">const</span> vecwUrl = <span class="hljs-string">'https://t0.tianditu.gov.cn/vec_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=vec&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br><span class="hljs-comment">//矢量注记</span><br><span class="hljs-keyword">const</span> cvawUrl = <span class="hljs-string">'https://t3.tianditu.gov.cn/cva_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=cva&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br><br><span class="hljs-comment">/**<br> * 向地图中添加一个栅格瓦片图层<br> * @param map<br> * @param url 瓦片url<br> * @param sourceId 数据源id，保证唯一性即可<br> * @param layerId 图层id，保证唯一性即可<br> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addRasterTileLayer</span>(<span class="hljs-params">map, url, sourceId, layerId</span>) </span>&#123;<br>    map.addSource(sourceId, &#123;<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'raster'</span>,<br>        <span class="hljs-attr">tiles</span>: [url],<br>        <span class="hljs-attr">tileSize</span>: <span class="hljs-number">256</span><br>    &#125;);<br>    map.addLayer(&#123;<br>        <span class="hljs-attr">id</span>: layerId,<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'raster'</span>,<br>        <span class="hljs-attr">source</span>: sourceId<br>    &#125;);<br>&#125;<br><br>map.on(<span class="hljs-string">'load'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-comment">//这里选择加载矢量底图及其标注</span><br>    addRasterTileLayer(map,vecwUrl,<span class="hljs-string">'vecw'</span>,<span class="hljs-string">'vecw'</span>)<br>    addRasterTileLayer(map,cvawUrl,<span class="hljs-string">'cvaw'</span>,<span class="hljs-string">'cvaw'</span>)<br>&#125;)<br></code></pre></div></td></tr></table></figure>
+<p>我们先构造了一个空的style，这样map对象里就不含任何数据源和图层，也就是一张空白的地图。<br>然后我们定义了一个<code>addRasterTileLayer</code>函数，用以构建栅格瓦片数据源和图层并添加到地图中。<br>最后再用天地图的瓦片url构造了一个背景图层和一个背景标注图层。</p>
+<h1 id="栅格瓦片简介"><a href="#栅格瓦片简介" class="headerlink" title="栅格瓦片简介"></a>栅格瓦片简介</h1><p>按下F12打开开发者工具，然后滚动几下地图，你会发现mapbox请求了许多256*256的图片：<br><img src="/myimgs/20201229/1.jpg" alt="F12"><br>这些图片就是一个栅格瓦片，多个瓦片拼接完成了背景地图图层的展示。</p>
+<p>再回过头来看下天地图的瓦片url</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">const</span> vecwUrl = <span class="hljs-string">'https://t0.tianditu.gov.cn/vec_w/wmts?'</span> +<br>    <span class="hljs-string">'SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=vec&amp;STYLE=default&amp;TILEMATRIXSET=w&amp;FORMAT=tiles&amp;'</span> +<br>    <span class="hljs-string">'TILECOL=&#123;x&#125;&amp;TILEROW=&#123;y&#125;&amp;TILEMATRIX=&#123;z&#125;&amp;tk='</span> + tiandituToken;<br></code></pre></div></td></tr></table></figure>
+<p>可以看到，url里包含了{z}、{x}、{y}三个参数，事实上，任何瓦片的url都必须包含这三个参数:<br><img src="/myimgs/20201229/2.jpg" alt="ZXY"></p>
+<p>z即当前地图的缩放层级。<br>每个层级上，地球在水平和数值方向上都被切割成了2^z块瓦片，左上角的编号为(0,0)，并由左向右递增x、由上往下递增y。<br>所以，当我们把瓦片url传给mapbox后，mapbox就根据当前地图的层级、经纬度范围，按照这个规则去计算出需要哪些zxy对应的瓦片来填充地图，并发送请求去取图片。</p>
+<p>瓦片图层有哪些好处呢？<br>在服务端，我们可以提前把所有zxy对应的瓦片都预先生成好并存起来(这个过程称为预切片)，这样在运行过程中服务端就几乎没什么计算压力了。<br>而客户端也只需加载视野范围内的瓦片，不用像geojson那样把所有数据都加载过来，压力也少了很多。</p>
+<p>有同学要问了，那服务端传过来的是图片，我们没办法修改它的颜色等样式了呀，是的，所以mapbox又制定了矢量瓦片标准，瓦片里不再是一张jpg，而是压缩过的feature，<br>这样又可以在前端改样式了，矢量瓦片需要涉及一些服务端的知识，我们将在第四部分中详解。</p>
+<p><strong>TIPS:</strong>高德、百度等地图产商也提供了栅格瓦片或矢量瓦片，如有需要，我们也可以把天地图的瓦片换成高德或百度等。<br>但是，按照高德、百度的用户协议，直接调用瓦片是不合规的；而且为了保密，这些瓦片还经过了一些偏移处理，我们需要一些纠偏手段把偏移去掉，这也是不合规的。</p>
+
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="post-metas mb-3">
+                                
+                                    <div class="post-meta mr-3">
+                                        <i class="iconfont icon-category"></i>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                        
+                                    </div>
+                                
+                                
+                                    <div class="post-meta">
+                                        <i class="iconfont icon-tags"></i>
+                                        
+                                            <a class="hover-with-bg" href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+                                        
+                                    </div>
+                                
+                            </div>
+                            
+                                <p class="note note-warning">本文采用 <a
+                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                    https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/ </p>
+                            
+                            <!-- 打赏 -->
+                            <style>
+    .dashang{
+        display: block;
+        width: 56px;
+        margin: auto;
+        height: 56px;
+        line-height: 56px;
+        font-size: 20px;
+        color: #fff;
+        border: none;
+        background: #4094c7;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        -webkit-transition: 0.4s ease-in-out;
+        -webkit-transition: 0.4s ease-in-out;
+        -moz-transition: 0.4s ease-in-out;
+        -ms-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+    }
+    .hide_box {
+        z-index: 40;
+        background: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: none;
+    }
+    .shang_box {
+        width: 540px;
+        height: 450px;
+        padding: 10px;
+        background-color: #3f3f3f;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 41;
+        left: 50%;
+        top: 50%;
+        margin-left: -280px;
+        margin-top: -225px;
+        border: 1px dotted #000;
+        display: none;
+    }
+    .shang_box .shang_close {
+        position: absolute;
+        display: inline-block;
+        font-weight: 200;
+        font-size: 50px;
+        right: 19px;
+        outline: none;
+        text-shadow: none;
+        color: #4094c7;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-transition: color 0.35s;
+        -moz-transition: color 0.35s;
+        -ms-transition: color 0.35s;
+        -o-transition: color 0.35s;
+        transition: color 0.35s;
+    }
+    .shang_box .shang_tit {
+        width: 100%;
+        font-family: Roboto, "Roboto", serif;
+        height: 75px;
+        text-align: center;
+        line-height: 66px;
+        color: #fff;
+        font-size: 30px;
+        margin-top: 7px;
+        margin-right: 2px;
+    }
+    .shang_box .shang_payimg {
+        width: 255px;
+        height: 255px;
+        padding: 10px;
+        border: 6px solid #4094c7;
+        margin: 0 auto;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .shang_box .shang_payimg .pay_img {
+        width: 535px;
+        vertical-align: middle;
+        transition: margin-left 0.5s;
+    }
+    .shang_box .shang_payimg .pay_img img {
+        width: 225px;
+        width: 225px;
+        height: 100%;
+        margin: 0;
+        color: #283444;
+        font: 400 16px/1 "Open Sans", "Hiragino Sans GB", sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: none;
+        overflow: hidden;
+    }
+    .shang_box .shang_payselect {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20px;
+        height: 60px;
+        width: 320px;
+    }
+</style>
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>请作者喝杯咖啡</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg"
+                 class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg"
+                 class="weixin" title="扫码支持" style="display: none;">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input
+                        type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+<a  class="dashang" onclick="dashangToggle()">赏</a>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    $("input[name=pay]").on("click", function () {
+        console.log('click',$("input[name=pay]:checked").val())
+        $(".alipay").fadeToggle();
+        $(".weixin").fadeToggle();
+    })
+</script>
+
+                            <!-- end打赏 -->
+                            
+                                <div class="post-prevnext row">
+                                    <article class="post-prev col-6">
+                                        
+                                        
+                                            <a href="/2021/02/01/2021-02-01-libsvm-java/">
+                                                <i class="iconfont icon-arrowleft"></i>
+                                                <span class="hidden-mobile">用libsvm-java做数据分类</span>
+                                                <span class="visible-mobile">上一篇</span>
+                                            </a>
+                                        
+                                    </article>
+                                    <article class="post-next col-6">
+                                        
+                                        
+                                            <a href="/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/">
+                                                <span class="hidden-mobile">mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)</span>
+                                                <span class="visible-mobile">下一篇</span>
+                                                <i class="iconfont icon-arrowright"></i>
+                                            </a>
+                                        
+                                    </article>
+                                </div>
+                            
+                        </div>
+
+                        
+                            <!-- Comments -->
+                            <article class="comments" id="comments">
+                                
+                                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: '7827a2a274092d600318',
+          clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
+          repo: 'gitalkissue',
+          owner: 'codingmiao',
+          admin: ["codingmiao"],
+          id: '8cea178edd176e4eb9d0cf0abf556395',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+                            </article>
+                        
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+            <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+                <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

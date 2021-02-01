@@ -1,0 +1,857 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="liuyu">
+  <meta name="keywords" content="">
+  <title>mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下) - 懒惰的芜菁</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"9b0952b597daef8813158f4936f63a00","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>懒惰的芜菁</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-28 20:46" pubdate>
+        2020年12月28日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+        <div class="col-lg-8 nopadding-md">
+            <div class="container nopadding-md" id="board-ctn">
+                <div class="py-5" id="board">
+                    <article class="post-content mx-auto">
+                        <!-- SEO header -->
+                        <h1 style="display: none">mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)</h1>
+                        
+                        <div class="markdown-body">
+                            <h1 id="示例的详细说明"><a href="#示例的详细说明" class="headerlink" title="示例的详细说明"></a>示例的详细说明</h1><p>我们先简单回顾一下<a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">上一章</a>的demo：<br>要想展示自定义数据，我们需要先把数据做成数据源添加到map对象里，然后再新建一个图层指定样式和数据源添加到map。<br>所以在示例中，我们用构造了包含两个点的<strong>geojson</strong>数据源，然后构造了一个半径为20像素的红点<strong>样式</strong>，就完成了数据的展现工作。</p>
+<p>接下来，我们详细了解一下geojson和样式的结构</p>
+<h2 id="geojson"><a href="#geojson" class="headerlink" title="geojson"></a>geojson</h2><p><a href="https://tools.ietf.org/html/rfc7946" target="_blank" rel="noopener">这个网页</a>详细介绍了geojson的标准；<br><a href="https://www.oschina.net/translate/geojson-spec" target="_blank" rel="noopener">这个网页</a>对geojson标准进行了翻译。<br>总之很详细很复杂就是了。我们的应用中一般不需要这么复杂，所以这里对mapbox里geojson数据源的常用属性进行说明：</p>
+<h3 id="要素容器-FeatureCollection"><a href="#要素容器-FeatureCollection" class="headerlink" title="要素容器(FeatureCollection)"></a>要素容器(FeatureCollection)</h3><p>mapbox的geojson数据源，data部分要传入一个FeatureCollection，格式如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,<br>    <span class="hljs-attr">"features"</span>: [<br>      ...<span class="hljs-comment">//这里放要素</span><br>    ]<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>很简单，就是留出一个数组来放要素</p>
+<h3 id="要素"><a href="#要素" class="headerlink" title="要素"></a>要素</h3><p>要素包含了形状(geometry)和属性(properties)</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Feature"</span>,<br>    <span class="hljs-attr">"geometry"</span>: ...<span class="hljs-comment">//这里放形状json,</span><br>    <span class="hljs-string">"properties"</span>: ...<span class="hljs-comment">//这里放属性</span><br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>属性就是一个key-value格式的json,如<code>{name:&quot;张三&quot;,age:25}</code></p>
+<p>形状则根据其类型的不同有不同的格式，这里介绍一下常见的点、线、面三种类型：</p>
+<h4 id="点形状-point"><a href="#点形状-point" class="headerlink" title="点形状(point)"></a>点形状(point)</h4><p>在coordinates属性中放了一个长度为2的数组存放经纬度</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>	<span class="hljs-attr">"type"</span>: <span class="hljs-string">"Point"</span>,<br>	<span class="hljs-attr">"coordinates"</span>: [<span class="hljs-number">102.0</span>, <span class="hljs-number">0.5</span>]<span class="hljs-comment">//经纬度</span><br>&#125;<br></code></pre></div></td></tr></table></figure>
+<h4 id="线形状-LineString"><a href="#线形状-LineString" class="headerlink" title="线形状(LineString)"></a>线形状(LineString)</h4><p>在coordinates属性中放了一组经纬度坐标存放线上每个点的经纬度</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>	<span class="hljs-attr">"type"</span>: <span class="hljs-string">"LineString"</span>,<br>	<span class="hljs-attr">"coordinates"</span>: [<br>		[<span class="hljs-number">102.0</span>, <span class="hljs-number">0.0</span>],<br>		[<span class="hljs-number">103.0</span>, <span class="hljs-number">1.0</span>],<br>		[<span class="hljs-number">104.0</span>, <span class="hljs-number">0.0</span>],<br>		[<span class="hljs-number">105.0</span>, <span class="hljs-number">1.0</span>]<br>	]<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<h4 id="面形状-Polygon"><a href="#面形状-Polygon" class="headerlink" title="面形状(Polygon)"></a>面形状(Polygon)</h4><p>在coordinates属性中放了一组经纬度坐标存面线上每个点的经纬度</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"Polygon"</span>,<br>  <span class="hljs-attr">"coordinates"</span>: [<br>    [<br>      [<span class="hljs-number">100.0</span>, <span class="hljs-number">0.0</span>],<br>      [<span class="hljs-number">101.0</span>, <span class="hljs-number">0.0</span>],<br>      [<span class="hljs-number">101.0</span>, <span class="hljs-number">1.0</span>],<br>      [<span class="hljs-number">100.0</span>, <span class="hljs-number">1.0</span>],<br>      [<span class="hljs-number">100.0</span>, <span class="hljs-number">0.0</span>]<br>    ]<br>  ]<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>注意，coordinates必须形成一个环，也就是第一个坐标必须与最后一个坐标必须相同；<br>Polygon的coordinates比LineString的coordinates多了一层括号，这是因为面可能由多个环组成，可以想象一下铜钱，它由一个外圈的圆和内圈的正方形构成；<br>多个环的Polygon还要注意坐标的顺时针或逆时针顺序，一个环的话就随意了。</p>
+<h2 id="图层与样式"><a href="#图层与样式" class="headerlink" title="图层与样式"></a>图层与样式</h2><p>mapbox有很多种类型，每种类型的图层又配有对应的样式属性，一个标准的图层json格式如下:</p>
+<figure class="highlight json"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">"id"</span>: <span class="hljs-string">"lightLinelayer"</span>,<span class="hljs-comment">//图层id</span><br>  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"line"</span>,<span class="hljs-comment">//图层类型</span><br>  <span class="hljs-attr">"source"</span>: <span class="hljs-string">"lightSource"</span>,<span class="hljs-comment">//数据源id</span><br>  <span class="hljs-attr">"layout"</span>: &#123;<span class="hljs-comment">//样式的布局属性</span><br>    <span class="hljs-attr">"line-join"</span>: <span class="hljs-string">"round"</span>,<br>    <span class="hljs-attr">"line-cap"</span>: <span class="hljs-string">"round"</span><br>  &#125;,<br>  <span class="hljs-attr">"paint"</span>: &#123;<span class="hljs-comment">//样式的绘制属性</span><br>    <span class="hljs-attr">"line-color"</span>: <span class="hljs-string">"#00FFFF"</span>,<br>    <span class="hljs-attr">"line-width"</span>: <span class="hljs-number">5</span><br>  &#125;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+
+<p>样式的信息散落在布局属性(layout)和绘制属性(paint)中，从人类的思维上，layout和paint并没有明显的区分，例如线宽(line-width)和线端点(line-cap)都是对线型的描述，但却分别落在了paint和layout中，<br>官方对二者的差异如下解释:</p>
+<blockquote>
+<p>Layout properties appear in the layer’s “layout” object. They are applied early in the rendering process and define how data for that layer is passed to the GPU. Changes to a layout property require an asynchronous “layout” step.<br>布局属性出现在图层的“layout”对象中。它们在渲染过程的早期应用，并定义该层的数据如何传递给GPU。对布局属性的更改需要一个异步的“布局”过程。<br>Paint properties are applied later in the rendering process. Paint properties appear in the layer’s”paint” object. Changes to a paint property are cheap and happen synchronously.<br>绘制属性稍后在呈现过程中应用。绘制属性出现在图层的“paint”对象中。更改绘制属性的性能很高，并且是同步的。</p>
+</blockquote>
+<p>也就是说二者的差异体现在渲染的机制不同，所以，具体每种图层有哪些样式属性，是layout还是paint，需要查阅<a href="https://www.mapbox.cn/mapbox-gl-js/style-spec/#layers" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="数据和样式的修改"><a href="#数据和样式的修改" class="headerlink" title="数据和样式的修改"></a>数据和样式的修改</h2><p>下面对例子作一下扩充，我们看一下如何改变样式和数据</p>
+<h3 id="修改样式"><a href="#修改样式" class="headerlink" title="修改样式"></a>修改样式</h3><p><code>map.setLayoutProperty</code>和<code>map.setPaintProperty</code>函数可以设置图层的布局属性和绘制属性，这个例子演示了把点的颜色来回切换：</p>
+<div>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet'/>
+    <div id='map' style='width: 90%; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            center: [116.405419, 39.923568],
+            zoom: 11
+        });
+        map.on('load', function () {
+            const mySource = {
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [116.338728, 39.913385]
+                            },
+                            "properties": {
+                                "name": "点1",
+                            }
+                        },
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [116.405419, 39.923568]
+                            },
+                            "properties": {
+                                "name": "点1",
+                                "type": "测试类型"
+                            }
+                        }
+                    ]
+                }
+            };
+            map.addSource('source1', mySource);
+            let currentColor = "#FF0000";
+            map.addLayer({
+                "id": "testLayer",
+                "source": 'source1',
+                "type": "circle",
+                "paint": {
+                    "circle-color": currentColor,
+                    "circle-radius": 20
+                }
+            });
+            setInterval(function (){
+                if("#FF0000"==currentColor){
+                    currentColor = "#0000FF"
+                }else {
+                    currentColor = "#FF0000"
+                }
+                map.setPaintProperty('testLayer',"circle-color",currentColor)
+            },1000)
+        });
+    </script>
+</div>
+
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">let</span> currentColor = <span class="hljs-string">"#FF0000"</span><br>map.addLayer(&#123;<br>    <span class="hljs-string">"id"</span>: <span class="hljs-string">"testLayer"</span>,<br>    <span class="hljs-string">"source"</span>: <span class="hljs-string">'source1'</span>,<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"circle"</span>,<br>    <span class="hljs-string">"paint"</span>: &#123;<br>        <span class="hljs-string">"circle-color"</span>: currentColor,<br>        <span class="hljs-string">"circle-radius"</span>: <span class="hljs-number">20</span><br>    &#125;<br>&#125;);<br><span class="hljs-comment">//启动一个定时器定期修改颜色</span><br>setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)</span>&#123;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-string">"#FF0000"</span>==currentColor)&#123;<br>        currentColor = <span class="hljs-string">"#0000FF"</span><br>    &#125;<span class="hljs-keyword">else</span> &#123;<br>        currentColor = <span class="hljs-string">"#FF0000"</span><br>    &#125;<br>    <span class="hljs-comment">//三个参数分别是图层id、属性名、属性值</span><br>    map.setPaintProperty(<span class="hljs-string">'testLayer'</span>,<span class="hljs-string">"circle-color"</span>,currentColor)<br>&#125;,<span class="hljs-number">1000</span>)<br></code></pre></div></td></tr></table></figure>
+
+<h3 id="修改数据"><a href="#修改数据" class="headerlink" title="修改数据"></a>修改数据</h3><p><code>map.getSource(&#39;sourceId&#39;).setData</code>函数可以修改数据源内容，这个例子演示了修改坐标信息使红点水平移动：</p>
+<div>
+    <div id='map1' style='width: 90%; height: 300px;'></div>
+    <script>
+        const map1 = new mapboxgl.Map({
+            container: 'map1',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            center: [116.405419, 39.923568],
+            zoom: 11
+        });
+        map1.on('load', function () {
+            const mySource = {
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [116.338728, 39.913385]
+                            },
+                            "properties": {
+                                "name": "点1",
+                            }
+                        }
+                    ]
+                }
+            };
+            map1.addSource('source1', mySource);
+            map1.addLayer({
+                "id": "testLayer",
+                "source": 'source1',
+                "type": "circle",
+                "paint": {
+                    "circle-color": "#FF0000",
+                    "circle-radius": 20
+                }
+            });
+            const xmin = 116.338728, xmax = 116.405419, step = 0.0001;
+            const source1 = map1.getSource('source1');
+            let currentX = xmin;
+            //启动一个定时器定期修改颜色
+            setInterval(function () {
+                currentX += step
+                if (currentX > xmax) {
+                    currentX = xmin;
+                }
+                source1.setData(
+                    {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [currentX, 39.913385]
+                                },
+                                "properties": {
+                                    "name": "点1",
+                                }
+                            }
+                        ]
+                    }
+                );
+            }, 10)
+        });
+    </script>
+</div>
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">const</span> mySource = &#123;<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"geojson"</span>,<br>    <span class="hljs-string">"data"</span>: &#123;<br>        <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,<br>        <span class="hljs-string">"features"</span>: [<br>            &#123;<br>                <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,<br>                <span class="hljs-string">"geometry"</span>: &#123;<br>                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,<br>                    <span class="hljs-string">"coordinates"</span>: [<span class="hljs-number">116.338728</span>, <span class="hljs-number">39.913385</span>]<br>                &#125;,<br>                <span class="hljs-string">"properties"</span>: &#123;<br>                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"点1"</span>,<br>                &#125;<br>            &#125;<br>        ]<br>    &#125;<br>&#125;<br>map.addSource(<span class="hljs-string">'source1'</span>, mySource)<br>map.addLayer(&#123;<br>    <span class="hljs-string">"id"</span>: <span class="hljs-string">"testLayer"</span>,<br>    <span class="hljs-string">"source"</span>: <span class="hljs-string">'source1'</span>,<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"circle"</span>,<br>    <span class="hljs-string">"paint"</span>: &#123;<br>        <span class="hljs-string">"circle-color"</span>: <span class="hljs-string">"#FF0000"</span>,<br>        <span class="hljs-string">"circle-radius"</span>: <span class="hljs-number">20</span><br>    &#125;<br>&#125;);<br><span class="hljs-keyword">const</span> xmin = <span class="hljs-number">116.338728</span>, xmax = <span class="hljs-number">116.405419</span>, step = <span class="hljs-number">0.0001</span><br><span class="hljs-keyword">let</span> currentX = xmin;<br><span class="hljs-keyword">const</span> source1 = map.getSource(<span class="hljs-string">'source1'</span>);<br><span class="hljs-comment">//启动一个定时器定期修改颜色</span><br>setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>    currentX += step<br>    <span class="hljs-keyword">if</span> (currentX &gt; xmax) &#123;<br>        currentX = xmin;<br>    &#125;<br>    source1.setData(<br>        &#123;<br>            <span class="hljs-string">"type"</span>: <span class="hljs-string">"FeatureCollection"</span>,<br>            <span class="hljs-string">"features"</span>: [<br>                &#123;<br>                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Feature"</span>,<br>                    <span class="hljs-string">"geometry"</span>: &#123;<br>                        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,<br>                        <span class="hljs-string">"coordinates"</span>: [currentX, <span class="hljs-number">39.913385</span>]<br>                    &#125;,<br>                    <span class="hljs-string">"properties"</span>: &#123;<br>                        <span class="hljs-string">"name"</span>: <span class="hljs-string">"点1"</span>,<br>                    &#125;<br>                &#125;<br>            ]<br>        &#125;<br>    );<br>&#125;, <span class="hljs-number">10</span>)<br></code></pre></div></td></tr></table></figure>
+<p>这里使用了定时器来刷新坐标，mapbox还支持<code>requestAnimationFrame</code>函数按帧来刷新，使得运动更流畅，可以看<a href="https://www.mapbox.cn/mapbox-gl-js/example/animate-point-along-line/" target="_blank" rel="noopener">这个例子</a></p>
+<h2 id="geojson数据源的缺陷"><a href="#geojson数据源的缺陷" class="headerlink" title="geojson数据源的缺陷"></a>geojson数据源的缺陷</h2><p>你一定注意到了本章的标题“添加自定义数据（小数据量的方式）”，为什么要加小数据量这个限制呢？<br>试想，假如我们有一张数百万条数据的表，把这些数据全转为geojson再丢给mapbox渲染，那对服务端、网络、浏览器都将造成极大的压力。<br>而且即使电脑性能极佳能够撑住，显示器和人眼的分辨率有限，也无法将这些点分辨出来。</p>
+<p>所以、gis专家们提出了分层、切片等解决方法，制定了多种数据源以适应大数据量的展示，在本教程的第四部分会详细涉及。</p>
+<p>geojson的方式能够支撑大约一万个点的展示，在第四部分之前，我们依然将以geojson为主进行讲解。</p>
+
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="post-metas mb-3">
+                                
+                                    <div class="post-meta mr-3">
+                                        <i class="iconfont icon-category"></i>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                        
+                                    </div>
+                                
+                                
+                                    <div class="post-meta">
+                                        <i class="iconfont icon-tags"></i>
+                                        
+                                            <a class="hover-with-bg" href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+                                        
+                                    </div>
+                                
+                            </div>
+                            
+                                <p class="note note-warning">本文采用 <a
+                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                    https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/ </p>
+                            
+                            <!-- 打赏 -->
+                            <style>
+    .dashang{
+        display: block;
+        width: 56px;
+        margin: auto;
+        height: 56px;
+        line-height: 56px;
+        font-size: 20px;
+        color: #fff;
+        border: none;
+        background: #4094c7;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        -webkit-transition: 0.4s ease-in-out;
+        -webkit-transition: 0.4s ease-in-out;
+        -moz-transition: 0.4s ease-in-out;
+        -ms-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+    }
+    .hide_box {
+        z-index: 40;
+        background: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: none;
+    }
+    .shang_box {
+        width: 540px;
+        height: 450px;
+        padding: 10px;
+        background-color: #3f3f3f;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 41;
+        left: 50%;
+        top: 50%;
+        margin-left: -280px;
+        margin-top: -225px;
+        border: 1px dotted #000;
+        display: none;
+    }
+    .shang_box .shang_close {
+        position: absolute;
+        display: inline-block;
+        font-weight: 200;
+        font-size: 50px;
+        right: 19px;
+        outline: none;
+        text-shadow: none;
+        color: #4094c7;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-transition: color 0.35s;
+        -moz-transition: color 0.35s;
+        -ms-transition: color 0.35s;
+        -o-transition: color 0.35s;
+        transition: color 0.35s;
+    }
+    .shang_box .shang_tit {
+        width: 100%;
+        font-family: Roboto, "Roboto", serif;
+        height: 75px;
+        text-align: center;
+        line-height: 66px;
+        color: #fff;
+        font-size: 30px;
+        margin-top: 7px;
+        margin-right: 2px;
+    }
+    .shang_box .shang_payimg {
+        width: 255px;
+        height: 255px;
+        padding: 10px;
+        border: 6px solid #4094c7;
+        margin: 0 auto;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .shang_box .shang_payimg .pay_img {
+        width: 535px;
+        vertical-align: middle;
+        transition: margin-left 0.5s;
+    }
+    .shang_box .shang_payimg .pay_img img {
+        width: 225px;
+        width: 225px;
+        height: 100%;
+        margin: 0;
+        color: #283444;
+        font: 400 16px/1 "Open Sans", "Hiragino Sans GB", sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: none;
+        overflow: hidden;
+    }
+    .shang_box .shang_payselect {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20px;
+        height: 60px;
+        width: 320px;
+    }
+</style>
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>请作者喝杯咖啡</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg"
+                 class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg"
+                 class="weixin" title="扫码支持" style="display: none;">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input
+                        type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+<a  class="dashang" onclick="dashangToggle()">赏</a>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    $("input[name=pay]").on("click", function () {
+        console.log('click',$("input[name=pay]:checked").val())
+        $(".alipay").fadeToggle();
+        $(".weixin").fadeToggle();
+    })
+</script>
+
+                            <!-- end打赏 -->
+                            
+                                <div class="post-prevnext row">
+                                    <article class="post-prev col-6">
+                                        
+                                        
+                                            <a href="/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/">
+                                                <i class="iconfont icon-arrowleft"></i>
+                                                <span class="hidden-mobile">mapbox-gl教程(4):适配国内底图</span>
+                                                <span class="visible-mobile">上一篇</span>
+                                            </a>
+                                        
+                                    </article>
+                                    <article class="post-next col-6">
+                                        
+                                        
+                                            <a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">
+                                                <span class="hidden-mobile">mapbox-gl教程(2):添加自定义数据（小数据量的方式）(上)</span>
+                                                <span class="visible-mobile">下一篇</span>
+                                                <i class="iconfont icon-arrowright"></i>
+                                            </a>
+                                        
+                                    </article>
+                                </div>
+                            
+                        </div>
+
+                        
+                            <!-- Comments -->
+                            <article class="comments" id="comments">
+                                
+                                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: '7827a2a274092d600318',
+          clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
+          repo: 'gitalkissue',
+          owner: 'codingmiao',
+          admin: ["codingmiao"],
+          id: 'b1cc1b43475e9447f796238020a89707',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+                            </article>
+                        
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+            <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+                <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

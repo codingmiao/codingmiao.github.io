@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="liuyu">
+  <meta name="keywords" content="">
+  <title>mapbox-gl教程(1):初识mapboxgl - 懒惰的芜菁</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"9b0952b597daef8813158f4936f63a00","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>懒惰的芜菁</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mapbox-gl教程(1):初识mapboxgl">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-21 20:46" pubdate>
+        2020年12月21日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+        <div class="col-lg-8 nopadding-md">
+            <div class="container nopadding-md" id="board-ctn">
+                <div class="py-5" id="board">
+                    <article class="post-content mx-auto">
+                        <!-- SEO header -->
+                        <h1 style="display: none">mapbox-gl教程(1):初识mapboxgl</h1>
+                        
+                        <div class="markdown-body">
+                            <h1 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h1><p>我们先来编写一个hello world，并看看效果：</p>
+<div>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <div id='map' style='width: 90%; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            center: [116.403119,39.925338],
+            zoom: 9
+        });
+    </script>
+</div>
+
+<p>代码如下（html、body之类的标签就省略了哈）：</p>
+<figure class="highlight html"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css'</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">'stylesheet'</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 90%; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript"><br>    mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br>    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>        container: <span class="hljs-string">'map'</span>,<br>        style: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br>        center: [<span class="hljs-number">116.403119</span>,<span class="hljs-number">39.925338</span>],<br>        zoom: <span class="hljs-number">9</span><br>    &#125;);<br></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+<p>逐行解释一下：</p>
+<p>第一步，引入mapbox的js和css</p>
+<figure class="highlight html"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">'https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css'</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">'stylesheet'</span> /&gt;</span><br></code></pre></div></td></tr></table></figure>
+
+<p>第二步，写一个div来展现地图，给它指定id</p>
+<figure class="highlight html"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 90%; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+
+<p>第三步，mapbox设置一个token才能获取它官方发布的地图，这里用了一个公开的token，你也可以去<a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener">这里</a>自己申请一个</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiY2hlbnNodXNodSIsImEiOiJjazNvM3A2MjkwMDJjM2VzNHhiMXppdjZwIn0.JvnD0CzpAYeqFRGQn8fClA'</span>;<br></code></pre></div></td></tr></table></figure>
+
+<p>接下来就是传入参数来构造map对象了:</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js"><span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>    <span class="hljs-attr">container</span>: <span class="hljs-string">'map'</span>,<br>    <span class="hljs-attr">center</span>: [<span class="hljs-number">116.403119</span>,<span class="hljs-number">39.925338</span>],<br>    <span class="hljs-attr">zoom</span>: <span class="hljs-number">9</span>,<br>    <span class="hljs-attr">style</span>: <span class="hljs-string">'mapbox://styles/mapbox/streets-v9'</span>,<br><br>&#125;);<br></code></pre></div></td></tr></table></figure>
+<p>各参数说明如下:</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>container</td>
+<td>将地图在指定的dom中展示，这里展示在我们刚才写的id为”map”的div里</td>
+</tr>
+<tr>
+<td>center</td>
+<td>地图初始化时的中心坐标，如果你不知道你要展示的位置的坐标，可以从<a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank" rel="noopener">这里</a>点选获取</td>
+</tr>
+<tr>
+<td>zoom</td>
+<td>地图初始化时的缩放等级，越大则越比例尺越大</td>
+</tr>
+<tr>
+<td>style</td>
+<td>地图样式，详见下面的描述</td>
+</tr>
+</tbody></table>
+<h2 id="style"><a href="#style" class="headerlink" title="style"></a>style</h2><p>mapbox的style是一个比较奇怪的概念，与arcgis、openlayers等产品中的样式有很大的不同，它实际上是数据源、图层、样式等信息的汇总。<br>我们后面再详细地学习它，这里我们只需知道它是一个url或者json，配置了地图展现相关的重要信息。所以，配置不同的style会在地图上展现出不同的数据和式样。</p>
+<p>本节中我们仅学习通过url来展现mapbox官方提供的背景地图。</p>
+<p>下面列出了几种常用的style id，你可以预览并选择一个你喜欢的id，然后用’mapbox://styles/mapbox/‘+id来配置它们</p>
+<div>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'></script>
+    <div id="menu">
+        <input id="streets-v9" type="radio" name="rtoggle" value="streets" checked="checked"/><label>streets-v9</label>&nbsp;
+        <input id="outdoors-v10" type="radio" name="rtoggle" value="light" /><label>outdoors-v10</label>&nbsp;
+        <input id="dark-v9" type="radio" name="rtoggle" value="light" /><label>dark-v9</label>&nbsp;
+        <input id="light-v9" type="radio" name="rtoggle" value="light" /><label>light-v9</label>&nbsp;
+        <input id="satellite-streets-v9" type="radio" name="rtoggle" value="light" /><label>satellite-streets-v9</label>&nbsp;
+        <input id="traffic-day-v2" type="radio" name="rtoggle" value="light" /><label>traffic-day-v2</label>&nbsp;
+        <input id="traffic-night-v2" type="radio" name="rtoggle" value="light" /><label>traffic-night-v2</label>&nbsp;
+    </div>
+    <div id='map1' style='width: 90%; height: 300px;'></div>
+    <script>
+        var map1 = new mapboxgl.Map({
+            container: 'map1',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            center: [116.403119,39.925338],
+            zoom: 9
+        });
+        mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+        var languageControl = new MapboxLanguage({
+            defaultLanguage: 'zh'
+        });
+        map1.addControl(languageControl);
+        var layerList = document.getElementById('menu');
+        var inputs = layerList.getElementsByTagName('input');
+        function switchLayer(layer) {
+            var layerId = layer.target.id;
+            map1.setStyle('mapbox://styles/mapbox/' + layerId);
+            map1.removeControl(languageControl);
+            map1.addControl(languageControl);
+        }
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].onclick = switchLayer;
+        }
+    </script>
+</div>
+<br/>
+
+<p>更多的样式，你可以从<a href="https://www.mapbox.com/gallery/" target="_blank" rel="noopener">这里找到</a>，然后申请一个token并点击“Expoler”-&gt;“Add Decimal  to your account”将其复制到你的token下来使用</p>
+<p>当然，这种style的设置方式虽然便捷，但是太不灵活了，后续的章节中我们将使用自定义json来配置它</p>
+<h1 id="mapbox-gl的优势和劣势"><a href="#mapbox-gl的优势和劣势" class="headerlink" title="mapbox-gl的优势和劣势"></a>mapbox-gl的优势和劣势</h1><p>如果你用过openlayers、leaflet或是arcgis js，你会发现mapbox-gl构建map对象的语法和它们很相像。事实上，如果我们想做一个web端的二维gis应用，这几款框架也是仅有的比较靠谱的选择。</p>
+<p>arcgis js作为esri的产品，功能强大稳定，而且它是require风格编写的，按需加载的机制使我们不用担心文件体积爆炸。但一个很致命的问题是，它不开源，使得深度调试和扩展很是麻烦。</p>
+<p>leaflet的优势是轻量级和对ie等浏览器的良好兼容，如果你需要兼容ie或是做一些轻量级、小数据量的开发，leaflet是不错的选择。</p>
+<p>openlayers是对面向对象开发人员非常友好的一个框架，map、layer、feature、geometry的分层非常清晰，写起来非常的OOP，如果有很复杂的前端逻辑，openlayers写出来的代码比其它几个都容易维护。<br>缺点是性能一般，而且对于一些新技术有少量奇怪的bug，比如矢量瓦片绘制跨瓦片的点绘制不完整。</p>
+<p>还有一类是运营商开发的框架，比如百度和高德，这类框架优势是方便且中文文档丰富。但是必须接公网、不开源、定制性差等问题，使得我们在需要开发强业务功能时几乎不会去考虑它。</p>
+<p>那么，mapbox有哪些优劣呢？最大的优劣都来源于：<strong>mapbox-gl是基于webgl开发的</strong>。</p>
+<p>👍<strong>高性能</strong> 用js进行数据基本处理，然后就丢给webgl去渲染了，所以性能非常强悍。以我的破笔记本来测试geojson点图层的加载，<br>openlayers加载一千个点左右就开始卡顿了，而mapbox可以支撑两万个点左右。如果用mapbox的webgl接口来操作，甚至可以支撑到百万级。</p>
+<p>👍<strong>可视化效果丰富</strong> mapbox-gl开放了webgl的操作接口，这使得我们可以直接用gl对象或是将gl对象丢给Three.js等框架，从而做出炫酷的效果。</p>
+<p>👎<strong>代码层级不够清晰</strong> 但基于webgl开发，造成了数据与渲染的高度分离，使得mapbox的代码层次不是很清晰，甚至于根本就没有feature和geometry（而是用json去代替），不是很容易维护，后面的章节中我们会体会到这点。<br>所以开发之前，你应该充分设计代码结构以防止后期的混乱（当然，openlayers虽然层次清晰，但不好好设计依然会混乱，只是比mapbox容易维护一些）。</p>
+<p>👎<strong>兼容性不高</strong> 在IE上完全无法展示，但微软自己都把IE丢掉了，除了应付守旧的用户，这条也不是大问题。</p>
+<p>了解了以上优劣，相信你会对你的的项目是否该使用mapbox有自己的判断。</p>
+<h1 id="本教程计划章节"><a href="#本教程计划章节" class="headerlink" title="本教程计划章节"></a>本教程计划章节</h1><p>本教程将按以下章节，逐步介绍和学习mapbox（啊，这坑好大，慢慢施工<del>~</del>）</p>
+<h2 id="第一部分-简介"><a href="#第一部分-简介" class="headerlink" title="第一部分 简介"></a>第一部分 简介</h2><p>这部分我们先编写一个hello world，介绍mapbox的基本情况，并与其它前端地图框架做比较，以帮助你快速选型和上手</p>
+<p><a href="/2020/12/21/2020-12-21-mapbox-gl-tutorial-1">mapbox-gl教程(1):初识mapboxgl</a></p>
+<h2 id="第二部分-简单的数据加载与展现"><a href="#第二部分-简单的数据加载与展现" class="headerlink" title="第二部分 简单的数据加载与展现"></a>第二部分 简单的数据加载与展现</h2><p>完成了hello world，我们就可以在此基础上展现我们自己的数据，从而实现实际的业务功能了</p>
+<p><a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2">mapbox-gl教程(2):添加自定义数据（小数据量的方式）(上)</a><br>介绍如何将自定义数据添加到地图上，并按我们需要的样式进行展现</p>
+<p><a href="/2020/12/28/2020-12-28-mapbox-gl-tutorial-3"> mapbox-gl教程(3):添加自定义数据（小数据量的方式）(下)</a><br>详细介绍geojson数据源</p>
+<p><a href="/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/">mapbox-gl教程(4):适配国内底图</a><br>mapbox官方的底图对国内用户并不是很友好，这里介绍一些适配方式，适配过程中我们将接触到一种新的数据源:栅格瓦片</p>
+<h2 id="第三部分-地图交互"><a href="#第三部分-地图交互" class="headerlink" title="第三部分 地图交互"></a>第三部分 地图交互</h2><p>完成了数据加载后，接下来我们将学习如何与地图进行交互</p>
+<p><a href="#本教程简介">(施工中) mapbox-gl教程(5):常见事件与组件</a></p>
+<p><a href="#本教程简介">(施工中) mapbox-gl教程(6):通过第三方组件扩展的效果</a></p>
+<h2 id="第四部分-数据与图层"><a href="#第四部分-数据与图层" class="headerlink" title="第四部分 数据与图层"></a>第四部分 数据与图层</h2><p>第二部分已经介绍了如何加载官方地图和自定义数据，然而很多情况下这并不能满足我们的需求。</p>
+<p>例如，在内网环境下我们无法使用官网的底图，那我们需要自己发布和加载内网底图来替换它。</p>
+<p>又如，数据量很大时，用第二部分介绍的添加geojson图层的方式会使得浏览器卡死，此时我们需要一些更高效的方法。</p>
+<p>或是需要高级特效的场景，我们需要使用mapbox的webgl接口来扩展自定义图层。</p>
+<p>这些例子中我们发现，要把gis功能做精，往往是需要前后端技术密切配合的，所以如果你是一位纯前端/后端，有些内容看起来会比较吃力，<br>你需要补习一下相关知识，或者找一位后端/前端来帮助你。</p>
+<p><a href="#本教程简介">(施工中) mapbox-gl教程(7):栅格瓦片图层的发布与使用</a></p>
+<p><a href="#本教程简介">(施工中) mapbox-gl教程(8):矢量瓦片图层的发布与使用</a></p>
+<p><a href="#本教程简介">(施工中) mapbox-gl教程(9):使用webgl接口扩展展现效果</a></p>
+
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="post-metas mb-3">
+                                
+                                    <div class="post-meta mr-3">
+                                        <i class="iconfont icon-category"></i>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                        
+                                    </div>
+                                
+                                
+                                    <div class="post-meta">
+                                        <i class="iconfont icon-tags"></i>
+                                        
+                                            <a class="hover-with-bg" href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+                                        
+                                    </div>
+                                
+                            </div>
+                            
+                                <p class="note note-warning">本文采用 <a
+                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                    https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/ </p>
+                            
+                            <!-- 打赏 -->
+                            <style>
+    .dashang{
+        display: block;
+        width: 56px;
+        margin: auto;
+        height: 56px;
+        line-height: 56px;
+        font-size: 20px;
+        color: #fff;
+        border: none;
+        background: #4094c7;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        -webkit-transition: 0.4s ease-in-out;
+        -webkit-transition: 0.4s ease-in-out;
+        -moz-transition: 0.4s ease-in-out;
+        -ms-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+    }
+    .hide_box {
+        z-index: 40;
+        background: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: none;
+    }
+    .shang_box {
+        width: 540px;
+        height: 450px;
+        padding: 10px;
+        background-color: #3f3f3f;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 41;
+        left: 50%;
+        top: 50%;
+        margin-left: -280px;
+        margin-top: -225px;
+        border: 1px dotted #000;
+        display: none;
+    }
+    .shang_box .shang_close {
+        position: absolute;
+        display: inline-block;
+        font-weight: 200;
+        font-size: 50px;
+        right: 19px;
+        outline: none;
+        text-shadow: none;
+        color: #4094c7;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-transition: color 0.35s;
+        -moz-transition: color 0.35s;
+        -ms-transition: color 0.35s;
+        -o-transition: color 0.35s;
+        transition: color 0.35s;
+    }
+    .shang_box .shang_tit {
+        width: 100%;
+        font-family: Roboto, "Roboto", serif;
+        height: 75px;
+        text-align: center;
+        line-height: 66px;
+        color: #fff;
+        font-size: 30px;
+        margin-top: 7px;
+        margin-right: 2px;
+    }
+    .shang_box .shang_payimg {
+        width: 255px;
+        height: 255px;
+        padding: 10px;
+        border: 6px solid #4094c7;
+        margin: 0 auto;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .shang_box .shang_payimg .pay_img {
+        width: 535px;
+        vertical-align: middle;
+        transition: margin-left 0.5s;
+    }
+    .shang_box .shang_payimg .pay_img img {
+        width: 225px;
+        width: 225px;
+        height: 100%;
+        margin: 0;
+        color: #283444;
+        font: 400 16px/1 "Open Sans", "Hiragino Sans GB", sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: none;
+        overflow: hidden;
+    }
+    .shang_box .shang_payselect {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20px;
+        height: 60px;
+        width: 320px;
+    }
+</style>
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>请作者喝杯咖啡</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg"
+                 class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg"
+                 class="weixin" title="扫码支持" style="display: none;">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input
+                        type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+<a  class="dashang" onclick="dashangToggle()">赏</a>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    $("input[name=pay]").on("click", function () {
+        console.log('click',$("input[name=pay]:checked").val())
+        $(".alipay").fadeToggle();
+        $(".weixin").fadeToggle();
+    })
+</script>
+
+                            <!-- end打赏 -->
+                            
+                                <div class="post-prevnext row">
+                                    <article class="post-prev col-6">
+                                        
+                                        
+                                            <a href="/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/">
+                                                <i class="iconfont icon-arrowleft"></i>
+                                                <span class="hidden-mobile">mapbox-gl教程(2):添加自定义数据（小数据量的方式）(上)</span>
+                                                <span class="visible-mobile">上一篇</span>
+                                            </a>
+                                        
+                                    </article>
+                                    <article class="post-next col-6">
+                                        
+                                        
+                                            <a href="/2020/11/05/2020-11-5-java-read-gdb/">
+                                                <span class="hidden-mobile">java读取arcgis的gdb文件</span>
+                                                <span class="visible-mobile">下一篇</span>
+                                                <i class="iconfont icon-arrowright"></i>
+                                            </a>
+                                        
+                                    </article>
+                                </div>
+                            
+                        </div>
+
+                        
+                            <!-- Comments -->
+                            <article class="comments" id="comments">
+                                
+                                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: '7827a2a274092d600318',
+          clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
+          repo: 'gitalkissue',
+          owner: 'codingmiao',
+          admin: ["codingmiao"],
+          id: 'd81e3cae1dc67b42c6168dfc3e14a6aa',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+                            </article>
+                        
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+            <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+                <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
