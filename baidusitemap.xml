@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.wowtools.org/2021/04/08/2021-04-08-certbot-ssl/</loc>
+    <lastmod>2021-04-09</lastmod>
+  </url>
+  <url>
     <loc>https://blog.wowtools.org/2021/02/01/2021-02-01-libsvm-java/</loc>
     <lastmod>2021-02-01</lastmod>
   </url>
