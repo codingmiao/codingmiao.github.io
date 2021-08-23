@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
+    <lastmod>2021-08-23</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
+    <lastmod>2021-08-23</lastmod>
+  </url>
+  <url>
     <loc>https://blog.wowtools.org/2021/04/08/2021-04-08-certbot-ssl/</loc>
     <lastmod>2021-04-09</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2021/02/01/2021-02-01-libsvm-java/</loc>
     <lastmod>2021-02-01</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
-    <lastmod>2020-12-30</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
@@ -49,11 +53,11 @@
     <lastmod>2020-12-18</lastmod>
   </url>
   <url>
-    <loc>https://blog.wowtools.org/2018/03/21/2018-03-21-parse-postgis-shape/</loc>
+    <loc>https://blog.wowtools.org/2017/11/30/2017-11-30-zip-exception/</loc>
     <lastmod>2020-12-18</lastmod>
   </url>
   <url>
-    <loc>https://blog.wowtools.org/2017/11/30/2017-11-30-zip-exception/</loc>
+    <loc>https://blog.wowtools.org/2018/03/21/2018-03-21-parse-postgis-shape/</loc>
     <lastmod>2020-12-18</lastmod>
   </url>
   <url>
