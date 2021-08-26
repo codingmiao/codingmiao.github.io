@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="liuyu">
   <meta name="keywords" content="">
-  <title>dojo报错Uncaught Error: irrationalPath原因及解决 - 懒惰的芜菁</title>
+  <title>geoserver gwc - 懒惰的芜菁</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -162,7 +162,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="dojo报错Uncaught Error: irrationalPath原因及解决">
+            <span class="h2" id="subtitle" title="geoserver gwc">
               
             </span>
 
@@ -172,8 +172,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2018-06-07 20:46" pubdate>
-        2018年6月7日 晚上
+      <time datetime="2016-11-28 20:46" pubdate>
+        2016年11月28日 晚上
       </time>
     </span>
   
@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      285 字
+      1.1k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4
+      12
        分钟
     </span>
   
@@ -224,24 +224,36 @@
                 <div class="py-5" id="board">
                     <article class="post-content mx-auto">
                         <!-- SEO header -->
-                        <h1 style="display: none">dojo报错Uncaught Error: irrationalPath原因及解决</h1>
+                        <h1 style="display: none">geoserver gwc</h1>
                         
                         <div class="markdown-body">
-                            <p>最近写了一堆amd风格的js库供其他同事调用，有同事反映说用dojo.js调的时候会报这个错:</p>
-<figure class="highlight css"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs css"><span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:4</span> <span class="hljs-selector-tag">Uncaught</span> <span class="hljs-selector-tag">Error</span>: <span class="hljs-selector-tag">irrationalPath</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">s</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:4)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">Ea</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:13)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">Ta</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:14)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">Ba</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:15)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">hb</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:21)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:21</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">c</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:4)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">gb</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:21)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">d</span> (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:20)</span><br>    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">HTMLScriptElement</span>.&lt;<span class="hljs-selector-tag">anonymous</span>&gt; (<span class="hljs-selector-tag">init</span><span class="hljs-selector-class">.js</span><span class="hljs-selector-pseudo">:23)</span><br></code></pre></div></td></tr></table></figure>
-<p>排查了好久，终于找到了原因，一句话解释就是../不能调用配置根路径以上的内容。</p>
-<p>详细还原一下出错过程，我提供的js库路径如下</p>
-<figure class="highlight armasm"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs armasm"><span class="hljs-symbol">xxx.com</span>/<br>    root/<br>        a/<br>            <span class="hljs-built_in">a1</span>.js<br>        <span class="hljs-keyword">b/<br></span>            <span class="hljs-keyword">b1.js</span><br></code></pre></div></td></tr></table></figure>
-<p>a1.js引用了b1.js:</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs actionscript">define([<span class="hljs-string">'../b/b1'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(b1)</span> </span>&#123;<br>    b1.xxx()<br></code></pre></div></td></tr></table></figure>
-
-<p>同事是这样调用的</p>
-<figure class="highlight javascript"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> dojoConfig = &#123;<br>    <span class="hljs-attr">parseOnLoad</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-attr">packages</span>: [<br>        &#123;<br>            <span class="hljs-string">"name"</span>: <span class="hljs-string">"ext"</span>,<br>            <span class="hljs-string">"location"</span>: <span class="hljs-string">"xxx.com/root/a"</span><br>        &#125;<br>    ]<br>&#125;;<br><br><span class="hljs-built_in">require</span>([<br>        <span class="hljs-string">"ext/a1"</span><br>    ],<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a1</span>) </span>&#123;<br>        a1.ooxx();<br>    &#125;<br>);<br></code></pre></div></td></tr></table></figure>
-<p>出于安全性考虑，dojo只允许调用根路径(xxx.com/root/a)下的资源,a.js中通过../去引用xxx.com/root/b/b.js，所以就出错了。</p>
-<p>正确地姿势应该是这样:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> dojoConfig = &#123;<br>    <span class="hljs-attr">parseOnLoad</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-attr">packages</span>: [<br>        &#123;<br>            <span class="hljs-string">"name"</span>: <span class="hljs-string">"ext"</span>,<br>            <span class="hljs-string">"location"</span>: <span class="hljs-string">"xxx.com/root"</span><br>        &#125;<br>    ]<br>&#125;;<br><br><span class="hljs-built_in">require</span>([<br>        <span class="hljs-string">"ext/a/a1"</span><br>    ],<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a1</span>) </span>&#123;<br>        a1.ooxx();<br>    &#125;<br>);<br></code></pre></div></td></tr></table></figure>
-
-<p>完o(<em>￣︶￣</em>)o</p>
+                            <p> <strong>- 简介</strong></p>
+<p>gwc，是“Geo Web Cache”的简称。它是一种带缓存的地图服务，但与TileLayer的工作机制又不太一样。我们先回顾一下两种常规的地图服务模式：</p>
+<p>DynamicLayer：动态图，即每次接收到用户的出图请求后，根据用户传过来的地图范围，查询范围内的要素并绘制成图片返回给用户。由于每次出图请求都需要查询和绘制，效率一般不会很高。</p>
+<p>TileLayer：根据指定的切图原点，切图范围等参数，预先将绘制好瓦片图并保存起来，当用户请求某个范围内的地图时，计算此范围覆盖了哪些瓦片并将这些切片返回给用户。由于瓦片是预先绘制好的，直接返回就行了，所以速度很快。TileLayer也有很多缺点，实时性不高，每次切图很耗时(几十天甚至几个月一点都不稀奇)，而且占用很大的磁盘空间，某级别下的某些区域用户可能根本不会去访问，这就白白浪费了切图的时间和磁盘。</p>
+<p>gwc是结合DynamicLayer和TileLayer的一种折衷方案：先不做预切图(当然也可以做，这个在下面实际使用时再具体说明)，当用户发送某个范围的出图请求时，计算范围内需要哪些切片，然后去缓存文件夹中找，没找到的话先临时生成一个丢到缓存文件夹里，把这些切片作适当的缩放和裁剪，再拼起来返回给用户。</p>
+<hr>
+<p> <strong>- 如何使用</strong></p>
+<p>首先，可以在web.xml文件里配置一下gwc切片目录：</p>
+<blockquote>
+<p> &lt;context-param&gt;<br>   &lt;param-name&gt;GEOWEBCACHE_CACHE_DIR&lt;/param-name&gt;<br>   &lt;param-value&gt;你的geowebcache切片的目录&lt;/param-value&gt;<br>  &lt;/context-param&gt;</p>
+</blockquote>
+<p>不配的话，tomcat里运行默认是存在tomcat的temp目录下。</p>
+<p> 然后进入geoserver的管理界面，我们看到Tile Cacing下一共五个子目录：<br><strong>Tile LayersTile Layers</strong><br>gwc图层的配置、查看、预切图等<br><strong>Caching Defaults</strong><br>一些默认设置<br><strong>Gridsets</strong><br>切图网格的设置<br><strong>Disk Quota</strong><br>磁盘存储设置，比如设置最大磁盘占用50g，当缓存文件超过50g后，会按最近最少使用之类的规则清理掉一些旧的<br><strong>BlobStores</strong><br>允许我们指定存储位置、磁盘blocksize等，以更合理地使用磁盘</p>
+<p>我们先在Gridsets里，按照所用的地图信息配置一个切图网格：<br>![此处输入图片的描述][2]<br>遗憾的是不能直接修改坐标原点，导致切出来的瓦片不能直接拷贝出来丢给arcgis之类的使用，当然这个可以通过自定义坐标系来解决。</p>
+<p>选择需要gwc的图层，<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/c4428e71-931d-4902-afe2-ecc84f4ea2eb" alt=""></p>
+<p>好了，准备工作完成，下面可以开始使用了：<br>点击Tile Layers,Preview下拉框选择一个想要的图片格式和grid，就可以预览了(预览页面右键查看源代码，就有openlayers调用gwc的方法了^_^)。</p>
+<p>如果想对指定区域进行预切片，只要点击Seed/Truncate，选好参数就可以开切了，不过geoserver切图性能堪忧，可以考虑用arcgis、gdal之类的切好了再丢到gwc缓存目录里。</p>
+<p> <strong>- 关于resolution</strong></p>
+<p> 比较一下gwc和wms请求图片的url：</p>
+<div class="hljs code-wrapper"><pre><code>gwc:
+geoserver/gwc/service/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=xxx
+wms:
+geoserver/&lt;workspace&gt;/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=xxx</code></pre></div><p>我们发现，gwc除了前缀url路径不一样，后面的请求参数和wms几乎是一样的，也就是说，gwc并不是像TileLayer那样直接把切片返回到客户端，而是需要通过bbox去计算需要哪些切片，然后做适当的拼接、裁剪、缩放。</p>
+<p>如果同一个空间参考系配置了多个grid，geoserver会去计算请求图片的resolution与哪个grid更接近就用哪个grid。</p>
+<p>如果请求图片的resolution与grid的resolution相差较大，会导致图片过大地缩放，然后图片质量就不好了，这是网上找的一张图：<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/114be441-b6ae-4630-b0e5-b0f5446cf2a1" alt=""></p>
+<p> 如果resolution相差再大一些，geoserver就直接抛个异常说resolution相差不能超过10%了。</p>
+<p> 所以，在使用gwc时，请尽量按照客户端地图的resolution来配置一套grid，以获得最佳浏览效果。</p>
 
                         </div>
                         <hr>
@@ -252,7 +264,10 @@
                                         <i class="iconfont icon-category"></i>
                                         
                                             <a class="hover-with-bg"
-                                               href="/categories/%E5%A5%87%E8%91%A9%E9%97%AE%E9%A2%98/">奇葩问题</a>
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%B7%A5%E5%85%B7%E5%92%8C%E8%BD%AF%E4%BB%B6/">工具和软件</a>
                                         
                                     </div>
                                 
@@ -260,7 +275,7 @@
                                     <div class="post-meta">
                                         <i class="iconfont icon-tags"></i>
                                         
-                                            <a class="hover-with-bg" href="/tags/dojo/">dojo</a>
+                                            <a class="hover-with-bg" href="/tags/geoserver/">geoserver</a>
                                         
                                     </div>
                                 
@@ -269,7 +284,7 @@
                                 <p class="note note-warning">本文采用 <a
                                             href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
                                             rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
-                                    https://blog.wowtools.org/2018/06/07/2018-06-07-Uncaught-Error-irrationalPath/ </p>
+                                    https://blog.wowtools.org/2016/11/28/2016-11-28-geoserver-gwc/ </p>
                             
                             <!-- 打赏 -->
                             <style>
@@ -427,21 +442,15 @@
                                     <article class="post-prev col-6">
                                         
                                         
-                                            <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
+                                            <a href="/2017/09/05/2017-09-05-arcgis-publishing-layer/">
                                                 <i class="iconfont icon-arrowleft"></i>
-                                                <span class="hidden-mobile">neo4j自定义call函数</span>
+                                                <span class="hidden-mobile">arcgis 发布图层</span>
                                                 <span class="visible-mobile">上一篇</span>
                                             </a>
                                         
                                     </article>
                                     <article class="post-next col-6">
                                         
-                                        
-                                            <a href="/2018/05/18/2018-05-18-centos7-install-gdal/">
-                                                <span class="hidden-mobile">centos 7安装gdal</span>
-                                                <span class="visible-mobile">下一篇</span>
-                                                <i class="iconfont icon-arrowright"></i>
-                                            </a>
                                         
                                     </article>
                                 </div>

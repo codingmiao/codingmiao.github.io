@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      894 字
+      927 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13
+      14
        分钟
     </span>
   
@@ -254,7 +254,7 @@
 <figure class="highlight vim"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs vim">IMPORTANT NOTES:<br> - Congratulations! Your certificate <span class="hljs-built_in">and</span> chain have been saved <span class="hljs-keyword">a</span><span class="hljs-variable">t:</span><br>   /etc/letsencrypt/live/xxx.<span class="hljs-keyword">com</span>/fullchain.pem<br>   Your key <span class="hljs-keyword">file</span> <span class="hljs-built_in">has</span> been saved <span class="hljs-keyword">a</span><span class="hljs-variable">t:</span><br>   /etc/letsencrypt/live/xxx.<span class="hljs-keyword">com</span>/privkey.pem<br>   Your certificate will expire <span class="hljs-keyword">on</span> <span class="hljs-number">2021</span>-<span class="hljs-number">07</span>-<span class="hljs-number">07</span>. To obtain <span class="hljs-keyword">a</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">or</span><br>   tweaked <span class="hljs-keyword">version</span> of this certificate in the future, simply run<br>   certbot again. To non-interactively renew *<span class="hljs-keyword">all</span>* of your<br>   certificates, run <span class="hljs-string">"certbot renew"</span><br></code></pre></div></td></tr></table></figure>
 <p>请记下提示中的证书位置<code>/etc/letsencrypt/live/xxx.com/</code></p>
 <h1 id="4、配置证书到nginx"><a href="#4、配置证书到nginx" class="headerlink" title="4、配置证书到nginx"></a>4、配置证书到nginx</h1><p>配置nginx如下并重启，我们的网站就可以https访问了:</p>
-<figure class="highlight nginx"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-comment">#强制将http访问转到https端口</span><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span>       <span class="hljs-number">80</span>;<br>    <span class="hljs-attribute">server_name</span>  localhost;<br>    <span class="hljs-attribute">rewrite</span><span class="hljs-regexp"> ^(.*)$</span>  https://<span class="hljs-variable">$host</span><span class="hljs-variable">$1</span> <span class="hljs-literal">permanent</span>;<br>&#125;<br><br><br><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-comment"># 开启http2充分提高性能</span><br>    <span class="hljs-attribute">listen</span>       <span class="hljs-number">443</span> http2 ssl;<br>    <span class="hljs-attribute">server_name</span>  localhost;<br>    <span class="hljs-comment"># 配置刚才生成的证书位置</span><br>    <span class="hljs-attribute">ssl_certificate</span> /etc/letsencrypt/live/xxx.com/fullchain.pem;<br>    <span class="hljs-attribute">ssl_certificate_key</span> /etc/letsencrypt/live/xxx.com/privkey.pem;<br>    <span class="hljs-comment"># ssl_session_cache shared:SSL:1m;</span><br>    <span class="hljs-attribute">ssl_session_timeout</span> <span class="hljs-number">5m</span>;<br>    <span class="hljs-comment"># ssl_ciphers HIGH:!aNULL:!MD5;</span><br>    <span class="hljs-attribute">ssl_prefer_server_ciphers</span> <span class="hljs-literal">on</span>;<br><br>    <span class="hljs-attribute">gzip</span> <span class="hljs-literal">on</span>;<br>    <span class="hljs-attribute">gzip_comp_level</span> <span class="hljs-number">3</span>;<br>    <span class="hljs-attribute">gzip_types</span> text/plain application/json application/x-javascript application/css application/xml application/xml+rss text/javascript application/x-httpd-php image/jpg image/jpeg image/gif image/x-ms-bmp;<br><br>    <span class="hljs-attribute">proxy_buffer_size</span>   <span class="hljs-number">128k</span>;<br>    <span class="hljs-attribute">proxy_buffers</span>   <span class="hljs-number">4</span> <span class="hljs-number">256k</span>;<br>    <span class="hljs-attribute">proxy_busy_buffers_size</span>   <span class="hljs-number">256k</span>;<br>    <span class="hljs-attribute">default_type</span> <span class="hljs-string">'text/html'</span>;<br>    <span class="hljs-attribute">charset</span> utf-<span class="hljs-number">8</span>;<br><br>    <span class="hljs-attribute">location</span> / &#123;<br>     <span class="hljs-attribute">proxy_pass</span>   http://127.0.0.1:8081;<br>        <span class="hljs-attribute">index</span>  index.html index.htm;<br>    &#125;<br><br><br>&#125;<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-comment">#强制将http访问转到https端口</span><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span>       <span class="hljs-number">80</span>;<br>    <span class="hljs-attribute">server_name</span>  localhost;<br>    <span class="hljs-attribute">rewrite</span><span class="hljs-regexp"> ^(.*)$</span>  https://<span class="hljs-variable">$host</span><span class="hljs-variable">$1</span> <span class="hljs-literal">permanent</span>;<br>&#125;<br><br><br><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-comment"># 开启http2充分提高性能</span><br>    <span class="hljs-attribute">listen</span>       <span class="hljs-number">443</span> http2 ssl;<br>    <span class="hljs-attribute">server_name</span>  localhost;<br>    <span class="hljs-comment"># 配置刚才生成的证书位置</span><br>    <span class="hljs-attribute">ssl_certificate</span> /etc/letsencrypt/live/xxx.com/fullchain.pem;<br>    <span class="hljs-attribute">ssl_certificate_key</span> /etc/letsencrypt/live/xxx.com/privkey.pem;<br>    <span class="hljs-comment"># ssl_session_cache shared:SSL:1m;</span><br>    <span class="hljs-attribute">ssl_session_timeout</span> <span class="hljs-number">5m</span>;<br>    <span class="hljs-comment"># ssl_ciphers HIGH:!aNULL:!MD5;</span><br>    <span class="hljs-attribute">ssl_prefer_server_ciphers</span> <span class="hljs-literal">on</span>;<br><br>    <span class="hljs-attribute">gzip</span> <span class="hljs-literal">on</span>;<br>    <span class="hljs-attribute">gzip_comp_level</span> <span class="hljs-number">3</span>;<br>    <span class="hljs-attribute">gzip_types</span> text/plain application/json application/x-javascript application/css application/xml application/xml+rss text/javascript application/x-httpd-php image/jpg image/jpeg image/gif image/x-ms-bmp;<br><br>    <span class="hljs-attribute">proxy_buffer_size</span>   <span class="hljs-number">128k</span>;<br>    <span class="hljs-attribute">proxy_buffers</span>   <span class="hljs-number">4</span> <span class="hljs-number">256k</span>;<br>    <span class="hljs-attribute">proxy_busy_buffers_size</span>   <span class="hljs-number">256k</span>;<br>    <span class="hljs-attribute">default_type</span> <span class="hljs-string">'text/html'</span>;<br>    <span class="hljs-attribute">charset</span> utf-<span class="hljs-number">8</span>;<br><br>    <span class="hljs-attribute">location</span> / &#123;<br>     <span class="hljs-attribute">proxy_pass</span>   http://127.0.0.1:8081;<br>        <span class="hljs-attribute">index</span>  index.html index.htm;<br>    &#125;<br><br>    <span class="hljs-comment"># 保留这个配置，自动续期的时候会再次访问</span><br>    <span class="hljs-attribute">location</span> <span class="hljs-regexp">~ ^/.well-known/acme-challenge/(.*)$</span> &#123;<br>        <span class="hljs-attribute">default_type</span> text/html;<br>        <span class="hljs-attribute">return</span> <span class="hljs-number">200</span> <span class="hljs-variable">$1</span>.LSUW93J599887-<span class="hljs-number">163523</span>;<br>    &#125;<br><br>&#125;<br></code></pre></div></td></tr></table></figure>
 
 <h1 id="5、自动续期"><a href="#5、自动续期" class="headerlink" title="5、自动续期"></a>5、自动续期</h1><p>生成证书的时候，我们看到提示<code>Your certificate will expire on 2021-07-07.</code>，也就是证书是会过期的，所以我们要写个计划任务来定期续期证书：<br>确保crond运行</p>
 <figure class="highlight shell"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">systemctl enable crond<br>systemctl start crond<br></code></pre></div></td></tr></table></figure>
@@ -472,38 +472,6 @@
                             
                         </div>
 
-                        
-                            <!-- Comments -->
-                            <article class="comments" id="comments">
-                                
-                                
-  <div id="gitalk-container"></div>
-  <script type="text/javascript">
-    Fluid.utils.waitElementVisible('gitalk-container', function() {
-      Fluid.utils.createCssLink('/css/gitalk.css')
-      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
-        var gitalk = new Gitalk({
-          clientID: '7827a2a274092d600318',
-          clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
-          repo: 'gitalkissue',
-          owner: 'codingmiao',
-          admin: ["codingmiao"],
-          id: 'f54baf2c5c7c4f3da70f3ef1a1fd104e',
-          language: 'zh-CN',
-          labels: ["Gitalk"],
-          perPage: 10,
-          pagerDirection: 'last',
-          createIssueManually: true,
-          distractionFreeMode: false
-        });
-        gitalk.render('gitalk-container');
-      });
-    });
-  </script>
-  <noscript>Please enable JavaScript to view the comments</noscript>
-
-
-                            </article>
                         
                     </article>
                 </div>

@@ -181,20 +181,17 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">neo4j同时使用嵌入模式和服务模式</a>
+        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">neo4j自定义call函数</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2019/12/27/2019-12-27-custom-neo4j1/">
+        <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
           
           
             
           
-          neo4j(社区版)有两种模式:嵌入模式和服务器模式，下图描述了它们的使用区别，简单来说，嵌入模式就是直接用java代码去操作，服务器模式就是通过暴露出来的web端口传入查询语句等进行操作。
-两种模式哪种更优？网上有太多的帖子讨论这个。可是，毕竟只有小孩子才做选择题，我们为什么不选择全都要呢O(∩_∩)O
-话不多说，直接上代码
-1、引入maven依赖:
-12345678910&lt;depende
+          在上一小节中(http://blog.wowtools.org/2019/12/27/2019-12-27-custom-neo4j1/)，我们学习了如何同时使用嵌入模式和服务模式。本小节将学习如何扩展自定义的call函数，以满足自定义查询需求。本小节的代码基于上一小节，所以你可能要先把上一节中的示例先写出来并运行起来。
+hello world先看效果图，我们自定义了一个函数test.hello，
         </a>
       </p>
 
@@ -488,6 +485,59 @@ ok，删掉WEB-INF/lib下所有的jar，tomcat能启动了(当
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/arcgis/">arcgis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2016/11/28/2016-11-28-geoserver-gwc/">geoserver gwc</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2016/11/28/2016-11-28-geoserver-gwc/">
+          
+          
+            
+          
+           - 简介
+gwc，是“Geo Web Cache”的简称。它是一种带缓存的地图服务，但与TileLayer的工作机制又不太一样。我们先回顾一下两种常规的地图服务模式：
+DynamicLayer：动态图，即每次接收到用户的出图请求后，根据用户传过来的地图范围，查询范围内的要素并绘制成图片返回给用户。由于每次出图请求都需要查询和绘制，效率一般不会很高。
+TileLayer：根据指定的切图原点，切图范
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2016-11-28 20:46" pubdate>
+              2016-11-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/gis/">gis</a>
+            
+              <a href="/categories/gis/%E5%B7%A5%E5%85%B7%E5%92%8C%E8%BD%AF%E4%BB%B6/">工具和软件</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/geoserver/">geoserver</a>
             
           </div>
         
