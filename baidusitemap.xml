@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
+    <lastmod>2021-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
+    <lastmod>2021-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
+    <lastmod>2021-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/</loc>
+    <lastmod>2021-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
+    <lastmod>2021-10-18</lastmod>
+  </url>
+  <url>
     <loc>https://blog.wowtools.org/2021/04/08/2021-04-08-certbot-ssl/</loc>
     <lastmod>2021-08-26</lastmod>
   </url>
@@ -9,28 +29,8 @@
     <lastmod>2021-08-26</lastmod>
   </url>
   <url>
-    <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
-    <lastmod>2021-08-23</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
-    <lastmod>2021-08-23</lastmod>
-  </url>
-  <url>
     <loc>https://blog.wowtools.org/2021/02/01/2021-02-01-libsvm-java/</loc>
     <lastmod>2021-02-01</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
-    <lastmod>2020-12-30</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
-    <lastmod>2020-12-29</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2020/12/25/2020-12-25-mapbox-gl-tutorial-2/</loc>
-    <lastmod>2020-12-28</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2020/09/25/2020-09-25-kill-the-sprite/</loc>
