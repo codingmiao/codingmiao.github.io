@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.wowtools.org/2022/04/28/2022-04-28-mapbox-gl-tutorial-8/</loc>
+    <lastmod>2022-04-29</lastmod>
+  </url>
+  <url>
     <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
     <lastmod>2021-10-18</lastmod>
   </url>
@@ -19,10 +23,6 @@
   <url>
     <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
     <lastmod>2021-10-18</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.wowtools.org/2021/04/08/2021-04-08-certbot-ssl/</loc>
-    <lastmod>2021-08-26</lastmod>
   </url>
   <url>
     <loc>https://blog.wowtools.org/2016/11/28/2016-11-28-geoserver-gwc/</loc>
