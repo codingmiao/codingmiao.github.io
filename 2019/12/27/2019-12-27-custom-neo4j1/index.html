@@ -19,22 +19,22 @@
   <meta name="keywords" content="">
   <title>neo4j同时使用嵌入模式和服务模式 - 懒惰的芜菁</title>
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="/lib/css/bootstrap.min.css" />
 
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/js/github-markdown.min.css" />
   <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
 
   
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github.min.css" />
+      <link  rel="stylesheet" href="/lib/js/styles/github-gist.min.css" />
     
   
 
   
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    <link  rel="stylesheet" href="/lib/js/jquery.fancybox.min.css" />
   
 
 
@@ -55,7 +55,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"9b0952b597daef8813158f4936f63a00","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"a3b27d40f206a97bb91289d5044bc63a","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      737 字
+      739 字
     </span>
   
 
@@ -231,65 +231,21 @@
 <p>两种模式哪种更优？网上有太多的帖子讨论这个。可是，毕竟只有小孩子才做选择题，我们为什么不选择全都要呢O(∩_∩)O</p>
 <p>话不多说，直接上代码</p>
 <p>1、引入maven依赖:</p>
-<pre><code>        &lt;dependency&gt;
-            &lt;groupId&gt;org.neo4j&lt;/groupId&gt;
-            &lt;artifactId&gt;neo4j&lt;/artifactId&gt;
-            &lt;version&gt;3.4.9&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.neo4j.app&lt;/groupId&gt;
-            &lt;artifactId&gt;neo4j-server&lt;/artifactId&gt;
-            &lt;version&gt;3.4.9&lt;/version&gt;
-        &lt;/dependency&gt;</code></pre><p>2、拷贝一个neo4j.conf文件，按官方文档进行自己需要的配置，值得注意的是此处:</p>
-<pre><code>#数据文件存放位置
-dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
-<pre><code>    private static final ServerBootstrapper serverBootstrapper;
-    private static final String dbPath;
-    private static final GraphDatabaseService graphDb;
-    ...
-        //读neo4j.conf的配置
-        Properties p = new Properties();
-        try {
-            p.load(ResourcesReader.readStream(Neo4jDbManager.class, &quot;neo4j.conf&quot;));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+<figure class="highlight xml"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.neo4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>neo4j<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.9<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.neo4j.app<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>neo4j-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.9<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
 
-        dbPath = p.getProperty(&quot;dbms.directories.data&quot;);
+<p>2、拷贝一个neo4j.conf文件，按官方文档进行自己需要的配置，值得注意的是此处:</p>
+<figure class="highlight haskell"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs haskell"><span class="hljs-meta">#数据文件存放位置</span><br><span class="hljs-title">dbms</span>.directories.<span class="hljs-class"><span class="hljs-keyword">data</span>=<span class="hljs-type">D</span>:/<span class="hljs-keyword">data</span>/test</span><br></code></pre></div></td></tr></table></figure>
 
-        File storeDir = new File(dbPath);
+<p>3、编写初始化代码</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs reasonml"><span class="hljs-keyword">private</span> static final ServerBootstrapper serverBootstrapper;<br><span class="hljs-keyword">private</span> static final String dbPath;<br><span class="hljs-keyword">private</span> static final GraphDatabaseService graphDb;<span class="hljs-operator"><br>...<br>    </span><span class="hljs-comment">//读neo4j.conf的配置</span><br>    Properties p = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Properties()</span>;<br>    <span class="hljs-keyword">try</span> &#123;<br>        p.load(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ResourcesReader</span>.</span></span>read<span class="hljs-constructor">Stream(Neo4jDbManager.<span class="hljs-params">class</span>, <span class="hljs-string">"neo4j.conf"</span>)</span>);<br>    &#125; catch (IOException e) &#123;<br>        throw <span class="hljs-keyword">new</span> <span class="hljs-constructor">RuntimeException(<span class="hljs-params">e</span>)</span>;<br>    &#125;<br><br>    dbPath = p.get<span class="hljs-constructor">Property(<span class="hljs-string">"dbms.directories.data"</span>)</span>;<br><br>    File storeDir = <span class="hljs-keyword">new</span> <span class="hljs-constructor">File(<span class="hljs-params">dbPath</span>)</span>;<br><br>    serverBootstrapper = <span class="hljs-keyword">new</span> <span class="hljs-constructor">CommunityBootstrapper()</span>;<br>    String cfgFilePath = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ResourcesReader</span>.</span></span>get<span class="hljs-constructor">ClassRootPath(Neo4jDbManager.<span class="hljs-params">class</span>)</span> +<br>            <span class="hljs-string">"/neo4j.conf"</span>;<br>    <span class="hljs-comment">//社区版的bug，部分属性无法直接从配置文件写入(例如7474端口号)，手动覆盖一下</span><br>    Optional&lt;File&gt; cfgFile = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Optional</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-keyword">new</span> <span class="hljs-constructor">File(<span class="hljs-params">cfgFilePath</span>)</span>);<br>    Set&lt;String&gt;  cfgKeys = p.<span class="hljs-built_in">string</span><span class="hljs-constructor">PropertyNames()</span>;<br>    Map&lt;String, String&gt; configOverrides = <span class="hljs-keyword">new</span> HashMap&lt;&gt;(cfgKeys.size<span class="hljs-literal">()</span>);<br>    for (String cfgKey : cfgKeys) &#123;<span class="hljs-comment">//把所有配置都读到map里，解决默认端口无法修改的问题</span><br>        configOverrides.put(cfgKey, p.get<span class="hljs-constructor">Property(<span class="hljs-params">cfgKey</span>)</span>);<br>    &#125;<br>    <br>    <span class="hljs-comment">//启动服务端模式</span><br>    serverBootstrapper.start(storeDir, cfgFile, configOverrides);<br>    NeoServer neoServer = serverBootstrapper.get<span class="hljs-constructor">Server()</span>;<br>    <span class="hljs-comment">//获取内嵌模式db对象</span><br>    graphDb = neoServer.get<span class="hljs-constructor">Database()</span>.get<span class="hljs-constructor">Graph()</span>;<br></code></pre></div></td></tr></table></figure>
+<p>其中，ResourcesReader是我自己写的一个工具类，负责从相对路径读取配置文件，要用的话需要引入这个maven，你也可以自己写一个来替换它~</p>
+<figure class="highlight xml"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.wowtools<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>catframe-common<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.4.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
 
-        serverBootstrapper = new CommunityBootstrapper();
-        String cfgFilePath = ResourcesReader.getClassRootPath(Neo4jDbManager.class) +
-                &quot;/neo4j.conf&quot;;
-        //社区版的bug，部分属性无法直接从配置文件写入(例如7474端口号)，手动覆盖一下
-        Optional&lt;File&gt; cfgFile = Optional.of(new File(cfgFilePath));
-        Set&lt;String&gt;  cfgKeys = p.stringPropertyNames();
-        Map&lt;String, String&gt; configOverrides = new HashMap&lt;&gt;(cfgKeys.size());
-        for (String cfgKey : cfgKeys) {//把所有配置都读到map里，解决默认端口无法修改的问题
-            configOverrides.put(cfgKey, p.getProperty(cfgKey));
-        }
-
-        //启动服务端模式
-        serverBootstrapper.start(storeDir, cfgFile, configOverrides);
-        NeoServer neoServer = serverBootstrapper.getServer();
-        //获取内嵌模式db对象
-        graphDb = neoServer.getDatabase().getGraph();</code></pre><p>其中，ResourcesReader是我自己写的一个工具类，负责从相对路径读取配置文件，要用的话需要引入这个maven，你也可以自己写一个来替换它~</p>
-<pre><code>        &lt;dependency&gt;
-            &lt;groupId&gt;org.wowtools&lt;/groupId&gt;
-            &lt;artifactId&gt;catframe-common&lt;/artifactId&gt;
-            &lt;version&gt;1.4.2&lt;/version&gt;
-        &lt;/dependency&gt;</code></pre><p>4、使用服务端模式和内嵌模式<br>当初始化完成后，服务模式已经在neo4j.conf配置的端口启动了，你可以在localhost:7474（默认端口是这个）这个可视化界面打开看到。</p>
+<p>4、使用服务端模式和内嵌模式<br>当初始化完成后，服务模式已经在neo4j.conf配置的端口启动了，你可以在localhost:7474（默认端口是这个）这个可视化界面打开看到。</p>
 <p>至于内嵌模式，因为前面我们已经拿到db对象了，可以任意利用java api去操作了，比如:</p>
-<pre><code>        Transaction tx = graphDb.beginTx();//记得起事务和关闭事务
-        try {
-            graphDb.findNodes(Label.label(&quot;xxx&quot;),&quot;name&quot;,&quot;小明&quot;).forEachRemaining((node)-&gt;{
-                System.out.println(node.getProperty(&quot;age&quot;));
-            });
-        } finally {
-            tx.close();
+<figure class="highlight reasonml"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs reasonml">Transaction tx = graphDb.<span class="hljs-keyword">begin</span><span class="hljs-constructor">Tx()</span>;<span class="hljs-comment">//记得起事务和关闭事务</span><br><span class="hljs-keyword">try</span> &#123;<br>    graphDb.find<span class="hljs-constructor">Nodes(Label.<span class="hljs-params">label</span>(<span class="hljs-string">"xxx"</span>)</span>,<span class="hljs-string">"name"</span>,<span class="hljs-string">"小明"</span>).for<span class="hljs-constructor">EachRemaining((<span class="hljs-params">node</span>)</span>-&gt;&#123;<br>        <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(node.get<span class="hljs-constructor">Property(<span class="hljs-string">"age"</span>)</span>);<br>    &#125;);<br>&#125; finally &#123;<br>    tx.close<span class="hljs-literal">()</span>;<br><br>&#125;<br></code></pre></div></td></tr></table></figure>
 
-        }</code></pre><p>好了，同时享受内嵌模式的高性能和服务端模式的快捷吧~<br>下一节我们将介绍如何把java方法暴露成自定义函数在服务端模式调用，让你将二者结合应用的更得心应手。</p>
+<p>好了，同时享受内嵌模式的高性能和服务端模式的快捷吧~<br>下一节我们将介绍如何把java方法暴露成自定义函数在服务端模式调用，让你将二者结合应用的更得心应手。</p>
 
                         </div>
                         <hr>
@@ -478,9 +434,9 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
                                     <article class="post-prev col-6">
                                         
                                         
-                                            <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
+                                            <a href="/2020/09/25/2020-09-25-kill-the-sprite/">
                                                 <i class="iconfont icon-arrowleft"></i>
-                                                <span class="hidden-mobile">neo4j自定义call函数</span>
+                                                <span class="hidden-mobile">干掉mapbox里的雪碧图(sprite)</span>
                                                 <span class="visible-mobile">上一篇</span>
                                             </a>
                                         
@@ -488,8 +444,8 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
                                     <article class="post-next col-6">
                                         
                                         
-                                            <a href="/2018/06/07/2018-06-07-Uncaught-Error-irrationalPath/">
-                                                <span class="hidden-mobile">dojo报错Uncaught Error: irrationalPath原因及解决</span>
+                                            <a href="/2019/12/27/2019-12-27-custom-neo4j2/">
+                                                <span class="hidden-mobile">neo4j自定义call函数</span>
                                                 <span class="visible-mobile">下一篇</span>
                                                 <i class="iconfont icon-arrowright"></i>
                                             </a>
@@ -499,38 +455,6 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
                             
                         </div>
 
-                        
-                            <!-- Comments -->
-                            <article class="comments" id="comments">
-                                
-                                
-  <div id="gitalk-container"></div>
-  <script type="text/javascript">
-    Fluid.utils.waitElementVisible('gitalk-container', function() {
-      Fluid.utils.createCssLink('/css/gitalk.css')
-      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
-        var gitalk = new Gitalk({
-          clientID: '7827a2a274092d600318',
-          clientSecret: '448c39c3e1a7a168c7b82f1d91b54801c00bd4ce',
-          repo: 'gitalkissue',
-          owner: 'codingmiao',
-          admin: ["codingmiao"],
-          id: '620a88c7190539c1c41d3c95c381bfb3',
-          language: 'zh-CN',
-          labels: ["Gitalk"],
-          perPage: 10,
-          pagerDirection: 'last',
-          createIssueManually: true,
-          distractionFreeMode: false
-        });
-        gitalk.render('gitalk-container');
-      });
-    });
-  </script>
-  <noscript>Please enable JavaScript to view the comments</noscript>
-
-
-                            </article>
                         
                     </article>
                 </div>
@@ -588,7 +512,7 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
 
   <footer class="text-center mt-5 py-3">
   <div class="footer-content">
-     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+     备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow noopener"><span>滇ICP备2022006911号</span></a> <i class="iconfont icon-love"></i> build on <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>、 <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
   </div>
   
   <div class="statistics">
@@ -623,8 +547,8 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
 
 <!-- SCRIPTS -->
 
-  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+  <script  src="/lib/js/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="/lib/js/nprogress.min.css" />
 
   <script>
     NProgress.configure({"showSpinner":false,"trickleSpeed":200})
@@ -638,8 +562,8 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
   </script>
 
 
-<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
-<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/lib/js/jquery.min.js" ></script>
+<script  src="/lib/js/bootstrap.min.js" ></script>
 <script  src="/js/debouncer.js" ></script>
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
@@ -657,19 +581,19 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+  <script  src="/lib/js/tocbot.min.js" ></script>
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+  <script  src="/lib/js/jquery.fancybox.min.js" ></script>
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+  <script  src="/lib/js/anchor.min.js" ></script>
 
 
 
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+  <script defer src="/lib/js/clipboard.min.js" ></script>
 
 
 
@@ -678,7 +602,7 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script  src="/lib/js/typed.min.js" ></script>
   <script>
     (function (window, document) {
       var typing = Fluid.plugins.typing;
@@ -720,7 +644,7 @@ dbms.directories.data=D:/data/test</code></pre><p>3、编写初始化代码</p>
       var _hmt = _hmt || [];
       (function () {
         var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?9b0952b597daef8813158f4936f63a00";
+        hm.src = "https://hm.baidu.com/hm.js?a3b27d40f206a97bb91289d5044bc63a";
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();

@@ -1,0 +1,876 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="liuyu">
+  <meta name="keywords" content="">
+  <title>mapbox-gl教程(5):常见事件与组件 - 懒惰的芜菁</title>
+
+  <link  rel="stylesheet" href="/lib/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="/lib/js/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="/lib/js/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="/lib/js/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.wowtools.org","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"a3b27d40f206a97bb91289d5044bc63a","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>懒惰的芜菁</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mapbox-gl教程(5):常见事件与组件">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-23 22:12" pubdate>
+        2021年8月23日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+        <div class="col-lg-8 nopadding-md">
+            <div class="container nopadding-md" id="board-ctn">
+                <div class="py-5" id="board">
+                    <article class="post-content mx-auto">
+                        <!-- SEO header -->
+                        <h1 style="display: none">mapbox-gl教程(5):常见事件与组件</h1>
+                        
+                        <div class="markdown-body">
+                            <p>老实说，这一章写起来有些鸡肋，因为<a href="https://www.mapbox.cn/mapbox-gl-js/api/#map" target="_blank" rel="noopener">mapbox官方api文档</a>已经写得非常详细了，而且是中文文档且配有示例，读起来非常舒服。<br>但为了章节内容的完整性，本章仍演示了常见的事件与组件，并记录下笔者使用时遇到的坑以供参考。</p>
+<h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><p>mapbox的事件， 通过<a href="https://www.mapbox.cn/mapbox-gl-js/api/#map#on" target="_blank" rel="noopener">map.on</a>函数来注册监听，<br>通过<a href="https://www.mapbox.cn/mapbox-gl-js/api/#map#on" target="_blank" rel="noopener">map.off</a>函数来移除监听。<br>这两个函数通过传入监听事件类型和回调函数来实现监听/取消监听，例如</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">map.on(<span class="hljs-string">'click'</span>, (e) =&gt; &#123;<br>    <span class="hljs-built_in">console</span>.log(e)<br>&#125;)<br></code></pre></div></td></tr></table></figure>
+
+<p>表示注册一个点击(click)事件，当点击地图时将点击对象打印出来。</p>
+<p>也可以指定图层id，使得事件仅在点击到这个图层时触发:</p>
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">map.on(<span class="hljs-string">'click'</span>, <span class="hljs-string">'poi'</span>, (e) =&gt; &#123;<br>    <span class="hljs-built_in">console</span>.log(e)<br>&#125;)<br></code></pre></div></td></tr></table></figure>
+
+<p><a href="https://www.mapbox.cn/mapbox-gl-js/api/#map.event:resize" target="_blank" rel="noopener">官方文档</a>列出了所有的事件名称，大致可分为如下几类:</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>说明</th>
+<th>事件名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>地图对象状态</td>
+<td>当地图状态发生变化时触发，例如初始化完成、地图被移除、大小变化等</td>
+<td>resize remove load</td>
+</tr>
+<tr>
+<td>点击</td>
+<td>地图被点击时触发，这类事件可以指定layerId</td>
+<td>mousedown mouseup mouseover mousemove click dblclick mouseenter mouseleave mouseout contextmenu touchstart touchend</td>
+</tr>
+<tr>
+<td>点击(不可指定图层)</td>
+<td>地图被点击时触发，这类事件不能指定layerId</td>
+<td>wheel touchmove touchcancel</td>
+</tr>
+<tr>
+<td>显示区域变化</td>
+<td>地图的范围、zoom、视角等变化时触发</td>
+<td>move movestart moveend drag dragstart dragend zoom zoomstart zoomend rotatestart rotate rotateend pitchstart pitch pitchend boxzoomstart boxzoomend boxzoomcancel</td>
+</tr>
+<tr>
+<td>图层展现过程</td>
+<td>数据加载/展现渲染开始、完成等时间点上触发</td>
+<td>render idle data styledata sourcedata dataloading styledataloading sourcedataloading styleimagemissing</td>
+</tr>
+<tr>
+<td>异常</td>
+<td>一些意外的异常产生时触发</td>
+<td>webglcontextlost webglcontextrestored error</td>
+</tr>
+</tbody></table>
+<h2 id="地图状态"><a href="#地图状态" class="headerlink" title="地图状态"></a>地图状态</h2><p>这个我们很熟悉了，前面几章的例子中，我们需要在<code>map.on(&#39;load&#39;)</code>监听map加载完成后，才能进行相关操作。</p>
+<h2 id="点击事件-可指定图层的事件、不可指定图层的事件"><a href="#点击事件-可指定图层的事件、不可指定图层的事件" class="headerlink" title="点击事件(可指定图层的事件、不可指定图层的事件)"></a>点击事件(可指定图层的事件、不可指定图层的事件)</h2><p>通过点击事件，我们可以拿到鼠标点击的经纬度，如果指定了图层id，我们还能拿到图层中被点击的要素:</p>
+<div>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <div id='map1' style='width: 90%; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaW1saXV5dSIsImEiOiJjbDM4aHM4eXowMDBpM2RvZGdxdGZjeWMxIn0.mYtay02E_Z4iYOsDx3IdoA';
+        const map1 = new mapboxgl.Map({
+            container: 'map1',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-100.04, 38.907],
+            zoom: 3
+        });
+        map1.on('load', function () {
+            map1.addLayer({
+                'id': 'states-layer',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson'
+                },
+                'paint': {
+                    'fill-color': 'rgba(200, 100, 240, 0.4)',
+                    'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                }
+            });
+            map1.on('click', 'states-layer', function (e) {
+                alert(e.features[0].properties.name + ' ' + e.lngLat.lng + ',' + e.lngLat.lat)
+            });
+        });
+    </script>
+</div>
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">map1.on(<span class="hljs-string">'click'</span>, <span class="hljs-string">'states-layer'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;<br>    alert(e.features[<span class="hljs-number">0</span>].properties.name + <span class="hljs-string">' '</span> + e.lngLat.lng + <span class="hljs-string">','</span> + e.lngLat.lat)<br>&#125;);<br></code></pre></div></td></tr></table></figure>
+
+<h2 id="显示区域变化"><a href="#显示区域变化" class="headerlink" title="显示区域变化"></a>显示区域变化</h2><p>通过监听区域的变化，我们可以做很多基于地图范围的事情，例如，我们的某个图层数据量很大，一次性加载到前端会给浏览器很大压力， 此时我们可以考虑在moveend事件触发时再去加载可视范围内的数据，这样就大大减少了数据量，又不会影响视觉效果。</p>
+<h2 id="图层展现过程"><a href="#图层展现过程" class="headerlink" title="图层展现过程"></a>图层展现过程</h2><p>mapbox中的图层展现出来，需要经历数据加载和图层渲染两个过程，我们可以监听这个过程中的关键节点来做一些事情。 例如，我们可以在矢量瓦片数据加载完成时，把瓦片中的水系数据清空，这样地图上就看不到水系图层了。</p>
+<div>
+    <div id='map0' style='width: 90%; height: 300px;'></div>
+    <script>
+        const map0 = new mapboxgl.Map({
+            container: 'map0',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-100.04, 38.907],
+            zoom: 3
+        });
+        map0.on('data',(e)=>{
+            if(!e.tile || !e.tile.buckets){
+                return
+            }
+            const tile  = e.tile;
+            const buckets = tile.buckets;
+            for(let key in buckets){
+                if(key.indexOf('water')>=0){
+                    delete buckets[key]
+                }
+            }
+        })
+    </script>
+</div>
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">map0.on(<span class="hljs-string">'data'</span>, (e) =&gt; &#123;<br>    <span class="hljs-keyword">if</span> (!e.tile || !e.tile.buckets) &#123;<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    <span class="hljs-keyword">const</span> tile = e.tile;<br>    <span class="hljs-keyword">const</span> buckets = tile.buckets;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> buckets) &#123;<br>        <span class="hljs-keyword">if</span> (key.indexOf(<span class="hljs-string">'water'</span>) &gt;= <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">delete</span> buckets[key]<br>        &#125;<br>    &#125;<br>&#125;)<br></code></pre></div></td></tr></table></figure>
+<p>（当然这个例子并没有实际用途，我们不需要水系图层的话，设置图层的可见性或者直接把图层移除即可，不必如此复杂。 这里只是演示一下data函数的用法，在后续熟悉了矢量瓦片的字节格式后，我们就可以玩出在前端直接改矢量瓦片数据的骚操作了）</p>
+<h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>官方的叫法是<a href="https://www.mapbox.cn/mapbox-gl-js/api/#user%20interface" target="_blank" rel="noopener">User Interface</a><br>主要有如下几种组件：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>control</td>
+<td>在地图的四个角落放一些小工具按钮(官方提供的或是自己写的)</td>
+</tr>
+<tr>
+<td>popup</td>
+<td>在地图上放一个弹出框</td>
+</tr>
+<tr>
+<td>marker</td>
+<td>标记，把一个图标放在地图上</td>
+</tr>
+</tbody></table>
+<h2 id="control"><a href="#control" class="headerlink" title="control"></a>control</h2><p>这个例子是在地图左上角放了两个control:官方自带的导航控件NavigationControl以及我们自己编写的2.5d视角控件</p>
+<div>
+    <div id='map2' style='width: 90%; height: 300px;'></div>
+    <button id="btn3d">3d</button>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaW1saXV5dSIsImEiOiJjbDM4aHM4eXowMDBpM2RvZGdxdGZjeWMxIn0.mYtay02E_Z4iYOsDx3IdoA';
+        const map2 = new mapboxgl.Map({
+            container: 'map2',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-100.04, 38.907],
+            zoom: 3
+        });
+        map2.addControl(new mapboxgl.NavigationControl(), "top-left");
+        class PitchToggle {
+            constructor({ bearing = -20, pitch = 70, minpitchzoom = null }) {
+                this._bearing = bearing;
+                this._pitch = pitch;
+                this._minpitchzoom = minpitchzoom;
+            }
+            onAdd(map) {
+                this._map = map;
+                let _this = this;
+                this._btn = document.getElementById('btn3d');
+                this._btn.onclick = function() {
+                    if (map.getPitch() === 0) {
+                        let options = { pitch: _this._pitch, bearing: _this._bearing };
+                        if (_this._minpitchzoom && map.getZoom() > _this._minpitchzoom) {
+                            options.zoom = _this._minpitchzoom;
+                        }
+                        map.easeTo(options);
+                    } else {
+                        map.easeTo({ pitch: 0, bearing: 0 });
+                    }
+                };
+                this._container = document.createElement("div");
+                this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+                this._container.appendChild(this._btn);
+                return this._container;
+            }
+            onRemove() {
+                this._container.parentNode.removeChild(this._container);
+                this._map = undefined;
+            }
+        }
+        map2.addControl(new PitchToggle({ minpitchzoom: 11 }), "top-left");
+    </script>
+</div>
+
+<figure class="highlight html"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'map2'</span> <span class="hljs-attr">style</span>=<span class="hljs-string">'width: 90%; height: 300px;'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"btn3d"</span>&gt;</span>3d<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"><br>    mapboxgl.accessToken = <span class="hljs-string">'pk.eyJ1IjoiaW1saXV5dSIsImEiOiJjbDM4aHM4eXowMDBpM2RvZGdxdGZjeWMxIn0.mYtay02E_Z4iYOsDx3IdoA'</span>;<br>    <span class="hljs-keyword">const</span> map2 = <span class="hljs-keyword">new</span> mapboxgl.Map(&#123;<br>        <span class="hljs-attr">container</span>: <span class="hljs-string">'map2'</span>,<br>        <span class="hljs-attr">style</span>: <span class="hljs-string">'mapbox://styles/mapbox/streets-v11'</span>,<br>        <span class="hljs-attr">center</span>: [<span class="hljs-number">-100.04</span>, <span class="hljs-number">38.907</span>],<br>        <span class="hljs-attr">zoom</span>: <span class="hljs-number">3</span><br>    &#125;);<br>    <br>    <span class="hljs-comment">//官方控件</span><br>    map2.addControl(<span class="hljs-keyword">new</span> mapboxgl.NavigationControl(), <span class="hljs-string">"top-left"</span>);<br>    <br>    <span class="hljs-comment">//自定义控件 </span><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PitchToggle</span> </span>&#123;<br>        <span class="hljs-keyword">constructor</span>(&#123; bearing = <span class="hljs-number">-20</span>, pitch = <span class="hljs-number">70</span>&#125;) &#123;<br>            <span class="hljs-keyword">this</span>._bearing = bearing;<br>            <span class="hljs-keyword">this</span>._pitch = pitch;<br>        &#125;<br>        onAdd(map) &#123;<br>            <span class="hljs-keyword">this</span>._map = map;<br>            <span class="hljs-keyword">let</span> _this = <span class="hljs-keyword">this</span>;<br>            <span class="hljs-keyword">this</span>._btn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'btn3d'</span>);<br>            <span class="hljs-keyword">this</span>._btn.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;<br>                <span class="hljs-keyword">if</span> (map.getPitch() === <span class="hljs-number">0</span>) &#123;<br>                    <span class="hljs-keyword">let</span> options = &#123; <span class="hljs-attr">pitch</span>: _this._pitch, <span class="hljs-attr">bearing</span>: _this._bearing &#125;;<br>                    options.zoom = _this._minpitchzoom;<br>                    map.easeTo(options);<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    map.easeTo(&#123; <span class="hljs-attr">pitch</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">bearing</span>: <span class="hljs-number">0</span> &#125;);<br>                &#125;<br>            &#125;;<br>            <span class="hljs-keyword">this</span>._container = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"div"</span>);<br>            <span class="hljs-keyword">this</span>._container.className = <span class="hljs-string">"mapboxgl-ctrl-group mapboxgl-ctrl"</span>;<br>            <span class="hljs-keyword">this</span>._container.appendChild(<span class="hljs-keyword">this</span>._btn);<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._container;<br>        &#125;<br>        onRemove() &#123;<br>            <span class="hljs-keyword">this</span>._container.parentNode.removeChild(<span class="hljs-keyword">this</span>._container);<br>            <span class="hljs-keyword">this</span>._map = <span class="hljs-literal">undefined</span>;<br>        &#125;<br>    &#125;<br>    map2.addControl(<span class="hljs-keyword">new</span> PitchToggle(&#123; <span class="hljs-attr">minpitchzoom</span>: <span class="hljs-number">11</span> &#125;), <span class="hljs-string">"top-left"</span>);<br></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+
+<h2 id="popup"><a href="#popup" class="headerlink" title="popup"></a>popup</h2><p>结合我们点击事件的例子，现在把alert改成一个弹出框气泡:</p>
+<div>
+    <div id='map3' style='width: 90%; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaW1saXV5dSIsImEiOiJjbDM4aHM4eXowMDBpM2RvZGdxdGZjeWMxIn0.mYtay02E_Z4iYOsDx3IdoA';
+        const map3 = new mapboxgl.Map({
+            container: 'map3',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-100.04, 38.907],
+            zoom: 3
+        });
+        map3.on('load', function () {
+            map3.addLayer({
+                'id': 'states-layer',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson'
+                },
+                'paint': {
+                    'fill-color': 'rgba(200, 100, 240, 0.4)',
+                    'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                }
+            });
+            map3.on('click', 'states-layer', function (e) {
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties.name)
+                    .addTo(map3);
+            });
+        });
+    </script>
+</div>
+
+<figure class="highlight js"><table><tr><td class="gutter hljs hljs hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs js">map3.on(<span class="hljs-string">'click'</span>, <span class="hljs-string">'states-layer'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;<br>    <span class="hljs-keyword">new</span> mapboxgl.Popup()<br>        .setLngLat(e.lngLat)<br>        .setHTML(e.features[<span class="hljs-number">0</span>].properties.name)<br>        .addTo(map3);<br>&#125;);<br></code></pre></div></td></tr></table></figure>
+<p>实际开发中，我们往往会把<code>setHTML</code>换成<a href="https://www.mapbox.cn/mapbox-gl-js/api/#popup#setdomcontent" target="_blank" rel="noopener">setDOMContent</a>，从而避免html字符串拼接，更有利于前端设计出美观的弹出框</p>
+<h2 id="marker"><a href="#marker" class="headerlink" title="marker"></a>marker</h2><p>marker用于在地图上画一个图标，并支持拖拽这个图标，其性能相比构造一个点图层要差很多，几百个marker打到地图上就能感到卡顿。<br>因此，除非有明确的拖动需求（比如编辑数据），或者临时性的打点，一般建议用点图层来替代marker。</p>
+<p><a href="https://www.mapbox.cn/mapbox-gl-js/example/drag-a-marker/" target="_blank" rel="noopener">这个例子</a>演示了如何创建一个可拖动的marker。</p>
+
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="post-metas mb-3">
+                                
+                                    <div class="post-meta mr-3">
+                                        <i class="iconfont icon-category"></i>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/">gis</a>
+                                        
+                                            <a class="hover-with-bg"
+                                               href="/categories/gis/%E5%89%8D%E7%AB%AF/">前端</a>
+                                        
+                                    </div>
+                                
+                                
+                                    <div class="post-meta">
+                                        <i class="iconfont icon-tags"></i>
+                                        
+                                            <a class="hover-with-bg" href="/tags/mapbox-gl%E6%95%99%E7%A8%8B/">mapbox-gl教程</a>
+                                        
+                                    </div>
+                                
+                            </div>
+                            
+                                <p class="note note-warning">本文采用 <a
+                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                    https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/ </p>
+                            
+                            <!-- 打赏 -->
+                            <style>
+    .dashang{
+        display: block;
+        width: 56px;
+        margin: auto;
+        height: 56px;
+        line-height: 56px;
+        font-size: 20px;
+        color: #fff;
+        border: none;
+        background: #4094c7;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        -webkit-transition: 0.4s ease-in-out;
+        -webkit-transition: 0.4s ease-in-out;
+        -moz-transition: 0.4s ease-in-out;
+        -ms-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+    }
+    .hide_box {
+        z-index: 40;
+        background: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: none;
+    }
+    .shang_box {
+        width: 540px;
+        height: 450px;
+        padding: 10px;
+        background-color: #3f3f3f;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 41;
+        left: 50%;
+        top: 50%;
+        margin-left: -280px;
+        margin-top: -225px;
+        border: 1px dotted #000;
+        display: none;
+    }
+    .shang_box .shang_close {
+        position: absolute;
+        display: inline-block;
+        font-weight: 200;
+        font-size: 50px;
+        right: 19px;
+        outline: none;
+        text-shadow: none;
+        color: #4094c7;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-transition: color 0.35s;
+        -moz-transition: color 0.35s;
+        -ms-transition: color 0.35s;
+        -o-transition: color 0.35s;
+        transition: color 0.35s;
+    }
+    .shang_box .shang_tit {
+        width: 100%;
+        font-family: Roboto, "Roboto", serif;
+        height: 75px;
+        text-align: center;
+        line-height: 66px;
+        color: #fff;
+        font-size: 30px;
+        margin-top: 7px;
+        margin-right: 2px;
+    }
+    .shang_box .shang_payimg {
+        width: 255px;
+        height: 255px;
+        padding: 10px;
+        border: 6px solid #4094c7;
+        margin: 0 auto;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .shang_box .shang_payimg .pay_img {
+        width: 535px;
+        vertical-align: middle;
+        transition: margin-left 0.5s;
+    }
+    .shang_box .shang_payimg .pay_img img {
+        width: 225px;
+        width: 225px;
+        height: 100%;
+        margin: 0;
+        color: #283444;
+        font: 400 16px/1 "Open Sans", "Hiragino Sans GB", sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: none;
+        overflow: hidden;
+    }
+    .shang_box .shang_payselect {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20px;
+        height: 60px;
+        width: 320px;
+    }
+</style>
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>请作者喝杯咖啡</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg"
+                 class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg"
+                 class="weixin" title="扫码支持" style="display: none;">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input
+                        type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+<a  class="dashang" onclick="dashangToggle()">赏</a>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    $("input[name=pay]").on("click", function () {
+        console.log('click',$("input[name=pay]:checked").val())
+        $(".alipay").fadeToggle();
+        $(".weixin").fadeToggle();
+    })
+</script>
+
+                            <!-- end打赏 -->
+                            
+                                <div class="post-prevnext row">
+                                    <article class="post-prev col-6">
+                                        
+                                        
+                                            <a href="/2022/04/28/2022-04-28-mapbox-gl-tutorial-8/">
+                                                <i class="iconfont icon-arrowleft"></i>
+                                                <span class="hidden-mobile">mapbox-gl教程(8):矢量瓦片图层的发布与使用</span>
+                                                <span class="visible-mobile">上一篇</span>
+                                            </a>
+                                        
+                                    </article>
+                                    <article class="post-next col-6">
+                                        
+                                        
+                                            <a href="/2021/04/08/2021-04-08-certbot-ssl/">
+                                                <span class="hidden-mobile">centos7安装certbot免费获取并自动续期https证书</span>
+                                                <span class="visible-mobile">下一篇</span>
+                                                <i class="iconfont icon-arrowright"></i>
+                                            </a>
+                                        
+                                    </article>
+                                </div>
+                            
+                        </div>
+
+                        
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+            <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+                <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow noopener"><span>滇ICP备2022006911号</span></a> <i class="iconfont icon-love"></i> build on <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>、 <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="/lib/js/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="/lib/js/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="/lib/js/jquery.min.js" ></script>
+<script  src="/lib/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="/lib/js/tocbot.min.js" ></script>
+
+
+
+  <script  src="/lib/js/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="/lib/js/anchor.min.js" ></script>
+
+
+
+  <script defer src="/lib/js/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="/lib/js/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a3b27d40f206a97bb91289d5044bc63a";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
