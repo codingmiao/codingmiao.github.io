@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
+    
+    <lastmod>2023-02-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
+    
+    <lastmod>2023-02-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.wowtools.org/2023/02/11/2023-02-11-mybatisplus-jdbc/</loc>
     
     <lastmod>2023-02-11</lastmod>
@@ -20,15 +38,6 @@
   </url>
   
   <url>
-    <loc>https://blog.wowtools.org/2020/12/28/2020-12-28-mapbox-gl-tutorial-3/</loc>
-    
-    <lastmod>2022-05-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.wowtools.org/2020/12/29/2020-12-29-mapbox-gl-tutorial-4/</loc>
     
     <lastmod>2022-05-16</lastmod>
@@ -39,15 +48,6 @@
   
   <url>
     <loc>https://blog.wowtools.org/2020/12/21/2020-12-21-mapbox-gl-tutorial-1/</loc>
-    
-    <lastmod>2022-05-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.wowtools.org/2021/08/23/2021-08-23-mapbox-gl-tutorial-5/</loc>
     
     <lastmod>2022-05-16</lastmod>
     
