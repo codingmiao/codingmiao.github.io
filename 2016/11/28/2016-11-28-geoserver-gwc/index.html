@@ -59,7 +59,7 @@
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 4.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -241,7 +241,7 @@
 <p>不配的话，tomcat里运行默认是存在tomcat的temp目录下。</p>
 <p> 然后进入geoserver的管理界面，我们看到Tile Cacing下一共五个子目录：<br><strong>Tile LayersTile Layers</strong><br>gwc图层的配置、查看、预切图等<br><strong>Caching Defaults</strong><br>一些默认设置<br><strong>Gridsets</strong><br>切图网格的设置<br><strong>Disk Quota</strong><br>磁盘存储设置，比如设置最大磁盘占用50g，当缓存文件超过50g后，会按最近最少使用之类的规则清理掉一些旧的<br><strong>BlobStores</strong><br>允许我们指定存储位置、磁盘blocksize等，以更合理地使用磁盘</p>
 <p>我们先在Gridsets里，按照所用的地图信息配置一个切图网格：<br>![此处输入图片的描述][2]<br>遗憾的是不能直接修改坐标原点，导致切出来的瓦片不能直接拷贝出来丢给arcgis之类的使用，当然这个可以通过自定义坐标系来解决。</p>
-<p>选择需要gwc的图层，<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/c4428e71-931d-4902-afe2-ecc84f4ea2eb" alt=""></p>
+<p>选择需要gwc的图层，<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/c4428e71-931d-4902-afe2-ecc84f4ea2eb" srcset="/img/loading.gif" alt=""></p>
 <p>好了，准备工作完成，下面可以开始使用了：<br>点击Tile Layers,Preview下拉框选择一个想要的图片格式和grid，就可以预览了(预览页面右键查看源代码，就有openlayers调用gwc的方法了^_^)。</p>
 <p>如果想对指定区域进行预切片，只要点击Seed/Truncate，选好参数就可以开切了，不过geoserver切图性能堪忧，可以考虑用arcgis、gdal之类的切好了再丢到gwc缓存目录里。</p>
 <p> <strong>- 关于resolution</strong></p>
@@ -251,7 +251,7 @@ geoserver/gwc/service/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=xxx
 wms:
 geoserver/&lt;workspace&gt;/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=xxx</code></pre></div><p>我们发现，gwc除了前缀url路径不一样，后面的请求参数和wms几乎是一样的，也就是说，gwc并不是像TileLayer那样直接把切片返回到客户端，而是需要通过bbox去计算需要哪些切片，然后做适当的拼接、裁剪、缩放。</p>
 <p>如果同一个空间参考系配置了多个grid，geoserver会去计算请求图片的resolution与哪个grid更接近就用哪个grid。</p>
-<p>如果请求图片的resolution与grid的resolution相差较大，会导致图片过大地缩放，然后图片质量就不好了，这是网上找的一张图：<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/114be441-b6ae-4630-b0e5-b0f5446cf2a1" alt=""></p>
+<p>如果请求图片的resolution与grid的resolution相差较大，会导致图片过大地缩放，然后图片质量就不好了，这是网上找的一张图：<br><img src="http://7xlvcv.com1.z0.glb.clouddn.com/114be441-b6ae-4630-b0e5-b0f5446cf2a1" srcset="/img/loading.gif" alt=""></p>
 <p> 如果resolution相差再大一些，geoserver就直接抛个异常说resolution相差不能超过10%了。</p>
 <p> 所以，在使用gwc时，请尽量按照客户端地图的resolution来配置一套grid，以获得最佳浏览效果。</p>
 
@@ -282,8 +282,8 @@ geoserver/&lt;workspace&gt;/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=
                             </div>
                             
                                 <p class="note note-warning">本文采用 <a
-                                            href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
-                                            rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
+                                            target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
+                                            rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
                                     https://blog.wowtools.org/2016/11/28/2016-11-28-geoserver-gwc/ </p>
                             
                             <!-- 打赏 -->
@@ -411,9 +411,9 @@ geoserver/&lt;workspace&gt;/wms?LAYERS=xxx&amp;...&amp;SRS=EPSG%3A3857&amp;BBOX=
     </div>
     <div class="shang_payimg">
         <div class="pay_img">
-            <img src="/img/alipay.jpg"
+            <img src="/img/alipay.jpg" srcset="/img/loading.gif"
                  class="alipay" title="扫码支持">
-            <img src="/img/weixin.jpg"
+            <img src="/img/weixin.jpg" srcset="/img/loading.gif"
                  class="weixin" title="扫码支持" style="display: none;">
         </div>
     </div>
