@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      967 字
+      992 字
     </span>
   
 
@@ -230,8 +230,10 @@
                             <p>之前一直使用certbot-auto来获取https证书，今晚为一台新服务器安装的时候提示“Your system is not supported by certbot-auto anymore.”，<br>查了一下是因为certbot-auto团队没有精力为所有操作系统进行维护，所以包括centos7在内的许多系统已不被支持，于是整理了一下基于snap的方式。</p>
 <h1 id="1、安装snapd"><a href="#1、安装snapd" class="headerlink" title="1、安装snapd"></a>1、安装snapd</h1><p>依次执行下列命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">sudo yum install -y epel-release<br>sudo yum install -y yum-plugin-copr<br>sudo yum -y copr enable ngompa/snapcore-el7<br><br>sudo yum install -y snapd<br>sudo systemctl enable --now snapd.socket<br>sudo ln -s /var/lib/snapd/snap /snap<br></code></pre></div></td></tr></table></figure>
+<p>完成后，退出并重新登录一次系统，以确保snap生效,然后关selinux</p>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">sudo setenforce 0<br></code></pre></div></td></tr></table></figure>
 <p>完成后，退出并重新登录一次系统，以确保snap生效,然后更新下snap</p>
-<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">sudo setenforce 0<br>snap install core<br>snap refresh core<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">snap install core<br>snap refresh core<br></code></pre></div></td></tr></table></figure>
 
 <h1 id="2、安装certbot"><a href="#2、安装certbot" class="headerlink" title="2、安装certbot"></a>2、安装certbot</h1><p>依次执行下列命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">yum -y remove certbot<br>rm -rf /opt/eff.org/certbot<br><br>snap install --classic certbot<br>ln -s /snap/bin/certbot /usr/bin/certbot<br></code></pre></div></td></tr></table></figure>
@@ -247,7 +249,7 @@
 <figure class="highlight axapta"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs axapta">Detail: The key authorization file <span class="hljs-keyword">from</span> the <span class="hljs-keyword">server</span> did not match<br><span class="hljs-keyword">this</span> challenge<br><span class="hljs-string">&quot;6awrCzvoy.LSUW93J599887-163523&quot;</span><br>!= <span class="hljs-string">&quot;6awrCzvoy&quot;</span><br></code></pre></div></td></tr></table></figure>
 <p>这是因为校验服务器向我们的80端口发了个请求:<code>http://xxx.com/.well-known/acme-challenge/&lt;id&gt;</code><br>并要求我们响应<code>&lt;id&gt;.&lt;key&gt;</code>也就是上面的字符串<code>&quot;6awrCzvoy.LSUW93J599887-163523&quot;</code><br>因此，我们复制下需要的key<code>LSUW93J599887-163523</code>(注意各服务器的key不一样，请复制你机器上报错出来的key)并修改刚才的nginx配置</p>
 <figure class="highlight nginx"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs nginx"><span class="hljs-section">location</span> <span class="hljs-regexp">~ ^/.well-known/acme-challenge/(.*)$</span> &#123;<br>    <span class="hljs-attribute">default_type</span> text/html;<br>    <span class="hljs-attribute">return</span> <span class="hljs-number">200</span> <span class="hljs-variable">$1</span>.LSUW93J599887-<span class="hljs-number">163523</span>;<br>&#125;<br></code></pre></div></td></tr></table></figure>
-<p>重启nginx，再次执行certbot certonly  –email <a href="mailto:&#x78;&#x78;&#x78;&#64;&#x78;&#120;&#120;&#x2e;&#x63;&#111;&#109;">&#x78;&#x78;&#x78;&#64;&#x78;&#120;&#120;&#x2e;&#x63;&#111;&#109;</a> -d xxx.com -d <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> -w &#x2F;mydata&#x2F;webroot&#x2F;:</p>
+<p>重启nginx，再次执行certbot certonly  –email <a href="mailto:&#120;&#x78;&#x78;&#x40;&#120;&#120;&#x78;&#46;&#99;&#111;&#x6d;">&#120;&#x78;&#x78;&#x40;&#120;&#120;&#x78;&#46;&#99;&#111;&#x6d;</a> -d xxx.com -d <a target="_blank" rel="noopener" href="http://www.xxx.com/">www.xxx.com</a> -w &#x2F;mydata&#x2F;webroot&#x2F;:</p>
 <figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">certbot certonly  --email xxx@xxx.com -d xxx.com -d www.xxx.com -w /mydata/webroot/<br></code></pre></div></td></tr></table></figure>
 <p>依然输入3</p>
 <p>稍等片刻，证书生成完成，并提示:</p>

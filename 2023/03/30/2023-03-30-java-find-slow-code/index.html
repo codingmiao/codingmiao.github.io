@@ -15,9 +15,9 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="description" content="">
-  <meta name="author" content="刘雨">
+  <meta name="author" content="liuyu">
   <meta name="keywords" content="">
-  <title>mybatis-plus中获取Connection对象并进行jdbc操作 - 懒惰的芜菁</title>
+  <title>java排查耗时代码的几种方式 - 懒惰的芜菁</title>
 
   <link  rel="stylesheet" href="/lib/css/bootstrap.min.css" />
 
@@ -162,7 +162,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="mybatis-plus中获取Connection对象并进行jdbc操作">
+            <span class="h2" id="subtitle" title="java排查耗时代码的几种方式">
               
             </span>
 
@@ -172,8 +172,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2023-02-11 20:22" pubdate>
-        2023年2月11日 晚上
+      <time datetime="2023-03-30 22:14" pubdate>
+        2023年3月30日 晚上
       </time>
     </span>
   
@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      790 字
+      1.5k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      19
        分钟
     </span>
   
@@ -224,24 +224,54 @@
                 <div class="py-5" id="board">
                     <article class="post-content mx-auto">
                         <!-- SEO header -->
-                        <h1 style="display: none">mybatis-plus中获取Connection对象并进行jdbc操作</h1>
+                        <h1 style="display: none">java排查耗时代码的几种方式</h1>
                         
                         <div class="markdown-body">
-                            <h1 id="为什么会在一个ORM框架中用jdbc？"><a href="#为什么会在一个ORM框架中用jdbc？" class="headerlink" title="为什么会在一个ORM框架中用jdbc？"></a>为什么会在一个ORM框架中用jdbc？</h1><p><del>鲁迅</del>James Elliott曾说过：</p>
-<figure class="highlight text"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs text">As good object-oriented developers got tired of this repetitive work, <br>their typical tendency towards enlightened laziness started to manifest itself in the creation of tools to help automate the process. <br>When working with relational databases, <br>the culmination of such efforts were object/relational mapping tools.<br></code></pre></div></td></tr></table></figure>
-<p>大致翻译一下就是优秀的OOPer总是喜欢偷懒，所以他们创造了ORM工具。可见mybatis-plus只是一个偷懒的工具罢了，但是当这个工具面对某些场景不那么趁手时（比如一个复杂的查询业务，不得不用QueryWrapper套一大堆lambdaQuery或是在xml里配一大段带着if的sql），用工具反而增加了不少工作量。</p>
-<p>所以本懒人选择把jdbc能力加入到项目中，这样就可以在ORM和原生jdbc间反复横跳来最大化偷懒了。</p>
-<h1 id="mybatis-plus-多数据源支持和原理"><a href="#mybatis-plus-多数据源支持和原理" class="headerlink" title="mybatis-plus 多数据源支持和原理"></a>mybatis-plus 多数据源支持和原理</h1><p>你搜到这篇文章的话，大概率是你的项目里已经配好多数据源了，所以我们简单回顾一下配置步骤：</p>
-<p>1、拉个maven依赖</p>
-<figure class="highlight xml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.baomidou<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>dynamic-datasource-spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>xxx<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+                            <p>当java程序出现性能问题时，我们可以通过一些工具，快速定位出拖慢程序的代码：</p>
+<h1 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h1><p>jstack是jdk自带的堆栈跟踪工具</p>
+<p>首先，我们用<code>ps -ef|grep java</code>命令列出正在运行的java进程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">ps -ef|grep java</span><br>root        33    32 67 21:52 tty2     00:00:10 java -jar xxx.jar<br>root       101    11  0 21:52 pts/0    00:00:00 grep --color=auto java<br></code></pre></div></td></tr></table></figure>
+<p>得到其进程号，这个例子里，xxx.jar程序的进程号是33。</p>
+<p>（如果你的系统是windows执行不了这些命令，强烈建议装一个wsl1，IDEA支持把代码跑在wsl里了，调试起来会非常舒服，wsl2目前与windows本体的文件交换机制是网络传输，性能很差不建议。）</p>
+<p>现在，我们执行两个命令，分别打印出进程33的线程运行情况、最忙的线程（建议把打印结果复制到一个txt文件里方便ctrl+f查找）</p>
+<p><code>jstack -l 33</code>命令打印线程运行情况</p>
+<p><code>ps p 33 -L -o pcpu,pid,tid,time,tname,cmd</code>打印出线程使用cpu的情况</p>
+<p>打印结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">jstack -l 33</span><br>Full thread dump OpenJDK 64-Bit Server VM (17.0.2+8-86 mixed mode, sharing):<br><br>Threads class SMR info:<br>_java_thread_list=0x00007f3658001890, length=12, elements=&#123;<br>0x00007f369c023f10, 0x00007f369c1739b0, ...<br>&#125;<br><br>&quot;main&quot; #1 prio=5 os_prio=0 cpu=90140.00ms elapsed=98.18s tid=0x00007f369c023f10 nid=0x22 runnable  [0x00007f36a12fe000]<br>   java.lang.Thread.State: RUNNABLE<br>        at org.rocksdb.RocksDB.get(Native Method)<br>        at org.rocksdb.RocksDB.get(RocksDB.java:1965)<br>        at org.wowtools.giscat.vector.rocksrtree.TreeTransaction.get(TreeTransaction.java:74)<br>        at org.wowtools.giscat.vector.rocksrtree.TreeBuilder.getLeaf(TreeBuilder.java:186)<br>        ...<br><br>   Locked ownable synchronizers:<br>        - None<br><br>&quot;Reference Handler&quot; #2 daemon prio=10 os_prio=0 cpu=0.00ms elapsed=97.06s tid=0x00007f369c1739b0 nid=0x29 waiting on condition  [0x00007f367955e000]<br>   java.lang.Thread.State: RUNNABLE<br>        at java.lang.ref.Reference.waitForReferencePendingList(java.base@17.0.2/Native Method)<br>        at java.lang.ref.Reference.processPendingReferences(java.base@17.0.2/Reference.java:253)<br>        at java.lang.ref.Reference$ReferenceHandler.run(java.base@17.0.2/Reference.java:215)<br><br>   Locked ownable synchronizers:<br>        - None<br><br>...<br><br></code></pre></div></td></tr></table></figure>
 
-<p>2、配置一个dynamic datasource</p>
-<figure class="highlight yaml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">dynamic:</span><br>      <span class="hljs-attr">primary:</span> <span class="hljs-string">master</span><br>      <span class="hljs-attr">strict:</span> <span class="hljs-literal">false</span><br>      <span class="hljs-attr">datasource:</span><br>        <span class="hljs-attr">master:</span><br>          <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/xxx?characterEncoding=utf8&amp;useSSL=false</span><br>          <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">com.mysql.cj.jdbc.Driver</span><br>          <span class="hljs-attr">username:</span> <span class="hljs-string">xxx</span><br>          <span class="hljs-attr">password:</span> <span class="hljs-string">xxx</span><br>        <span class="hljs-attr">postgres:</span><br>          <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:postgresql://localhost:5432/xxx</span><br>          <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">org.postgresql.Driver</span><br>          <span class="hljs-attr">username:</span> <span class="hljs-string">xxx</span><br>          <span class="hljs-attr">password:</span> <span class="hljs-string">xxx</span><br></code></pre></div></td></tr></table></figure>
-<p>3、在Service上加上<code>@DS(&quot;postgres&quot;)</code>注解指定数据源即可。</p>
-<p>所以，其实mybatis-plus多数据源的原理是塞了一个DataSource的实现类<code>DynamicRoutingDataSource</code>,并根据注解调用<code>getDataSource(String ds)</code>方法拿到对应的实际DataSource：</p>
-<figure class="highlight java"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.baomidou.dynamic.datasource;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DynamicRoutingDataSource</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractRoutingDataSource</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InitializingBean</span>, DisposableBean &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, DataSource&gt; dataSourceMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>();<br><br>    <span class="hljs-keyword">public</span> DataSource <span class="hljs-title function_">getDataSource</span><span class="hljs-params">(String ds)</span> &#123;<br>        <span class="hljs-keyword">if</span> (StringUtils.isEmpty(ds)) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.determinePrimaryDataSource();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.groupDataSources.isEmpty() &amp;&amp; <span class="hljs-built_in">this</span>.groupDataSources.containsKey(ds)) &#123;<br>            log.debug(<span class="hljs-string">&quot;dynamic-datasource switch to the datasource named [&#123;&#125;]&quot;</span>, ds);<br>            <span class="hljs-keyword">return</span> ((GroupDataSource) <span class="hljs-built_in">this</span>.groupDataSources.get(ds)).determineDataSource();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.dataSourceMap.containsKey(ds)) &#123;<br>            log.debug(<span class="hljs-string">&quot;dynamic-datasource switch to the datasource named [&#123;&#125;]&quot;</span>, ds);<br>            <span class="hljs-keyword">return</span> (DataSource) <span class="hljs-built_in">this</span>.dataSourceMap.get(ds);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.strict) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CannotFindDataSourceException</span>(<span class="hljs-string">&quot;dynamic-datasource could not find a datasource named&quot;</span> + ds);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.determinePrimaryDataSource();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></div></td></tr></table></figure>
-<h1 id="编写一个获取Connection对象并执行jdbc操作的工具"><a href="#编写一个获取Connection对象并执行jdbc操作的工具" class="headerlink" title="编写一个获取Connection对象并执行jdbc操作的工具"></a>编写一个获取Connection对象并执行jdbc操作的工具</h1><p>了解了大致原理，我们只需写个工具类拿到spring上下文中的DynamicRoutingDataSource实例，即可获取实际的DataSource，进而拿到Connection对象并执行jdbc操作了：</p>
-<figure class="highlight java"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">import</span> com.baomidou.dynamic.datasource.DynamicRoutingDataSource;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Autowired;<br><span class="hljs-keyword">import</span> org.springframework.stereotype.Component;<br><span class="hljs-comment">//import org.wowtools.dao.SqlUtil;</span><br><br><span class="hljs-keyword">import</span> javax.annotation.PostConstruct;<br><span class="hljs-keyword">import</span> javax.sql.DataSource;<br><span class="hljs-keyword">import</span> java.sql.Connection;<br><span class="hljs-keyword">import</span> java.sql.SQLException;<br><br><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DbConnectionUtil</span> &#123;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> DynamicRoutingDataSource dynamicRoutingDataSource;<br><br><br>    <span class="hljs-keyword">private</span> DataSource mysqlDataSource;<br><br>    <span class="hljs-keyword">private</span> DataSource pgDataSource;<br><br>    <span class="hljs-meta">@PostConstruct</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">init</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">//在初始化的时候就把实际DataSource拿出来提高一点点性能，用的时候再根据名称拿DataSource也没什么问题</span><br>        mysqlDataSource = dynamicRoutingDataSource.getDataSource(<span class="hljs-string">&quot;master&quot;</span>);<br>        pgDataSource = dynamicRoutingDataSource.getDataSource(<span class="hljs-string">&quot;postgres&quot;</span>);<br><span class="hljs-comment">//        System.out.println(&quot;SqlUtil.queryBaseObjectWithJdbc&quot;+ SqlUtil.queryBaseObjectWithJdbc(getPgConnection(), &quot;select count(*) from xxx&quot;));</span><br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取mysql数据源的Connection</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> Connection <span class="hljs-title function_">getMysqlConnection</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> getConnection(mysqlDataSource);<br>    &#125;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取pg数据源的Connection</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> Connection <span class="hljs-title function_">getPgConnection</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> getConnection(pgDataSource);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Connection <span class="hljs-title function_">getConnection</span><span class="hljs-params">(DataSource ds)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-keyword">return</span> ds.getConnection();<br>        &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">ps p 33 -L -o pcpu,pid,tid,time,tname,cmd</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">CPU   PID   TID     TIME TTY      CMD</span><br>91.9    33    33 00:01:02 tty2     /mydata/java/jdk-17/bin/java<br>87.9    33    34 00:00:59 tty2     /mydata/java/jdk-17/bin/java<br> 0.0    33    35 00:00:00 tty2     /mydata/java/jdk-17/bin/java<br> 0.0    33    36 00:00:00 tty2     /mydata/java/jdk-17/bin/java<br> ...<br></code></pre></div></td></tr></table></figure>
+
+<p>现在我们知道了34号线程是最忙的，占了87.9%的CPU（33是主线程看不出什么内容），然后把34转为16进制：</p>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;0x%x\n&quot;</span>  34</span><br>0x22<br><br></code></pre></div></td></tr></table></figure>
+<p>最后，我们去查找jstack -l 33的输出里找关键字0x22:</p>
+<figure class="highlight text"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs text">&quot;main&quot; #1 prio=5 os_prio=0 cpu=90140.00ms elapsed=98.18s tid=0x00007f369c023f10 nid=0x22 runnable  [0x00007f36a12fe000]<br>   java.lang.Thread.State: RUNNABLE<br>        at org.rocksdb.RocksDB.get(Native Method)<br>        at org.rocksdb.RocksDB.get(RocksDB.java:1965)<br>        at org.wowtools.giscat.vector.rocksrtree.TreeTransaction.get(TreeTransaction.java:74)<br>        at org.wowtools.giscat.vector.rocksrtree.TreeBuilder.getLeaf(TreeBuilder.java:186)<br>        ...<br></code></pre></div></td></tr></table></figure>
+<p>可以发现，这段代码是频繁地去RocksDB里get数据，导致性能过低，我们用一个HashMap缓存一下，避免重复的get，性能一下就上去了~~~</p>
+<h1 id="火焰图"><a href="#火焰图" class="headerlink" title="火焰图"></a>火焰图</h1><p><code>jstack -l</code>命令是用来获取当前的线程栈信息，也就是它的结果是瞬时的，如果我们的实际应用场景比较复杂，往往需要采样一段时间内的运行情况，再找出这段时间内总耗时最多的方法。</p>
+<h2 id="火焰图怎么看"><a href="#火焰图怎么看" class="headerlink" title="火焰图怎么看"></a>火焰图怎么看</h2><p>实操前，我们先学习一下火焰图的阅读方法，这里引用阮一峰大佬<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2017/09/flame-graph.html">这篇博客</a>里的一张火焰图：</p>
+<p><img src="/myimgs/20230330/1.jpg" srcset="/img/loading.gif" alt="火焰图示例"></p>
+<p>图中的a、b、c…、i表示一个函数(java里面叫方法)。</p>
+<p>首先我们看y轴，也就是按图的自上而下看，下面的方法调用了紧贴着它上层的方法。例如图中方法f调用了方法g，而方法d调用了方法e、f。</p>
+<p>注意，由于火焰图是一个采样结果，所以不一定说方法d执行一次就会同时执行到e、f，比如d里面可能有个if判断:</p>
+<figure class="highlight java"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">XX</span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">d</span><span class="hljs-params">(<span class="hljs-type">int</span> input)</span> &#123;<br>        <span class="hljs-keyword">if</span> (input &gt; <span class="hljs-number">100</span>) &#123;<br>            e(input);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            f(input);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">e</span><span class="hljs-params">(<span class="hljs-type">int</span> input)</span>&#123;<br>        <span class="hljs-comment">// ...</span><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">f</span><span class="hljs-params">(<span class="hljs-type">int</span> input)</span>&#123;<br>        <span class="hljs-comment">// ...</span><br>    &#125;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>而在采样的这段时间内，由于有不同的input，导致d-&gt;e、d-&gt;f路径都被走过。</p>
+<p>接下来我们看x轴，也就是看每个方法所在矩形的宽度。宽度越宽代表着执行时间越长，但是要减掉上一层的宽度，也就是把调用其他方法的时间扣除掉才是此方法的实际耗时：</p>
+<p><img src="/myimgs/20230330/2.jpg" srcset="/img/loading.gif" alt="火焰图看耗时"></p>
+<p>所以，方法的耗时如下（单位是像素~~）：<br>e: 92</p>
+<p>g: 212</p>
+<p>d: 390-212-92&#x3D;86，即方法d的实际耗时需要减掉调用f、e的耗时</p>
+<p>i: 100</p>
+<p>所以，在排查性能问题和优化时，首先去检查最耗时的g，再依次去检查 i、e、d、等等。</p>
+<h2 id="arthas生成火焰图"><a href="#arthas生成火焰图" class="headerlink" title="arthas生成火焰图"></a>arthas生成火焰图</h2><p>这里的arthas不是魔兽里的洛丹伦孝子，是阿里开源的一个java线上监测工具。</p>
+<p>1、下载：<a target="_blank" rel="noopener" href="https://arthas.aliyun.com/doc/download.html">https://arthas.aliyun.com/doc/download.html</a></p>
+<p>2、<code>java -jar arthas-boot.jar</code> 启动arthas，会有一个列表列出当前在运行的java进程,输入序号(不是进程号)进入此进程的监控命令行。</p>
+<p>3、输入<code>profiler start</code>开始采样</p>
+<p>4、采样一段时间后，输入<code>profiler stop</code>结束采样，会生成一个html文件，在把这个html拖到chrome里就能看到火焰图了。</p>
+<p>这个火焰图是可以交互的，例如左上角的放大镜按钮可以用来高亮出包含关键字的矩形，如果方法调用层次太深，也可以点击某个矩形，只查看此矩形之上的部分。</p>
+<h1 id="jprofiler"><a href="#jprofiler" class="headerlink" title="jprofiler"></a>jprofiler</h1><p>jprofiler是一个性能分析神器，安装好后，按如下步骤即可执行java程序CPU运行情况的统计和实时展现：</p>
+<p><code>start center -&gt; quickly attach -&gt; 选择对应java进程 -&gt; samping -&gt; ok -&gt; cpu views -&gt; start recording</code></p>
+<p>jprofiler也可以和arthas联动，运行如下命令后得到一个jrf，然后把jrf丢进jprofiler里也能查看CPU情况:</p>
+<figure class="highlight shell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs shell">profiler start -f /mnt/e/%t.jfr -d 10<br></code></pre></div></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/arthas/issues/1416">详见这里</a></p>
 
                         </div>
                         <hr>
@@ -254,16 +284,13 @@
                                             <a class="hover-with-bg"
                                                href="/categories/java/">java</a>
                                         
-                                            <a class="hover-with-bg"
-                                               href="/categories/java/%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/">框架学习</a>
-                                        
                                     </div>
                                 
                                 
                                     <div class="post-meta">
                                         <i class="iconfont icon-tags"></i>
                                         
-                                            <a class="hover-with-bg" href="/tags/mybatis-plus/">mybatis-plus</a>
+                                            <a class="hover-with-bg" href="/tags/java/">java</a>
                                         
                                     </div>
                                 
@@ -272,7 +299,7 @@
                                 <p class="note note-warning">本文采用 <a
                                             target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
                                             rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明原始链接:
-                                    https://blog.wowtools.org/2023/02/11/2023-02-11-mybatisplus-jdbc/ </p>
+                                    https://blog.wowtools.org/2023/03/30/2023-03-30-java-find-slow-code/ </p>
                             
                             <!-- 打赏 -->
                             <style>
@@ -430,18 +457,12 @@
                                     <article class="post-prev col-6">
                                         
                                         
-                                            <a href="/2023/03/30/2023-03-30-java-find-slow-code/">
-                                                <i class="iconfont icon-arrowleft"></i>
-                                                <span class="hidden-mobile">java排查耗时代码的几种方式</span>
-                                                <span class="visible-mobile">上一篇</span>
-                                            </a>
-                                        
                                     </article>
                                     <article class="post-next col-6">
                                         
                                         
-                                            <a href="/2022/04/28/2022-04-28-mapbox-gl-tutorial-8/">
-                                                <span class="hidden-mobile">mapbox-gl教程(8):矢量瓦片图层的发布与使用</span>
+                                            <a href="/2023/02/11/2023-02-11-mybatisplus-jdbc/">
+                                                <span class="hidden-mobile">mybatis-plus中获取Connection对象并进行jdbc操作</span>
                                                 <span class="visible-mobile">下一篇</span>
                                                 <i class="iconfont icon-arrowright"></i>
                                             </a>
